@@ -24,7 +24,7 @@ export const reactClass = connect(
     this.state = {
       test:"testinfo",
       need_notify:"",
-      notify_list:{}
+      notify_list:{n:1}
     }
   }
 
@@ -69,22 +69,38 @@ export const reactClass = connect(
   }
 
   need_notify(newshipid,newshipname){
-    if(this.if_new_ship(newshipid)){
-      var neednotify = this.state.need_notify;
-      if(neednotify==""){
-        this.setState({need_notify:newshipname});
-      }else{
-        this.setState({need_notify:neednotify+"&"+newshipname});
+    var notifylist = this.state.notify_list;
+    if(notifylist.n){
+      if(this.if_new_ship(newshipid)){
+        var neednotify = this.state.need_notify;
+        if(neednotify==""){
+          this.setState({need_notify:newshipname});
+        }else{
+          this.setState({need_notify:neednotify+"&"+newshipname});
+        }
+      }
+    }else{
+      if(notifylist[newshipid]){
+        var neednotify = this.state.need_notify;
+        if(neednotify==""){
+          this.setState({need_notify:newshipname});
+        }else{
+          this.setState({need_notify:neednotify+"&"+newshipname});
+        }
       }
     }
+
   }
   handleFormChange(e){
     var value = e.target.value;
-    console.log(value);
     if(value=="请选择"){
 
     }else if(value == "船舱里没有的新船"){
-
+      var notify_list=this.state.notify_list;
+      if(notify_list.n==undefined){
+        notify_list.n=1;
+        this.setState({notify_list:notify_list})
+      }
     }else{
       var notify_list=this.state.notify_list;
       if(notify_list[value]==undefined){
@@ -92,7 +108,16 @@ export const reactClass = connect(
         this.setState({notify_list:notify_list})
       }
     }
+  }
 
+  removenotify(shipid){
+    var notify_list=this.state.notify_list;
+    if(shipid=="n"){
+      if(notify_list.n){
+        delete(notify_list["n"]);
+        this.setState({notify_list:notify_list})
+      }
+    }
   }
 
 
@@ -100,11 +125,17 @@ export const reactClass = connect(
     const $ships = this.props.$ships;
     const allship = Object.keys($ships);
     const notifylist = this.state.notify_list;
-    console.log(notifylist);
     const notifykeys = Object.keys(notifylist);
     return(
       <div>
         {notifykeys.map(function(notifykey){
+          if(notifykey=="n"){
+            return(
+              <div>
+                船舱里没有的新船
+              </div>
+            )
+          }
           return(
             <div>{
               $ships[notifykey].api_name
