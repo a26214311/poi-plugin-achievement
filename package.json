@@ -1,0 +1,20 @@
+{
+  "name": "poi-plugin-notify",
+  "version": "0.0.1",
+  "main": "index.es",
+  "description": "A plugin for notify locking ships",
+  "author": {
+    "name": "a26214311",
+    "url": "https://github.com/a26214311"
+  },
+  "poiPlugin": {
+    "title": "锁船提醒",
+    "description": "快给老娘上锁带上戒指",
+    "icon": "fa/star",
+    "i18nDir": "i18n/translator",
+    "apiVer": {
+      "6.3.3": "2.1.1",
+      "7.0.0-beta.1": "3.0.0"
+    }
+  }
+}
