@@ -130,7 +130,7 @@ export const reactClass = connect(
       }
     }else{
       if(notify_list[shipid]){
-        delete(notify_list["n"]);
+        delete(notify_list[shipid]);
         this.setState({notify_list:notify_list})
       }
     }
@@ -181,11 +181,14 @@ export const reactClass = connect(
             )
           }
           return(
-            <div>{
-              $ships[notifykey].api_name
-            }</div>
+            <div>
+              <span>
+                {$ships[notifykey].api_name}
+              </span>
+              <span onClick={() => {this.removenotify(notifykey)}}> x删除</span>
+            </div>
           )
-        })}
+        }.bind(this))}
         <div>
           <FormControl style={{width:"200px",display:'inline','text-align':'center'}} componentClass="select"
                        onChange={this.handleFormChange.bind(this)}
