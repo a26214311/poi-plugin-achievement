@@ -30,7 +30,6 @@ export const reactClass = connect(
   }
 
   componentDidMount = () => {
-    console.log("cmount!");
     window.addEventListener('game.response', this.handleResponse)
   }
 
@@ -62,17 +61,16 @@ export const reactClass = connect(
     var $ships = this.props.$ships;
     var shipidlist = {};
     var x = newshipid;
+    shipidlist[x]=1;
     while($ships[x].api_aftershipid!="0"){
-      shipidlist[x]=1;
-      x=$ships[x].api_aftershipid;
+      var aftershipid = $ships[x].api_aftershipid;
+      shipidlist[aftershipid]=1;
+      x=parseInt($ships[x].api_aftershipid);
     }
-    console.log(newshipid);
-    console.log(shipidlist);
     for(var p in allships){
       var ship = allships[p];
       var shipid = ship.api_ship_id;
       if(shipidlist[shipid]){
-        console.log(shipid);
         return false;
       }
     }
@@ -89,15 +87,15 @@ export const reactClass = connect(
         }else{
           this.setState({need_notify:neednotify+"&"+newshipname});
         }
+        return;
       }
-    }else{
-      if(notifylist[newshipid]){
-        var neednotify = this.state.need_notify;
-        if(neednotify==""){
-          this.setState({need_notify:newshipname});
-        }else{
-          this.setState({need_notify:neednotify+"&"+newshipname});
-        }
+    }
+    if(notifylist[newshipid]){
+      var neednotify = this.state.need_notify;
+      if(neednotify==""){
+        this.setState({need_notify:newshipname});
+      }else{
+        this.setState({need_notify:neednotify+"&"+newshipname});
       }
     }
 
@@ -137,21 +135,20 @@ export const reactClass = connect(
   }
 
   savelist(){
-    console.log("now saving");
     try{
       var notifylist = this.state.notify_list;
       var savepath = join(window.APPDATA_PATH, 'notify_config','notify_config.json');
       fs.writeFileSync(savepath, JSON.stringify(notifylist));
-      window.warn("保存成功");
+      window.success("保存列表成功");
     }catch(e){
       fs.mkdir(join(window.APPDATA_PATH, 'notify_config'));
       try{
         var notifylist = this.state.notify_list;
         var savepath = join(window.APPDATA_PATH, 'notify_config','notify_config.json');
         fs.writeFileSync(savepath, JSON.stringify(notifylist));
-        window.warn("保存成功");
+        window.success("保存列表成功");
       }catch(e2){
-        window.warn("保存失败");
+        window.success("保存列表失败");
         console.log(e2);
       }
     }
