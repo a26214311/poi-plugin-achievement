@@ -5,10 +5,10 @@ import {createSelector} from 'reselect'
 import {store} from 'views/create-store'
 
 import {join} from 'path'
-import { FormControl,FormGroup} from 'react-bootstrap'
+import { FormControl,Button} from 'react-bootstrap'
 
 import {extensionSelectorFactory} from 'views/utils/selectors'
-
+const fs = require('fs')
 export const reactClass = connect(
   state => ({
     horizontal: state.config.poi.layout || 'horizontal',
@@ -24,7 +24,8 @@ export const reactClass = connect(
     this.state = {
       test:"testinfo",
       need_notify:"",
-      notify_list:{n:1}
+      notify_list:{n:1},
+      need_load:true
     }
   }
 
@@ -58,10 +59,20 @@ export const reactClass = connect(
 
   if_new_ship(newshipid){
     var allships = this.props.ships;
+    var $ships = this.props.$ships;
+    var shipidlist = {};
+    var x = newshipid;
+    while($ships[x].api_aftershipid!="0"){
+      shipidlist[x]=1;
+      x=$ships[x].api_aftershipid;
+    }
+    console.log(newshipid);
+    console.log(shipidlist);
     for(var p in allships){
       var ship = allships[p];
       var shipid = ship.api_ship_id;
-      if(newshipid==shipid){
+      if(shipidlist[shipid]){
+        console.log(shipid);
         return false;
       }
     }
@@ -117,14 +128,47 @@ export const reactClass = connect(
         delete(notify_list["n"]);
         this.setState({notify_list:notify_list})
       }
+    }else{
+      if(notify_list[shipid]){
+        delete(notify_list["n"]);
+        this.setState({notify_list:notify_list})
+      }
     }
   }
 
+  savelist(){
+    try{
+      var notifylist = this.state.notify_list;
+      var savepath = join(window.APPDATA_PATH, 'notify_config','notify_config.json');
+      fs.writeFileSync(savepath, JSON.stringify(notifylist));
+    }catch(e){
+      console.log(e);
+    }
+  }
+
+  loadlist(){
+    var needload = this.state.need_load;
+    if(needload){
+      try{
+        var savedpath = join(window.APPDATA_PATH, 'notify_config','notify_config.json');
+        var datastr = fs.readFileSync(savedpath,'utf-8');
+        var notifylist = eval("(" + datastr + ")");
+        this.setState({notify_list:notifylist,need_load:false});
+        return notifylist;
+      }catch(e){
+        console.log(e);
+        this.setState({notify_list:{n:1},need_load:false});
+        return {n:1};
+      }
+    }else{
+      return this.state.notify_list;
+    }
+  }
 
   render(){
     const $ships = this.props.$ships;
     const allship = Object.keys($ships);
-    const notifylist = this.state.notify_list;
+    const notifylist = this.loadlist();
     const notifykeys = Object.keys(notifylist);
     return(
       <div>
@@ -159,6 +203,7 @@ export const reactClass = connect(
             }
           </FormControl>
         </div>
+        <Button onClick={this.savelist.bind(this)}>保存列表</Button>
       </div>
     )
   }
