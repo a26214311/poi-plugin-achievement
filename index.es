@@ -137,12 +137,23 @@ export const reactClass = connect(
   }
 
   savelist(){
+    console.log("now saving");
     try{
       var notifylist = this.state.notify_list;
       var savepath = join(window.APPDATA_PATH, 'notify_config','notify_config.json');
       fs.writeFileSync(savepath, JSON.stringify(notifylist));
+      window.warn("保存成功");
     }catch(e){
-      console.log(e);
+      fs.mkdir(join(window.APPDATA_PATH, 'notify_config'));
+      try{
+        var notifylist = this.state.notify_list;
+        var savepath = join(window.APPDATA_PATH, 'notify_config','notify_config.json');
+        fs.writeFileSync(savepath, JSON.stringify(notifylist));
+        window.warn("保存成功");
+      }catch(e2){
+        window.warn("保存失败");
+        console.log(e2);
+      }
     }
   }
 
