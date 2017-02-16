@@ -282,7 +282,7 @@ export const reactClass = connect(
               )
             }
             return(
-              <Col xs={3} sm={2} md={1}>
+              <Col xs={3} sm={this.props.horizontal == 'horizontal' ? 3 : 2} md={this.props.horizontal == 'horizontal' ? 3 : 1}>
                 <div className="ship-item">
                   <span className="ship-name">
                     {$ships[notifykey].api_name}
