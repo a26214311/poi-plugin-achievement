@@ -264,10 +264,10 @@ export const reactClass = connect(
               return(
                 <Col xs={6}>
                   <div className="ship-item">
-                  <span>
+                  <span className="ship-name">
                     船舱里没有的新船
                   </span>
-                    <span onClick={() => {this.removenotify("n")}} className="close-btn">x</span>
+                    <span onClick={() => {this.removenotify("n")}} className="close-btn"> </span>
                   </div>
                 </Col>
               )
