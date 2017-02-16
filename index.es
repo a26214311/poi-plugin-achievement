@@ -7,6 +7,7 @@ import {store} from 'views/create-store'
 import {join} from 'path'
 import { FormControl, Button, Row, Col } from 'react-bootstrap'
 
+
 import {extensionSelectorFactory} from 'views/utils/selectors'
 const fs = require('fs')
 export const reactClass = connect(
@@ -173,11 +174,48 @@ export const reactClass = connect(
     }
   }
 
+  simplfyship(){
+    var $ships = this.props.$ships;
+    for(var p in $ships){
+      var ship = $ships[p];
+      var afterlv = ship.api_afterlv;
+      var aftershipid = ship.api_aftershipid;
+      if(afterlv&&aftershipid){
+        var aftership = $ships[aftershipid];
+        var aftership_beforeshipid = aftership.before_shipid;
+        var aftership_beforeshiplv = aftership.before_shiplv;
+        if(aftership_beforeshipid){
+          if(afterlv<aftership_beforeshiplv){
+            aftership.before_shipid=p;
+            aftership.before_shiplv=afterlv;
+          }
+        }else{
+          aftership.before_shipid=p;
+          aftership.before_shiplv=afterlv;
+        }
+      }
+    }
+    var list = [];
+    for(var p in $ships){
+      var ship = $ships[p];
+      var afterlv = ship.api_afterlv;
+      var aftershipid = ship.api_aftershipid;
+      if(afterlv&&aftershipid){
+        if(ship.before_shipid==undefined){
+          list.push(p);
+        }
+      }
+    }
+    list.sort(function(a,b){return $ships[a].api_stype-$ships[b].api_stype});
+    return list;
+  }
+
   render(){
     const $ships = this.props.$ships;
-    const allship = Object.keys($ships);
+    const allship = this.simplfyship();
     const notifylist = this.loadlist();
     const notifykeys = Object.keys(notifylist);
+    const $shipTypes = this.props.$shipTypes;
     return(
       <div id="notify" className="notify">
         <link rel="stylesheet" href={join(__dirname, 'notify.css')}/>
@@ -190,8 +228,10 @@ export const reactClass = connect(
                 allship.map(function(shipid){
                   var shipinfo = $ships[shipid];
                   var shipname = shipinfo.api_name;
+                  var shiptypeid = shipinfo.api_stype;
+                  var shiptypename = $shipTypes[shiptypeid].api_name;
                   return(
-                    <option value={shipid}>{shipname}</option>
+                    <option value={shipid}>{shiptypename}:{shipname}</option>
                   )
                 })
               }
