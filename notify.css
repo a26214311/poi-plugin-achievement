@@ -25,17 +25,66 @@
 	position: relative;
 	line-height: 20px;
 	background: #333;
+	color: #fff;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+	text-align: center;
+	transition: 300ms;
+}
 
+#notify .ship-item:hover{
+	text-indent: -20px;
 }
 
 #notify .ship-item .close-btn {
 	position: absolute;
-	right: 0;
-	width: 20px;
-	height: 20px;
-	line-height: 20px;
+	right: 2px;
+	width: 16px;
+	height: 16px;
 	text-align: center;
 	background: #f00;
 	border-radius: 10px;
+	overflow: hidden;
+	border: 2px solid #f00;
+	transform: rotate(45deg);
+	margin-top: 2px;
+	transition:transform 500ms;
+	cursor: pointer;
+	opacity: 0;
+}
 
+#notify .ship-item:hover .close-btn {
+	opacity: 1;
+}
+
+#notify .ship-item .close-btn:hover{
+	transform: rotate(225deg);
+}
+
+#notify .ship-item .close-btn:before {
+	content: ' ';
+	display: block;
+	width: 7px;
+	height: 7px;
+	position: absolute;
+	top: 0;
+	left: 0;
+	background: transparent;
+	border-bottom: 2px solid #fff;
+	border-right: 2px solid #fff;
+
+}
+
+#notify .ship-item .close-btn:after {
+	content: ' ';
+	display: block;
+	width: 7px;
+	height: 7px;
+	position: absolute;
+	right: 0;
+	bottom: 0;
+	background: transparent;
+	border-top: 2px solid #fff;
+	border-left: 2px solid #fff;
 }

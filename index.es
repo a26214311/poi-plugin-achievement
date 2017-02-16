@@ -5,7 +5,7 @@ import {createSelector} from 'reselect'
 import {store} from 'views/create-store'
 
 import {join} from 'path'
-import { FormControl, Button, Row, Col } from 'react-bootstrap'
+import { FormGroup, FormControl, Button, Row, Col } from 'react-bootstrap'
 
 
 import {extensionSelectorFactory} from 'views/utils/selectors'
@@ -256,7 +256,7 @@ export const reactClass = connect(
                   <span>
                     {$ships[notifykey].api_name}
                   </span>
-                  <span onClick={() => {this.removenotify(notifykey)}} className="close-btn">x</span>
+                  <span onClick={() => {this.removenotify(notifykey)}} className="close-btn"></span>
                 </div>
               </Col>
             )
