@@ -5,7 +5,7 @@ import {createSelector} from 'reselect'
 import {store} from 'views/create-store'
 
 import {join} from 'path'
-import { FormControl,Button} from 'react-bootstrap'
+import { FormControl, Button, Row, Col } from 'react-bootstrap'
 
 import {extensionSelectorFactory} from 'views/utils/selectors'
 const fs = require('fs')
@@ -171,42 +171,49 @@ export const reactClass = connect(
     const notifylist = this.loadlist();
     const notifykeys = Object.keys(notifylist);
     return(
-      <div>
-        {notifykeys.map(function(notifykey){
-          if(notifykey=="n"){
-            return(
-              <div>
-                船舱里没有的新船
-              </div>
-            )
-          }
-          return(
-            <div>
-              <span>
-                {$ships[notifykey].api_name}
-              </span>
-              <span onClick={() => {this.removenotify(notifykey)}}> x删除</span>
-            </div>
-          )
-        }.bind(this))}
-        <div>
-          <FormControl style={{width:"200px",display:'inline','text-align':'center'}} componentClass="select"
-                       onChange={this.handleFormChange.bind(this)}
-          >
-            <option value="请选择">请选择</option>
-            <option value="船舱里没有的新船">船舱里没有的新船</option>
-            {
-              allship.map(function(shipid){
-                var shipinfo = $ships[shipid];
-                var shipname = shipinfo.api_name;
-                return(
-                  <option value={shipid}>{shipname}</option>
-                )
-              })
+      <div id="notify" className="notify">
+        <link rel="stylesheet" href={join(__dirname, 'notify.css')}/>
+        <Row className="top-control">
+          <Col xs={8}>
+            <FormControl style={{width:"200px",display:'inline','text-align':'center'}} componentClass="select" onChange={this.handleFormChange.bind(this)}>
+              <option value="请选择">请选择</option>
+              <option value="船舱里没有的新船">船舱里没有的新船</option>
+              {
+                allship.map(function(shipid){
+                  var shipinfo = $ships[shipid];
+                  var shipname = shipinfo.api_name;
+                  return(
+                    <option value={shipid}>{shipname}</option>
+                  )
+                })
+              }
+            </FormControl>
+          </Col>
+          <Col xs={4}>
+            <Button onClick={this.savelist.bind(this)}>保存列表</Button>
+          </Col>
+        </Row>
+        <Row>
+          {notifykeys.map(function(notifykey){
+            if(notifykey=="n"){
+              return(
+                <Col xs={12}>
+                  船舱里没有的新船
+                </Col>
+              )
             }
-          </FormControl>
-        </div>
-        <Button onClick={this.savelist.bind(this)}>保存列表</Button>
+            return(
+              <Col xs={3}>
+                <div className="ship-item">
+                  <span>
+                    {$ships[notifykey].api_name}
+                  </span>
+                  <span onClick={() => {this.removenotify(notifykey)}} className="close-btn">x</span>
+                </div>
+              </Col>
+            )
+          }.bind(this))}
+        </Row>
       </div>
     )
   }
