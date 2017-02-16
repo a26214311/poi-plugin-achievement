@@ -253,10 +253,10 @@ export const reactClass = connect(
             return(
               <Col xs={3}>
                 <div className="ship-item">
-                  <span>
+                  <span className="ship-name">
                     {$ships[notifykey].api_name}
                   </span>
-                  <span onClick={() => {this.removenotify(notifykey)}} className="close-btn"></span>
+                  <span onClick={() => {this.removenotify(notifykey)}} className="close-btn"> </span>
                 </div>
               </Col>
             )

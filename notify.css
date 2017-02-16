@@ -26,20 +26,26 @@
 	line-height: 20px;
 	background: #333;
 	color: #fff;
+	text-align: center;
+}
+
+#notify .ship-item .ship-name{
+	display: block;
 	overflow: hidden;
 	text-overflow: ellipsis;
 	white-space: nowrap;
-	text-align: center;
+	width: 100%;
 	transition: 300ms;
 }
 
-#notify .ship-item:hover{
-	text-indent: -20px;
+#notify .ship-item:hover .ship-name{
+	margin-left: -10px;
 }
 
 #notify .ship-item .close-btn {
 	position: absolute;
-	right: 2px;
+	top: 7px;
+	right: 5px;
 	width: 16px;
 	height: 16px;
 	text-align: center;
@@ -48,7 +54,6 @@
 	overflow: hidden;
 	border: 2px solid #f00;
 	transform: rotate(45deg);
-	margin-top: 2px;
 	transition:transform 500ms;
 	cursor: pointer;
 	opacity: 0;
