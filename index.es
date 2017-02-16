@@ -175,6 +175,21 @@ export const reactClass = connect(
   }
 
   simplfyship(){
+    try{
+      return this.simplfyship_D();
+    }catch(e){
+      console.log(e);
+      try{
+        return Object.keys(this.props.$ships);
+      }catch(e2){
+        console.log(e2);
+        return [];
+      }
+    }
+
+  }
+
+  simplfyship_D(){
     var $ships = this.props.$ships;
     for(var p in $ships){
       var ship = $ships[p];
@@ -227,12 +242,14 @@ export const reactClass = connect(
               {
                 allship.map(function(shipid){
                   var shipinfo = $ships[shipid];
-                  var shipname = shipinfo.api_name;
-                  var shiptypeid = shipinfo.api_stype;
-                  var shiptypename = $shipTypes[shiptypeid].api_name;
-                  return(
-                    <option value={shipid}>{shiptypename}:{shipname}</option>
-                  )
+                  if(shipinfo){
+                    var shipname = shipinfo.api_name;
+                    var shiptypeid = shipinfo.api_stype;
+                    var shiptypename = $shipTypes[shiptypeid].api_name;
+                    return(
+                      <option value={shipid}>{shiptypename}:{shipname}</option>
+                    )
+                  }
                 })
               }
             </FormControl>
