@@ -273,7 +273,7 @@ export const reactClass = connect(
               )
             }
             return(
-              <Col xs={3}>
+              <Col xs={3} sm={2} md={1}>
                 <div className="ship-item">
                   <span className="ship-name">
                     {$ships[notifykey].api_name}
