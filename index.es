@@ -230,6 +230,15 @@ export const reactClass = connect(
     const allship = this.simplfyship();
     const notifylist = this.loadlist();
     const notifykeys = Object.keys(notifylist);
+    try{
+      notifykeys.sort(function(a,b){
+        if(a=="n"){return -999};
+        if(b=="n"){return 999};
+        return $ships[a].api_stype-$ships[b].api_stype
+      })
+    }catch(e){
+      console.log(e);
+    }
     const $shipTypes = this.props.$shipTypes;
     return(
       <div id="notify" className="notify">
