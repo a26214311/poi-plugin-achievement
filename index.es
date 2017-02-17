@@ -27,7 +27,8 @@ export const reactClass = connect(
       need_notify:"",
       notify_list:{n:1},
       newestshipid:0,
-      need_load:true
+      need_load:true,
+      ship_targets: this.simplfyship()
     }
   }
 
@@ -272,7 +273,16 @@ export const reactClass = connect(
     return list;
   }
 
-
+  changeHandler(e){
+    e.preventDefault();
+    e.stopPropagation();
+    let allship = [], $ship = this.props.$ships;
+    this.simplfyship().map((id) => {
+      if(new RegExp(e.target.value).test($ship[id].api_name))
+        allship.push(id);
+    });
+    this.setState({ship_targets: allship})
+  }
 
 
 
@@ -291,6 +301,19 @@ export const reactClass = connect(
       console.log(e);
     }
     const $shipTypes = this.props.$shipTypes;
+
+    const createList = (arr) => {
+      var out = [];
+      arr.map((option) => {
+        out.push(
+          <li>
+            {$ships[option].api_name}
+          </li>
+        )
+      });
+      return out;
+    };
+
     return(
       <div id="notify" className="notify">
         <link rel="stylesheet" href={join(__dirname, 'notify.css')}/>
@@ -343,6 +366,18 @@ export const reactClass = connect(
               </Col>
             )
           }.bind(this))}
+        </Row>
+        <Row>
+          <Col xs={12}>
+            <form className="input-select">
+              <FormGroup>
+                <FormControl type="text" placeholder="Normal text" onChange={this.changeHandler.bind(this)}/>
+                <ul className="option-list">
+                  {createList(this.state.ship_targets)}
+                </ul>
+              </FormGroup>
+            </form>
+          </Col>
         </Row>
       </div>
     )

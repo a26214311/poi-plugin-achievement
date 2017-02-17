@@ -29,6 +29,17 @@
 	text-align: center;
 }
 
+/* form下拉输入框 */
+#notify .input-select {
+	position: relative;
+}
+#notify .input-select .form-group {
+	position: absolute;
+	top: 0;
+}
+
+
+/* 列表特效 */
 #notify .ship-item .ship-name{
 	display: block;
 	overflow: hidden;
