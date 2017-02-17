@@ -26,12 +26,67 @@ export const reactClass = connect(
       test:"testinfo",
       need_notify:"",
       notify_list:{n:1},
+      newestshipid:0,
       need_load:true
     }
   }
 
+  componentWillReceiveProps(nextProps) {
+    var oldnewestshipid = this.state.newestshipid;
+    if(oldnewestshipid==0){
+      var newestshipid = this.get_newest_shipid(nextProps);
+      this.setState({newestshipid:newestshipid});
+    }else{
+      this.get_newest_ship(nextProps)
+    }
+  }
+
+  get_newest_ship(nextProps){
+    try{
+      this.get_newest_ship_D(nextProps);
+    }catch (e){
+      console.log(e);
+    }
+  }
+
+  get_newest_shipid(nextProps){
+    try{
+      console.log(nextProps);
+      var ships = nextProps.ships;
+      var newestid=0;
+      for(var p in ships){
+        if(parseInt(p)>newestid){
+          newestid = p;
+        }
+      }
+      return newestid;
+    }catch(e){
+      console.log(e);
+      return -1;
+    }
+  }
+
+  get_newest_ship_D(nextProps){
+    var newestid=this.get_newest_shipid(nextProps);
+    var oldnewestshipid = this.state.newestshipid;
+    var ships = nextProps.ships;
+    if(newestid>oldnewestshipid){
+      var newestship = ships[newestid];
+      var newestapiid = newestship.api_ship_id;
+      var $ships = this.props.$ships;
+      var newestname = $ships[newestapiid].api_name;
+      this.need_notify(newestapiid,newestname,newestid);
+    }
+  }
+
+
+
+
+
+
   componentDidMount = () => {
-    window.addEventListener('game.response', this.handleResponse)
+    window.addEventListener('game.response', this.handleResponse);
+    this.loadlist();
   }
 
   componentWillUnmount = () => {
@@ -45,14 +100,6 @@ export const reactClass = connect(
       if(neednotify!=""){
         window.toggleModal('锁船提醒', neednotify+':快给老娘上锁！');
         this.setState({need_notify:""});
-      }
-    }
-    if(path == "/kcsapi/api_req_sortie/battleresult"){
-      var getship = body.api_get_ship;
-      if(getship){
-        var getshipid = getship.api_ship_id;
-        var getshipname = getship.api_ship_name;
-        this.need_notify(getshipid,getshipname);
       }
     }
   }
@@ -78,28 +125,29 @@ export const reactClass = connect(
     return true;
   }
 
-  need_notify(newshipid,newshipname){
+  need_notify(newshipid,newshipname,newestid){
+    var newstate = {};
     var notifylist = this.state.notify_list;
     if(notifylist.n){
       if(this.if_new_ship(newshipid)){
         var neednotify = this.state.need_notify;
         if(neednotify==""){
-          this.setState({need_notify:newshipname});
+          newstate.need_notify = newshipname;
         }else{
-          this.setState({need_notify:neednotify+"&"+newshipname});
+          newstate.need_notify = neednotify+"&"+newshipname;
         }
-        return;
       }
     }
     if(notifylist[newshipid]){
       var neednotify = this.state.need_notify;
       if(neednotify==""){
-        this.setState({need_notify:newshipname});
+        newstate.need_notify = newshipname;
       }else{
-        this.setState({need_notify:neednotify+"&"+newshipname});
+        newstate.need_notify = neednotify+"&"+newshipname;
       }
     }
-
+    newstate.newestshipid=newestid;
+    this.setState(newstate);
   }
   handleFormChange(e){
     var value = e.target.value;
@@ -225,10 +273,14 @@ export const reactClass = connect(
     return list;
   }
 
+
+
+
+
   render(){
     const $ships = this.props.$ships;
     const allship = this.simplfyship();
-    const notifylist = this.loadlist();
+    const notifylist = this.state.notify_list;
     const notifykeys = Object.keys(notifylist);
     try{
       notifykeys.sort(function(a,b){
