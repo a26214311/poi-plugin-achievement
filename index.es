@@ -51,7 +51,6 @@ export const reactClass = connect(
 
   get_newest_shipid(nextProps){
     try{
-      console.log(nextProps);
       var ships = nextProps.ships;
       var newestid=0;
       for(var p in ships){
@@ -269,7 +268,7 @@ export const reactClass = connect(
         }
       }
     }
-    list.sort(function(a,b){return $ships[a].api_stype-$ships[b].api_stype});
+    list.sort(function(a,b){return 8*($ships[a].api_stype-$ships[b].api_stype)+$ships[a].api_name.localeCompare($ships[b].api_name)});
     return list;
   }
 
