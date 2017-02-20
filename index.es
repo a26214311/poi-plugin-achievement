@@ -28,12 +28,13 @@ export const reactClass = connect(
       notify_list:{n:1},
       newestshipid:0,
       need_load:true,
-      ship_targets: this.simplfyship()
+      ship_targets: []
     }
   }
 
   componentWillReceiveProps(nextProps) {
     var oldnewestshipid = this.state.newestshipid;
+    console.log(oldnewestshipid,nextProps);
     if(oldnewestshipid==0){
       var newestshipid = this.get_newest_shipid(nextProps);
       this.setState({newestshipid:newestshipid});
@@ -110,10 +111,15 @@ export const reactClass = connect(
     var shipidlist = {};
     var x = newshipid;
     shipidlist[x]=1;
+    var c = 0;
     while($ships[x].api_aftershipid!="0"){
       var aftershipid = $ships[x].api_aftershipid;
-      shipidlist[aftershipid]=1;
-      x=parseInt($ships[x].api_aftershipid);
+      if(shipidlist[aftershipid]==undefined){
+        shipidlist[aftershipid]=1;
+        x=parseInt($ships[x].api_aftershipid);
+      }else{
+        break;
+      }
     }
     for(var p in allships){
       var ship = allships[p];
@@ -157,12 +163,14 @@ export const reactClass = connect(
       var notify_list=this.state.notify_list;
       if(notify_list.n==undefined){
         notify_list.n=1;
+        this.savelist();
         this.setState({notify_list:notify_list})
       }
     }else{
       var notify_list=this.state.notify_list;
       if(notify_list[value]==undefined){
         notify_list[value]=1;
+        this.savelist();
         this.setState({notify_list:notify_list})
       }
     }
@@ -173,11 +181,13 @@ export const reactClass = connect(
     if(shipid=="n"){
       if(notify_list.n){
         delete(notify_list["n"]);
+        this.savelist();
         this.setState({notify_list:notify_list})
       }
     }else{
       if(notify_list[shipid]){
         delete(notify_list[shipid]);
+        this.savelist();
         this.setState({notify_list:notify_list})
       }
     }
@@ -318,7 +328,7 @@ export const reactClass = connect(
       <div id="notify" className="notify">
         <link rel="stylesheet" href={join(__dirname, 'notify.css')}/>
         <Row className="top-control">
-          <Col xs={8}>
+          <Col xs={12}>
             <FormControl style={{width:"200px",display:'inline','text-align':'center'}} componentClass="select" onChange={this.handleFormChange.bind(this)}>
               <option value="请选择">请选择</option>
               <option value="船舱里没有的新船">船舱里没有的新船</option>
@@ -336,9 +346,6 @@ export const reactClass = connect(
                 })
               }
             </FormControl>
-          </Col>
-          <Col xs={4}>
-            <Button onClick={this.savelist.bind(this)}>保存列表</Button>
           </Col>
         </Row>
         <Row>
