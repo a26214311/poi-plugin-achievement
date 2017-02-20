@@ -1,6 +1,6 @@
 {
   "name": "poi-plugin-notify",
-  "version": "0.0.6",
+  "version": "0.0.8",
   "main": "index.es",
   "description": "A plugin for notify locking ships",
   "author": {
