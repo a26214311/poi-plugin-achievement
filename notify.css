@@ -38,8 +38,28 @@
 	top: 0;
 }
 
+#notify .input-select .ship-list {
+	position: absolute;
+	top: 50px;
+	max-height: 120px;
+	overflow: scroll;
+	list-style: none;
+	padding-left: 0;
+}
 
-/* 列表特效 */
+#notify .input-select .ship-list li{
+	padding: 5px 10px;
+	font-size: 14px;
+	line-height: 16px;
+	cursor: pointer;
+}
+
+#notify .input-select .ship-list li:hover{
+	background: #333;
+}
+
+
+	/* 列表特效 */
 #notify .ship-item .ship-name{
 	display: block;
 	overflow: hidden;

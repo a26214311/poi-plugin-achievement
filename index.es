@@ -5,7 +5,7 @@ import {createSelector} from 'reselect'
 import {store} from 'views/create-store'
 
 import {join} from 'path'
-import { FormGroup, FormControl, Button, Row, Col } from 'react-bootstrap'
+import { FormGroup, FormControl, ListGroup, ListGroupItem, Button, Row, Col } from 'react-bootstrap'
 
 
 import {extensionSelectorFactory} from 'views/utils/selectors'
@@ -28,7 +28,8 @@ export const reactClass = connect(
       notify_list:{n:1},
       newestshipid:0,
       need_load:true,
-      ship_targets: []
+      ship_targets: this.simplfyship(),
+      show_shipList: false
     }
   }
 
@@ -288,13 +289,24 @@ export const reactClass = connect(
     e.stopPropagation();
     let allship = [], $ship = this.props.$ships;
     this.simplfyship().map((id) => {
-      if(new RegExp(e.target.value).test($ship[id].api_name))
+      if(new RegExp(e.target.value, 'i').test($ship[id].api_name))
         allship.push(id);
     });
     this.setState({ship_targets: allship})
   }
 
+  hiddenShipList(e){
+    e.preventDefault();
+    e.stopPropagation();
+    this.setState({show_shipList: false})
+    console.log(e.target)
+  }
 
+  showShipList(e){
+    e.preventDefault();
+    e.stopPropagation();
+    this.setState({show_shipList: true})
+  }
 
   render(){
     const $ships = this.props.$ships;
@@ -316,7 +328,7 @@ export const reactClass = connect(
       var out = [];
       arr.map((option) => {
         out.push(
-          <li>
+          <li onClick={this.hiddenShipList.bind(this)}>
             {$ships[option].api_name}
           </li>
         )
@@ -329,7 +341,7 @@ export const reactClass = connect(
         <link rel="stylesheet" href={join(__dirname, 'notify.css')}/>
         <Row className="top-control">
           <Col xs={12}>
-            <FormControl style={{width:"200px",display:'inline','text-align':'center'}} componentClass="select" onChange={this.handleFormChange.bind(this)}>
+            <FormControl style={{width:"200px",display:'inline'}} componentClass="select" onChange={this.handleFormChange.bind(this)}>
               <option value="请选择">请选择</option>
               <option value="船舱里没有的新船">船舱里没有的新船</option>
               {
@@ -378,11 +390,11 @@ export const reactClass = connect(
           <Col xs={12}>
             <form className="input-select">
               <FormGroup>
-                <FormControl type="text" placeholder="Normal text" onChange={this.changeHandler.bind(this)}/>
-                <ul className="option-list">
-                  {createList(this.state.ship_targets)}
-                </ul>
+                <FormControl type="text" placeholder="Normal text" onChange={this.changeHandler.bind(this)} onFocus={this.showShipList.bind(this)} onBlur={this.hiddenShipList.bind(this)}/>
               </FormGroup>
+              <ul className="ship-list" style={{display: this.state.show_shipList ? 'block' : 'none'}}>
+                {createList(this.state.ship_targets)}
+              </ul>
             </form>
           </Col>
         </Row>
