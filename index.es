@@ -29,7 +29,8 @@ export const reactClass = connect(
       newestshipid:0,
       need_load:true,
       ship_targets: this.simplfyship(),
-      show_shipList: false
+      show_shipList: false,
+      input_shipList: ''
     }
   }
 
@@ -158,9 +159,7 @@ export const reactClass = connect(
   }
   handleFormChange(e){
     var value = e.target.value;
-    if(value=="请选择"){
-
-    }else if(value == "船舱里没有的新船"){
+    if(value == 0){
       var notify_list=this.state.notify_list;
       if(notify_list.n==undefined){
         notify_list.n=1;
@@ -284,6 +283,19 @@ export const reactClass = connect(
     return list;
   }
 
+  hiddenShipList(e){
+    e.preventDefault();
+    e.stopPropagation();
+    this.setState({show_shipList: false});
+  }
+
+  showShipList(e){
+    e.preventDefault();
+    e.stopPropagation();
+    this.setState({show_shipList: true});
+    this.changeHandler(e);
+  }
+
   changeHandler(e){
     e.preventDefault();
     e.stopPropagation();
@@ -292,20 +304,17 @@ export const reactClass = connect(
       if(new RegExp(e.target.value, 'i').test($ship[id].api_name))
         allship.push(id);
     });
-    this.setState({ship_targets: allship})
+    this.setState({ship_targets: allship, input_shipList: e.target.value})
   }
 
-  hiddenShipList(e){
-    e.preventDefault();
+  selectShip(e){
     e.stopPropagation();
-    this.setState({show_shipList: false})
-    console.log(e.target)
-  }
-
-  showShipList(e){
-    e.preventDefault();
-    e.stopPropagation();
-    this.setState({show_shipList: true})
+    let $ships = this.props.$ships, option = e.target.value;
+    console.log(e.target);
+    if(option != 0){
+      this.setState({input_shipList: $ships[option].api_name});
+    }
+    this.handleFormChange(e);
   }
 
   render(){
@@ -325,11 +334,18 @@ export const reactClass = connect(
     const $shipTypes = this.props.$shipTypes;
 
     const createList = (arr) => {
-      var out = [];
+      let out = [], newShip = 0;
+      out.push(
+        <li onMouseDown={this.selectShip.bind(this)} value={newShip}>船舱里没有的新船</li>
+      );
       arr.map((option) => {
+        const shipinfo = $ships[option],
+          shipname = shipinfo.api_name,
+          shiptypeid = shipinfo.api_stype,
+          shiptypename = $shipTypes[shiptypeid].api_name;
         out.push(
-          <li onClick={this.hiddenShipList.bind(this)}>
-            {$ships[option].api_name}
+          <li onMouseDown={this.selectShip.bind(this)} value={option}>
+            {shiptypename + ' : ' + shipname}
           </li>
         )
       });
@@ -339,25 +355,16 @@ export const reactClass = connect(
     return(
       <div id="notify" className="notify">
         <link rel="stylesheet" href={join(__dirname, 'notify.css')}/>
-        <Row className="top-control">
+        <Row>
           <Col xs={12}>
-            <FormControl style={{width:"200px",display:'inline'}} componentClass="select" onChange={this.handleFormChange.bind(this)}>
-              <option value="请选择">请选择</option>
-              <option value="船舱里没有的新船">船舱里没有的新船</option>
-              {
-                allship.map(function(shipid){
-                  var shipinfo = $ships[shipid];
-                  if(shipinfo){
-                    var shipname = shipinfo.api_name;
-                    var shiptypeid = shipinfo.api_stype;
-                    var shiptypename = $shipTypes[shiptypeid].api_name;
-                    return(
-                      <option value={shipid}>{shiptypename}:{shipname}</option>
-                    )
-                  }
-                })
-              }
-            </FormControl>
+            <form className="input-select">
+              <FormGroup>
+                <FormControl type="text" placeholder="请选择或输入要提醒的舰船" ref="shipInput" value={this.state.input_shipList} onChange={this.changeHandler.bind(this)} onFocus={this.showShipList.bind(this)} onBlur={this.hiddenShipList.bind(this)}/>
+              </FormGroup>
+              <ul className="ship-list" style={{display: this.state.show_shipList ? 'block' : 'none'}}>
+                {createList(this.state.ship_targets)}
+              </ul>
+            </form>
           </Col>
         </Row>
         <Row>
@@ -385,18 +392,6 @@ export const reactClass = connect(
               </Col>
             )
           }.bind(this))}
-        </Row>
-        <Row>
-          <Col xs={12}>
-            <form className="input-select">
-              <FormGroup>
-                <FormControl type="text" placeholder="Normal text" onChange={this.changeHandler.bind(this)} onFocus={this.showShipList.bind(this)} onBlur={this.hiddenShipList.bind(this)}/>
-              </FormGroup>
-              <ul className="ship-list" style={{display: this.state.show_shipList ? 'block' : 'none'}}>
-                {createList(this.state.ship_targets)}
-              </ul>
-            </form>
-          </Col>
         </Row>
       </div>
     )
