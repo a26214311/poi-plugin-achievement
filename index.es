@@ -204,6 +204,10 @@ export const reactClass = connect(
         var savedpath = join(window.APPDATA_PATH, 'notify_config','notify_config.json');
         var datastr = fs.readFileSync(savedpath,'utf-8');
         var notifylist = eval("(" + datastr + ")");
+        if(notifylist.n){
+          delete(notifylist.n);
+          notifylist.newShip=true;
+        }
         this.setState({notify_list:notifylist,need_load:false});
         return notifylist;
       }catch(e){
