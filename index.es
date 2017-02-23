@@ -317,8 +317,19 @@ export const reactClass = connect(
     this.savelist();
     this.setState({notify_list: nl})
   }
-
   render(){
+    try{
+      return this.render_D();
+    }catch(e){
+      console.log(e);
+      return(
+        <div>
+          unknown error
+        </div>
+      )
+    }
+  }
+  render_D(){
     const { $ships, horizontal } = this.props;
     const colSm = (horizontal == 'horizontal') ? 3 : 2,
       colMd = (horizontal == 'horizontal') ? 3 : 1;
