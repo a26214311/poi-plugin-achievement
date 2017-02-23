@@ -276,16 +276,18 @@ export const reactClass = connect(
   showShipList(e){
     e.preventDefault();
     e.stopPropagation();
-    this.setState({show_shipList: true});
-    this.changeHandler(e);
+    this.setState({show_shipList: true, input_shipList: ''}, this.changeHandler(e, true));
   }
 
   changeHandler(e){
     e.preventDefault();
     e.stopPropagation();
-    let allship = [], $ship = this.props.$ships;
+    let allship = [], $ship = this.props.$ships, expStr = e.target.value;
+    if(arguments.length == 2 && arguments[1]){
+      expStr = ''
+    }
     this.simplfyship().map((id) => {
-      if(new RegExp(e.target.value, 'i').test($ship[id].api_name))
+      if(new RegExp(expStr, 'i').test($ship[id].api_name))
         allship.push(id);
     });
     this.setState({ship_targets: allship, input_shipList: e.target.value})
@@ -321,8 +323,8 @@ export const reactClass = connect(
     const notifykeys = Object.keys(notifylist);
     try{
       notifykeys.sort(function(a,b){
-        if(a=="n"){return -999};
-        if(b=="n"){return 999};
+        if(a=="newShip"){return -999};
+        if(b=="newShip"){return 999};
         return $ships[a].api_stype-$ships[b].api_stype
       })
     }catch(e){
