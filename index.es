@@ -308,6 +308,7 @@ export const reactClass = connect(
     }else{
       nl.newShip = true
     }
+    this.savelist();
     this.setState({notify_list: nl})
   }
 
@@ -359,37 +360,29 @@ export const reactClass = connect(
               </ul>
             </form>
           </Col>
+        </Row>
+        <Row>
           <Col xs={12}>
-            <Button bsSize="xsmall" onClick={this.handleNewShip.bind(this)} bsStyle={this.state.notify_list.newShip ? "success" : "danger"} style={{width: '100%'}}>
-              <FontAwesome name={this.state.notify_list.newShip ? 'lock' : 'unlock'} />
+            <Button bsSize="small" onClick={this.handleNewShip.bind(this)} bsStyle={this.state.notify_list.newShip ? "success" : "danger"} style={{width: '100%'}}>
+              <FontAwesome name={this.state.notify_list.newShip ? 'heart' : 'heartbeat'} />
               &nbsp;船舱里没有的新船
             </Button>
-        </Col>
+          </Col>
         </Row>
         <Row>
           {notifykeys.map(function(notifykey){
-            if(notifykey=="n"){
+            if(notifykey != "newShip"){
               return(
-                <Col xs={6}>
+                <Col xs={3} sm={colSm} md={colMd}>
                   <div className="ship-item">
                   <span className="ship-name">
-                    船舱里没有的新船
+                    {$ships[notifykey].api_name}
                   </span>
-                    <span onClick={() => {this.removenotify("n")}} className="close-btn"> </span>
+                    <span onClick={() => {this.removenotify(notifykey)}} className="close-btn"> </span>
                   </div>
                 </Col>
               )
             }
-            return(
-              <Col xs={3} sm={colSm} md={colMd}>
-                <div className="ship-item">
-                  <span className="ship-name">
-                    {$ships[notifykey].api_name}
-                  </span>
-                  <span onClick={() => {this.removenotify(notifykey)}} className="close-btn"> </span>
-                </div>
-              </Col>
-            )
           }.bind(this))}
         </Row>
       </div>

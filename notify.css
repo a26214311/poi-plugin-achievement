@@ -30,16 +30,21 @@
 }
 
 /* form下拉输入框 */
+#notify .row {
+	margin-bottom: 8px;
+}
+
 #notify .input-select {
 	position: relative;
 	width: 100%;
-	height: 50px;
+	height: 40px;
 	z-index: 999;
 }
 #notify .input-select .form-group {
 	position: absolute;
 	width: 100%;
 	top: 0;
+	margin-bottom: 0;
 }
 
 #notify .input-select .ship-list {
