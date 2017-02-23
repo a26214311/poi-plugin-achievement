@@ -6,6 +6,7 @@ import {store} from 'views/create-store'
 
 import {join} from 'path'
 import { FormGroup, FormControl, ListGroup, ListGroupItem, Button, Row, Col } from 'react-bootstrap'
+import FontAwesome from 'react-fontawesome'
 
 
 import {extensionSelectorFactory} from 'views/utils/selectors'
@@ -25,7 +26,7 @@ export const reactClass = connect(
     this.state = {
       test:"testinfo",
       need_notify:"",
-      notify_list:{n:1},
+      notify_list:{newShip: true},
       newestshipid:0,
       need_load:true,
       ship_targets: this.simplfyship(),
@@ -136,7 +137,7 @@ export const reactClass = connect(
   need_notify(newshipid,newshipname,newestid){
     var newstate = {};
     var notifylist = this.state.notify_list;
-    if(notifylist.n){
+    if(notifylist.newShip){
       if(this.if_new_ship(newshipid)){
         var neednotify = this.state.need_notify;
         if(neednotify==""){
@@ -159,37 +160,20 @@ export const reactClass = connect(
   }
   handleFormChange(e){
     var value = e.target.value;
-    if(value == 0){
-      var notify_list=this.state.notify_list;
-      if(notify_list.n==undefined){
-        notify_list.n=1;
-        this.savelist();
-        this.setState({notify_list:notify_list})
-      }
-    }else{
-      var notify_list=this.state.notify_list;
-      if(notify_list[value]==undefined){
-        notify_list[value]=1;
-        this.savelist();
-        this.setState({notify_list:notify_list})
-      }
+    var notify_list=this.state.notify_list;
+    if(notify_list[value]==undefined){
+      notify_list[value]=1;
+      this.savelist();
+      this.setState({notify_list:notify_list})
     }
   }
 
   removenotify(shipid){
     var notify_list=this.state.notify_list;
-    if(shipid=="n"){
-      if(notify_list.n){
-        delete(notify_list["n"]);
-        this.savelist();
-        this.setState({notify_list:notify_list})
-      }
-    }else{
-      if(notify_list[shipid]){
-        delete(notify_list[shipid]);
-        this.savelist();
-        this.setState({notify_list:notify_list})
-      }
+    if(notify_list[shipid]){
+      delete(notify_list[shipid]);
+      this.savelist();
+      this.setState({notify_list:notify_list})
     }
   }
 
@@ -224,8 +208,8 @@ export const reactClass = connect(
         return notifylist;
       }catch(e){
         console.log(e);
-        this.setState({notify_list:{n:1},need_load:false});
-        return {n:1};
+        this.setState({notify_list:{newShip :true},need_load:false});
+        return {newShip :true};
       }
     }else{
       return this.state.notify_list;
@@ -317,8 +301,20 @@ export const reactClass = connect(
     this.handleFormChange(e);
   }
 
+  handleNewShip(e){
+    let nl = this.state.notify_list;
+    if(nl.newShip != 'undefined'){
+      nl.newShip = !nl.newShip;
+    }else{
+      nl.newShip = true
+    }
+    this.setState({notify_list: nl})
+  }
+
   render(){
-    const $ships = this.props.$ships;
+    const { $ships, horizontal } = this.props;
+    const colSm = (horizontal == 'horizontal') ? 3 : 2,
+      colMd = (horizontal == 'horizontal') ? 3 : 1;
     const allship = this.simplfyship();
     const notifylist = this.state.notify_list;
     const notifykeys = Object.keys(notifylist);
@@ -334,10 +330,7 @@ export const reactClass = connect(
     const $shipTypes = this.props.$shipTypes;
 
     const createList = (arr) => {
-      let out = [], newShip = 0;
-      out.push(
-        <li onMouseDown={this.selectShip.bind(this)} value={newShip}>船舱里没有的新船</li>
-      );
+      let out = [];
       arr.map((option) => {
         const shipinfo = $ships[option],
           shipname = shipinfo.api_name,
@@ -359,13 +352,19 @@ export const reactClass = connect(
           <Col xs={12}>
             <form className="input-select">
               <FormGroup>
-                <FormControl type="text" placeholder="请选择或输入要提醒的舰船" ref="shipInput" value={this.state.input_shipList} onChange={this.changeHandler.bind(this)} onFocus={this.showShipList.bind(this)} onBlur={this.hiddenShipList.bind(this)}/>
+                <FormControl type="text" placeholder="选择或输入要提醒的舰船" ref="shipInput" value={this.state.input_shipList} onChange={this.changeHandler.bind(this)} onFocus={this.showShipList.bind(this)} onBlur={this.hiddenShipList.bind(this)}/>
               </FormGroup>
               <ul className="ship-list" style={{display: this.state.show_shipList ? 'block' : 'none'}}>
                 {createList(this.state.ship_targets)}
               </ul>
             </form>
           </Col>
+          <Col xs={12}>
+            <Button bsSize="xsmall" onClick={this.handleNewShip.bind(this)} bsStyle={this.state.notify_list.newShip ? "success" : "danger"} style={{width: '100%'}}>
+              <FontAwesome name={this.state.notify_list.newShip ? 'lock' : 'unlock'} />
+              &nbsp;船舱里没有的新船
+            </Button>
+        </Col>
         </Row>
         <Row>
           {notifykeys.map(function(notifykey){
@@ -382,7 +381,7 @@ export const reactClass = connect(
               )
             }
             return(
-              <Col xs={3} sm={this.props.horizontal == 'horizontal' ? 3 : 2} md={this.props.horizontal == 'horizontal' ? 3 : 1}>
+              <Col xs={3} sm={colSm} md={colMd}>
                 <div className="ship-item">
                   <span className="ship-name">
                     {$ships[notifykey].api_name}
