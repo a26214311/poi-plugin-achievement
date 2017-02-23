@@ -300,7 +300,6 @@ export const reactClass = connect(
   selectShip(e){
     e.stopPropagation();
     let $ships = this.props.$ships, option = e.target.value;
-    console.log(e.target);
     if(option != 0){
       this.setState({input_shipList: $ships[option].api_name});
     }
