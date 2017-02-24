@@ -54,23 +54,15 @@
 	max-height: 200px;
 	overflow: scroll;
 	list-style: none;
-	background-color: #111;
-	border: 1px solid #fff;
 	padding: 5px;
 	border-radius: 4px;
 }
 
 #notify .input-select .ship-list li{
-	padding: 5px 10px;
 	font-size: 14px;
 	line-height: 16px;
-	cursor: pointer;
-	color: #fff;
 }
 
-#notify .input-select .ship-list li:hover{
-	background: #666;
-}
 
 	/* 列表特效 */
 #notify .ship-item .ship-name{

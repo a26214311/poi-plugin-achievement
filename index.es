@@ -155,7 +155,7 @@ export const reactClass = connect(
   }
 
   handleFormChange(e) {
-    let value = e.target.value;
+    let value = e.currentTarget.value;
     let notify_list = this.state.notify_list;
     if (notify_list[value] == undefined) {
       notify_list[value] = 1;
@@ -297,7 +297,7 @@ export const reactClass = connect(
 
   selectShip = e => {
     e.stopPropagation();
-    let $ships = this.props.$ships, option = e.target.value;
+    let $ships = this.props.$ships, option = e.currentTarget.value;
     if (option != 0) {
       this.setState({input_shipList: $ships[option].api_name});
     }
@@ -351,7 +351,7 @@ export const reactClass = connect(
     }
     const $shipTypes = this.props.$shipTypes;
 
-    const createList = (arr) => {
+    const createList = arr => {
       let out = [];
       arr.map((option) => {
         const shipinfo = $ships[option],
@@ -360,7 +360,9 @@ export const reactClass = connect(
           shiptypename = $shipTypes[shiptypeid].api_name;
         out.push(
           <li onMouseDown={this.selectShip} value={option}>
-            {shiptypename + ' : ' + shipname}
+            <a>
+              {shiptypename + ' : ' + shipname}
+            </a>
           </li>
         )
       });
@@ -378,7 +380,7 @@ export const reactClass = connect(
                              onChange={this.changeHandler} onFocus={this.showShipList}
                              onBlur={this.hiddenShipList}/>
               </FormGroup>
-              <ul className="ship-list" style={{display: this.state.show_shipList ? 'block' : 'none'}}>
+              <ul className="ship-list dropdown-menu" style={{display: this.state.show_shipList ? 'block' : 'none'}}>
                 {createList(this.state.ship_targets)}
               </ul>
             </form>
@@ -398,7 +400,7 @@ export const reactClass = connect(
             if (notifykey != "newShip") {
               return (
                 <Col xs={3} sm={colSm} md={colMd}>
-                  <div className="ship-item">
+                  <div className="bs-default">
                   <span className="ship-name">
                     {$ships[notifykey].api_name}
                   </span>
