@@ -400,7 +400,7 @@ export const reactClass = connect(
             if (notifykey != "newShip") {
               return (
                 <Col xs={3} sm={colSm} md={colMd}>
-                  <div className="bs-default">
+                  <div className="ship-item btn-default">
                   <span className="ship-name">
                     {$ships[notifykey].api_name}
                   </span>
