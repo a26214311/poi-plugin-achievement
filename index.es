@@ -293,30 +293,28 @@ export const reactClass = connect(
       expStr = ''
     }
     let lowstr = expStr.toLowerCase();
-    if(lowstr>='a'&&lowstr<='z'){
-      this.simplfyship().map((id) => {
-        var shipname = $ship[id].api_name;
-        if(lowstr>='a'&&lowstr<='z'){
-          var match=true;
-          for(var i=0;i<lowstr.length;i++){
-            var x=lowstr.charCodeAt(i)-97;
-            var cs=zh[x];
-            var ce=zh[x+1];
-            if(shipname.charAt(i).localeCompare(cs)>0&&shipname.charAt(i).localeCompare(ce)<0){
+    this.simplfyship().map((id) => {
+      var shipname = $ship[id].api_name;
+      if(lowstr>='a'&&lowstr<='z'){
+        var match=true;
+        for(var i=0;i<lowstr.length;i++){
+          var x=lowstr.charCodeAt(i)-97;
+          var cs=zh[x];
+          var ce=zh[x+1];
+          if(shipname.charAt(i).localeCompare(cs)>0&&shipname.charAt(i).localeCompare(ce)<0){
 
-            }else{
-              match=false;
-              break;
-            }
-          }
-          if(match){
-            allship.push(id);
+          }else{
+            match=false;
+            break;
           }
         }
-        if (new RegExp(expStr, 'i').test($ship[id].api_name))
+        if(match){
           allship.push(id);
-      });
-    }
+        }
+      }
+      if (new RegExp(expStr, 'i').test($ship[id].api_name))
+        allship.push(id);
+    });
     this.setState({ship_targets: allship, input_shipList: e.target.value})
   };
 
