@@ -98,6 +98,7 @@ export const reactClass = connect(
       let neednotify = this.state.need_notify;
       if (neednotify != "") {
         window.toggleModal('锁船提醒', neednotify + ':快给老娘上锁！');
+        window.toast(neednotify + ':快给老娘上锁！');
         this.setState({need_notify: ""});
       }
     }
