@@ -11,7 +11,7 @@ import FontAwesome from 'react-fontawesome'
 
 import {extensionSelectorFactory} from 'views/utils/selectors'
 const fs = require('fs')
-const zh = "阿八嚓哒妸发旮哈或讥咔垃痳拏噢妑七呥扨它拖脱穵夕丫帀坐".split('');
+const zh = "阿八嚓哒妸发旮哈或讥咔垃痳拏噢妑七呥撒它拖脱穵夕丫帀坐".split('');
 
 
 export const reactClass = connect(
