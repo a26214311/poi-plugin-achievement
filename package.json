@@ -1,15 +1,15 @@
 {
-  "name": "poi-plugin-notify",
+  "name": "poi-plugin-achievement",
   "version": "0.2.0",
   "main": "index.es",
-  "description": "A plugin for notify locking ships",
+  "description": "A plugin for view achievement",
   "author": {
     "name": "a26214311",
     "url": "https://github.com/a26214311"
   },
   "poiPlugin": {
-    "title": "锁船提醒",
-    "description": "快给老娘上锁带上戒指",
+    "title": "baka",
+    "description": "bakabakabaka",
     "icon": "fa/lock",
     "i18nDir": "i18n/translator",
     "apiVer": {
