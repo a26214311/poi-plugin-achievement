@@ -1,1 +1,1 @@
-# poi-plugin-notify
+# poi-plugin-achievement
