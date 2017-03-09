@@ -35,6 +35,7 @@ export const reactClass = connect(
       r501:0,
       ranktime:0,
       mysenka:0,
+      targetsenka:2400,
       need_load:true
     }
   }
@@ -51,7 +52,6 @@ export const reactClass = connect(
     var achieve = {};
     var data = this.loadlist();
     var exphistory = data.exphis;
-    console.log(exphistory);
     var lastmonth = data.lastmonth;
     var needupdate=false;
     if(month!=lastmonth){
@@ -182,6 +182,12 @@ export const reactClass = connect(
     }
   }
 
+  handleChangeTarget = e =>{
+    console.log(e);
+    var value = e.target.value;
+    this.setState({targetsenka:value})
+  }
+
   render_D() {
     var achieve = this.state;
     var r1 = achieve.r1?achieve.r1:0;
@@ -215,6 +221,7 @@ export const reactClass = connect(
     var upsenka = (exp - exphis[no])/50000*35;
     var exlist=[15,16,25,35,45,55,65];
     var maps = this.props.maps;
+    var unfinishedex = [];
     return (
       <div>
         <div>
@@ -240,6 +247,19 @@ export const reactClass = connect(
               )
             })
           }
+        </div>
+        <div>
+          <div>计算器：</div>
+          <div>目标战果：
+            <FormControl style={{width:'200px'}} value={this.state.targetsenka} type="text" placeholder="target senka" onChange={this.handleChangeTarget}></FormControl>
+          </div>
+          <div>剩余战果：{(this.state.targetsenka-mysenka-upsenka).toFixed(1)}</div>
+          <div>5-4：{Math.ceil((this.state.targetsenka-mysenka-upsenka)/2.05)}次</div>
+          <div>5-2：{Math.ceil((this.state.targetsenka-mysenka-upsenka)/1.85)}次</div>
+          <div>2-3：{Math.ceil((this.state.targetsenka-mysenka-upsenka)/1.55)}次</div>
+        </div>
+        <div>
+          <br></br>
         </div>
       </div>
     )
