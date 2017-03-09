@@ -5,7 +5,7 @@ import {createSelector} from 'reselect'
 import {store} from 'views/create-store'
 
 import {join} from 'path'
-import {FormGroup, FormControl, ListGroup, ListGroupItem, Button, Row, Col} from 'react-bootstrap'
+import {FormGroup, FormControl, ListGroup, ListGroupItem, Button, Row, Col,Checkbox} from 'react-bootstrap'
 import FontAwesome from 'react-fontawesome'
 
 
@@ -36,6 +36,7 @@ export const reactClass = connect(
       ranktime:0,
       mysenka:0,
       targetsenka:2400,
+      ignoreex:{},
       need_load:true
     }
   }
@@ -187,6 +188,13 @@ export const reactClass = connect(
     var value = e.target.value;
     this.setState({targetsenka:value})
   }
+  handleExChange = e =>{
+    var value = e.target.value;
+    var checked = e.target.checked;
+    var ignoreex = this.state.ignoreex;
+    ignoreex[value]=checked;
+    this.setState({ignoreex:ignoreex});
+  }
 
   render_D() {
     var achieve = this.state;
@@ -201,7 +209,6 @@ export const reactClass = connect(
     var date = ranktime.getDate();
     var hour = ranktime.getHours();
     var no = (date-1)*2+((hour>13)?1:0);
-
     var exphis = this.state.exphis;
     var hiskey = Object.keys(exphis);
 
@@ -219,9 +226,38 @@ export const reactClass = connect(
       }
     });
     var upsenka = (exp - exphis[no])/50000*35;
-    var exlist=[15,16,25,35,45,55,65];
+    var exlist=["1-5","1-6","2-5","3-5","4-5","5-5","6-5"];
+    var exvalue={"1-5":50,"1-6":75,"2-5":100,"3-5":150,"4-5":170,"5-5":205,"6-5":235};
     var maps = this.props.maps;
-    var unfinishedex = [];
+    var exret = [];
+    var unclearedex = [];
+    exlist.map(function(mapidstr,index){
+      var mapid = mapidstr.split("-").join('');
+      if(maps[mapid]){
+        if(maps[mapid].api_cleared==1){
+          exret.push(<div>{mapidstr}:已完成</div>);
+        }else{
+          unclearedex.push(mapidstr);
+          exret.push(<div>{mapidstr}:未完成</div>);
+        }
+      }else{
+        unclearedex.push(mapidstr);
+        exret.push(<div>{mapidstr}:未完成</div>);
+      }
+    });
+    var that=this;
+    var ignoreex = this.state.ignoreex;
+    var now = new Date();
+    var day = now.getDay();
+    var month = now.getMonth();
+    var dayofMonth = [31,28,31,30,31,30,31,31,30,31,30,31];
+    var daysleft = dayofMonth[month]-day;
+    var senkaleft = this.state.targetsenka-mysenka-upsenka;
+    for(var i=0;i<unclearedex.length;i++){
+      if(!ignoreex[unclearedex[i]]){
+        senkaleft=senkaleft-exvalue[unclearedex[i]];
+      }
+    }
     return (
       <div>
         <div>
@@ -232,31 +268,33 @@ export const reactClass = connect(
           <div>更新时间：{ranktime.toLocaleString()}</div>
           <div>上升预测：{(mysenka+upsenka).toFixed(1)}↑{upsenka.toFixed(1)}</div>
         </div>
+
+        <div>
+          <div>计算器：</div>
+          <div>
+            目标战果：<FormControl style={{width:'200px'}} value={this.state.targetsenka} type="text" placeholder="target senka" onChange={this.handleChangeTarget}></FormControl>
+          </div>
+          <div>剩余战果：{senkaleft.toFixed(1)}</div>
+          <div>5-4：{Math.ceil(senkaleft/2.05)}次,平均每天{(senkaleft/daysleft/2.05).toFixed(1)}次</div>
+          <div>5-2：{Math.ceil(senkaleft/1.85)}次,平均每天{(senkaleft/daysleft/1.85).toFixed(1)}次</div>
+          <div>2-3：{Math.ceil(senkaleft/1.55)}次,平均每天{(senkaleft/daysleft/1.55).toFixed(1)}次</div>
+          <div>
+            不准备攻略的EX：
+            {
+              unclearedex.map(function(exid){
+                var checked=ignoreex[exid];
+                return(
+                  <Checkbox inline checked={checked} value={exid} onChange={that.handleExChange.bind(that)}>
+                    {exid}
+                  </Checkbox>
+                )
+              })
+            }
+          </div>
+        </div>
         <div>
           本月战果记录：
           {ret}
-        </div>
-        <div>
-          EX图完成情况：
-          {
-            exlist.map(function(mapid,index){
-              return(
-                <div>
-                  {mapid}:{maps[mapid]?((maps[mapid].api_cleared==1)?'cleared':'unfinished'):'unfinished'}
-                </div>
-              )
-            })
-          }
-        </div>
-        <div>
-          <div>计算器：</div>
-          <div>目标战果：
-            <FormControl style={{width:'200px'}} value={this.state.targetsenka} type="text" placeholder="target senka" onChange={this.handleChangeTarget}></FormControl>
-          </div>
-          <div>剩余战果：{(this.state.targetsenka-mysenka-upsenka).toFixed(1)}</div>
-          <div>5-4：{Math.ceil((this.state.targetsenka-mysenka-upsenka)/2.05)}次</div>
-          <div>5-2：{Math.ceil((this.state.targetsenka-mysenka-upsenka)/1.85)}次</div>
-          <div>2-3：{Math.ceil((this.state.targetsenka-mysenka-upsenka)/1.55)}次</div>
         </div>
         <div>
           <br></br>
