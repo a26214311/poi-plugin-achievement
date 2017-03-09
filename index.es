@@ -17,7 +17,8 @@ const zh = "阿八嚓哒妸发旮哈或讥咔垃麻拏噢妑七呥撒它拖脱�
 export const reactClass = connect(
   state => ({
     horizontal: state.config.poi.layout || 'horizontal',
-    basic:state.info.basic
+    basic:state.info.basic,
+    maps:state.info.maps
   }),
   null, null, {pure: false}
 )(class PluginAchievement extends Component {
@@ -28,6 +29,12 @@ export const reactClass = connect(
       achieve:{
         exphis:{}
       },
+      exphis:{},
+      lastmonth:-1,
+      r1:0,
+      r501:0,
+      ranktime:0,
+      mysenka:0,
       need_load:true
     }
   }
@@ -41,17 +48,12 @@ export const reactClass = connect(
     var hour = now.getHours();
     var month = now.getMonth();
     var no = (date-1)*2+((hour>13)?1:0);
-    var achieve = this.state.achieve;
-    console.log(JSON.stringify(achieve));
-    console.log(achieve);
-    console.log(achieve.exphis.lastmonth);
-    console.log(achieve.lastmonth);
-    var exphistory = achieve.exphis;
-    console.log(achieve.lastmonth);
-    var lastmonth = achieve.lastmonth;
-    console.log(lastmonth);
+    var achieve = {};
+    var data = this.loadlist();
+    var exphistory = data.exphis;
+    console.log(exphistory);
+    var lastmonth = data.lastmonth;
     var needupdate=false;
-    console.log(month,lastmonth);
     if(month!=lastmonth){
       exphistory={};
       achieve.exphis=exphistory;
@@ -63,10 +65,9 @@ export const reactClass = connect(
       achieve.exphis=exphistory;
       needupdate=true;
     }
-    console.log(achieve);
     if(needupdate){
       this.savelist();
-      this.setState({achieve:achieve});
+      this.setState(achieve);
     }
 
   }
@@ -76,7 +77,7 @@ export const reactClass = connect(
     if(path=="/kcsapi/api_req_ranking/mxltvkpyuklh"){
       var myname = this.props.basic.api_nickname;
       var myid = this.props.basic.api_member_id;
-      var achieve = this.state.achieve;
+      var achieve = this.state;
       var page = body.api_disp_page;
       var list = body.api_list;
       for(var i=0;i<list.length;i++){
@@ -104,7 +105,7 @@ export const reactClass = connect(
       var now = new Date();
       achieve.ranktime = now;
       this.savelist();
-      this.setState({achieve:achieve});
+      this.setState(achieve);
     }
   };
 
@@ -122,19 +123,16 @@ export const reactClass = connect(
   savelist() {
     try {
       console.log("save");
-      let achieve = this.state.achieve;
+      let data = this.state;
       let savepath = join(window.APPDATA_PATH, 'achieve', 'achieve.json');
-      fs.writeFileSync(savepath, JSON.stringify(achieve));
-      window.success("保存列表成功");
+      fs.writeFileSync(savepath, JSON.stringify(data));
     } catch (e) {
       fs.mkdir(join(window.APPDATA_PATH, 'achieve'));
       try {
-        let achieve = this.state.achieve;
+        let data = this.state;
         let savepath = join(window.APPDATA_PATH, 'achieve', 'achieve.json');
-        fs.writeFileSync(savepath, JSON.stringify(achieve));
-        window.success("保存列表成功");
+        fs.writeFileSync(savepath, JSON.stringify(data));
       } catch (e2) {
-        window.success("保存列表失败");
         console.log(e2);
       }
     }
@@ -144,21 +142,20 @@ export const reactClass = connect(
     let needload = this.state.need_load;
     if (needload) {
       try {
-
         let savedpath = join(window.APPDATA_PATH, 'achieve', 'achieve.json');
         let datastr = fs.readFileSync(savedpath, 'utf-8');
-        let achieve = eval("(" + datastr + ")");
+        let data = eval("(" + datastr + ")");
         console.log("loadingstate");
-        console.log(achieve);
-        this.setState({achieve: achieve, need_load: false});
-        return achieve;
+        console.log(data);
+        data.need_load=false;
+        this.setState(data);
+        return data;
       } catch (e) {
         console.log(e);
-        this.setState({achieve: {exphis:{}}, need_load: false});
-        return {exphis:{}};
+        return {};
       }
     } else {
-      return this.state.notify_list;
+      return this.state;
     }
   }
 
@@ -186,27 +183,38 @@ export const reactClass = connect(
   }
 
   render_D() {
-    var achieve = this.state.achieve;
+    var achieve = this.state;
     var r1 = achieve.r1?achieve.r1:0;
     var r501 = achieve.r501?achieve.r501:0;
-    var ranktime =achieve.ranktime?achieve.ranktime:0;
+    var ranktime =new Date(achieve.ranktime?achieve.ranktime:0);
     var mysenka = achieve.mysenka?achieve.mysenka:0;
     var myno=achieve.myno?achieve.myno:0;
 
     var exp = this.props.basic.api_experience;
-    var exphis = this.state.achieve.exphis;
+
+    var date = ranktime.getDate();
+    var hour = ranktime.getHours();
+    var no = (date-1)*2+((hour>13)?1:0);
+
+    var exphis = this.state.exphis;
     var hiskey = Object.keys(exphis);
 
-    hiskey.sort();
+    hiskey.sort(function (a,b) {return(parseInt(a)-parseInt(b))});
     var lastkey = hiskey[0];
     var ret = [];
     hiskey.map(function(key){
       if(key!=hiskey[0]) {
-        ret.push(<div>{lastkey}~{key}:{exphis[key] - exphis[lastkey]}</div>);
+        var tsstr = (Math.floor(parseInt(key)/2)+1) + "日" + ((parseInt(key)%2==0)?"上午":"下午");
+        var addsenka = (exphis[key] - exphis[lastkey])/50000*35;
+        if(addsenka>0.1){
+          ret.push(<div>{tsstr}:{addsenka.toFixed(1)}</div>);
+        }
         lastkey = key;
       }
     });
-    console.log(ret);
+    var upsenka = (exp - exphis[no])/50000*35;
+    var exlist=[15,16,25,35,45,55,65];
+    var maps = this.props.maps;
     return (
       <div>
         <div>
@@ -215,12 +223,23 @@ export const reactClass = connect(
           <div>我的排名：{myno}</div>
           <div>我的战果：{mysenka.toFixed(1)}</div>
           <div>更新时间：{ranktime.toLocaleString()}</div>
+          <div>上升预测：{(mysenka+upsenka).toFixed(1)}↑{upsenka.toFixed(1)}</div>
         </div>
         <div>
+          本月战果记录：
           {ret}
         </div>
         <div>
-
+          EX图完成情况：
+          {
+            exlist.map(function(mapid,index){
+              return(
+                <div>
+                  {mapid}:{maps[mapid]?((maps[mapid].api_cleared==1)?'cleared':'unfinished'):'unfinished'}
+                </div>
+              )
+            })
+          }
         </div>
       </div>
     )
