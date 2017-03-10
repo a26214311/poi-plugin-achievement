@@ -273,7 +273,8 @@ export const reactClass = connect(
       }
     }
     return (
-      <div>
+      <div id="achievement" className="achievement">
+        <link rel="stylesheet" href={join(__dirname, 'achievement.css')}/>
         <div>
           <div>第1名：{r1.toFixed(1)}|||{r1tsstr}</div>
           <div>第501名：{r501.toFixed(1)}|||{r501tsstr}</div>
@@ -309,9 +310,6 @@ export const reactClass = connect(
         <div>
           本月战果记录：
           {ret}
-        </div>
-        <div>
-          <br></br>
         </div>
       </div>
     )
