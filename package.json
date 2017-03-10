@@ -8,9 +8,9 @@
     "url": "https://github.com/a26214311"
   },
   "poiPlugin": {
-    "title": "战果记录",
-    "description": "bakabakabaka",
-    "icon": "fa/lock",
+    "title": "战果计算",
+    "description": "战果辅助工具",
+    "icon": "fa/line-chart",
     "i18nDir": "i18n/translator",
     "apiVer": {
       "6.3.3": "2.1.1",
