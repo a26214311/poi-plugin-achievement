@@ -34,6 +34,8 @@ export const reactClass = connect(
       r1:0,
       r501:0,
       ranktime:0,
+      r1time:0,
+      r501time:0,
       mysenka:0,
       targetsenka:2400,
       ignoreex:{},
@@ -42,14 +44,11 @@ export const reactClass = connect(
   }
 
   componentWillReceiveProps(nextProps) {
-
     var basic = this.props.basic;
     var exp = basic.api_experience;
     var now = new Date();
-    var date = now.getDate();
-    var hour = now.getHours();
     var month = now.getMonth();
-    var no = (date-1)*2+((hour>13)?1:0);
+    var no = this.getDateNo(now);
     var achieve = {};
     var data = this.loadlist();
     var exphistory = data.exphis;
@@ -70,7 +69,6 @@ export const reactClass = connect(
       this.savelist();
       this.setState(achieve);
     }
-
   }
 
   handleResponse = e => {
@@ -81,34 +79,43 @@ export const reactClass = connect(
       var achieve = this.state;
       var page = body.api_disp_page;
       var list = body.api_list;
+      var now = new Date();
       for(var i=0;i<list.length;i++){
         if(list[i].api_mtjmdcwtvhdr==myname){
           var no=list[i].api_mxltvkpyuklh;
-          var key = list[i].api_wuhnhojjxmke
+          var key = list[i].api_wuhnhojjxmke;
           var senka = this.getRate(no,key,myid);
           achieve.mysenka=senka;
           achieve.myno=no;
+          achieve.ranktime = now;
         }
       }
       if(page==1){
         var no=list[0].api_mxltvkpyuklh;
-        var key = list[0].api_wuhnhojjxmke
+        var key = list[0].api_wuhnhojjxmke;
         var senka = this.getRate(no,key,myid);
         achieve.r1=senka;
+        achieve.r1time=now;
       }else if(page==51){
         var no=list[0].api_mxltvkpyuklh;
-        var key = list[0].api_wuhnhojjxmke
+        var key = list[0].api_wuhnhojjxmke;
         var senka = this.getRate(no,key,myid);
         achieve.r501=senka;
+        achieve.r501time=now;
       }else{
 
       }
-      var now = new Date();
-      achieve.ranktime = now;
       this.savelist();
       this.setState(achieve);
     }
   };
+
+  getDateNo(now){
+    var date = now.getDate();
+    var hour = now.getHours();
+    var no = (date-1)*2+((hour>13)?1:0);
+    return no;
+  }
 
 
   componentDidMount = () => {
@@ -200,15 +207,22 @@ export const reactClass = connect(
     var achieve = this.state;
     var r1 = achieve.r1?achieve.r1:0;
     var r501 = achieve.r501?achieve.r501:0;
+
+    var r1time = new Date(achieve.r1time?achieve.r1time:0);
+    var r1no = this.getDateNo(r1time);
+    var r1tsstr = (Math.floor((parseInt(r1no))/2)+1) + "日" + ((parseInt(r1no)%2==0)?"上午":"下午");
+    var r501time = new Date(achieve.r501time?achieve.r501time:0);
+    var r501no = this.getDateNo(r501time);
+    var r501tsstr = (Math.floor((parseInt(r501no))/2)+1) + "日" + ((parseInt(r501no)%2==0)?"上午":"下午");
+
+
     var ranktime =new Date(achieve.ranktime?achieve.ranktime:0);
     var mysenka = achieve.mysenka?achieve.mysenka:0;
     var myno=achieve.myno?achieve.myno:0;
 
     var exp = this.props.basic.api_experience;
-
-    var date = ranktime.getDate();
-    var hour = ranktime.getHours();
-    var no = (date-1)*2+((hour>13)?1:0);
+    var no = this.getDateNo(ranktime);
+    var mynostr = (Math.floor((parseInt(no))/2)+1) + "日" + ((parseInt(no)%2==0)?"上午":"下午");
     var exphis = this.state.exphis;
     var hiskey = Object.keys(exphis);
 
@@ -217,7 +231,7 @@ export const reactClass = connect(
     var ret = [];
     hiskey.map(function(key){
       if(key!=hiskey[0]) {
-        var tsstr = (Math.floor(parseInt(key)/2)+1) + "日" + ((parseInt(key)%2==0)?"上午":"下午");
+        var tsstr = (Math.floor((parseInt(key)+1)/2)) + "日" + ((parseInt(key)%2==1)?"上午":"下午");
         var addsenka = (exphis[key] - exphis[lastkey])/50000*35;
         if(addsenka>0.1){
           ret.push(<div>{tsstr}:{addsenka.toFixed(1)}</div>);
@@ -227,7 +241,7 @@ export const reactClass = connect(
     });
     var upsenka = (exp - exphis[no])/50000*35;
     var exlist=["1-5","1-6","2-5","3-5","4-5","5-5","6-5"];
-    var exvalue={"1-5":50,"1-6":75,"2-5":100,"3-5":150,"4-5":170,"5-5":205,"6-5":235};
+    var exvalue={"1-5":75,"1-6":75,"2-5":100,"3-5":150,"4-5":180,"5-5":200,"6-5":250};
     var maps = this.props.maps;
     var exret = [];
     var unclearedex = [];
@@ -261,11 +275,11 @@ export const reactClass = connect(
     return (
       <div>
         <div>
-          <div>第1名：{r1.toFixed(1)}</div>
-          <div>第501名：{r501.toFixed(1)}</div>
+          <div>第1名：{r1.toFixed(1)}|||{r1tsstr}</div>
+          <div>第501名：{r501.toFixed(1)}|||{r501tsstr}</div>
           <div>我的排名：{myno}</div>
           <div>我的战果：{mysenka.toFixed(1)}</div>
-          <div>更新时间：{ranktime.toLocaleString()}</div>
+          <div>更新时间：{mynostr}</div>
           <div>上升预测：{(mysenka+upsenka).toFixed(1)}↑{upsenka.toFixed(1)}</div>
         </div>
 
@@ -275,7 +289,7 @@ export const reactClass = connect(
             目标战果：<FormControl style={{width:'200px'}} value={this.state.targetsenka} type="text" placeholder="target senka" onChange={this.handleChangeTarget}></FormControl>
           </div>
           <div>剩余战果：{senkaleft.toFixed(1)}</div>
-          <div>5-4：{Math.ceil(senkaleft/2.05)}次,平均每天{(senkaleft/daysleft/2.05).toFixed(1)}次</div>
+          <div>5-4：{Math.ceil(senkaleft/2.2)}次,平均每天{(senkaleft/daysleft/2.2).toFixed(1)}次</div>
           <div>5-2：{Math.ceil(senkaleft/1.85)}次,平均每天{(senkaleft/daysleft/1.85).toFixed(1)}次</div>
           <div>2-3：{Math.ceil(senkaleft/1.55)}次,平均每天{(senkaleft/daysleft/1.55).toFixed(1)}次</div>
           <div>
