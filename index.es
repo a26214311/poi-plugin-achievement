@@ -259,7 +259,6 @@ export const reactClass = connect(
         exret.push(<div>{mapidstr}:未完成</div>);
       }
     });
-    var that=this;
     var ignoreex = this.state.ignoreex;
     var now = new Date();
     var day = now.getDay();
@@ -312,14 +311,11 @@ export const reactClass = connect(
               <div>
                 不准备攻略的EX：
                 {
-                  unclearedex.map(function(exid){
-                    var checked=ignoreex[exid];
-                    return(
-                      <Checkbox inline checked={checked} value={exid} onChange={that.handleExChange.bind(that)}>
-                        {exid}
-                      </Checkbox>
-                    )
-                  })
+                  unclearedex.map(exid =>
+                    <Checkbox inline checked={ignoreex[exid]} value={exid} onChange={this.handleExChange}>
+                      {exid}
+                    </Checkbox>
+                  )
                 }
               </div>
             </Panel>
