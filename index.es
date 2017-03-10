@@ -289,10 +289,10 @@ export const reactClass = connect(
           <Col xs={6}>
             <Panel header="战果计算器" className="info">
               <FormGroup bsClass="row">
-                <Col sm={2}>
+                <Col sm={4}>
                   目标战果
                 </Col>
-                <Col sm={10}>
+                <Col sm={8}>
                   <FormControl
                     value={this.state.targetsenka}
                     type="text"
@@ -302,9 +302,9 @@ export const reactClass = connect(
                 </Col>
               </FormGroup>
               <div>剩余战果：{senkaleft.toFixed(1)}</div>
-              <div>5-4：{Math.ceil(senkaleft/2.2)}次,平均每天{(senkaleft/daysleft/2.2).toFixed(1)}次</div>
-              <div>5-2：{Math.ceil(senkaleft/1.85)}次,平均每天{(senkaleft/daysleft/1.85).toFixed(1)}次</div>
-              <div>2-3：{Math.ceil(senkaleft/1.55)}次,平均每天{(senkaleft/daysleft/1.55).toFixed(1)}次</div>
+              <div>5-4：{Math.ceil(senkaleft/2.282)}次,平均每天{(senkaleft/daysleft/2.282).toFixed(1)}次</div>
+              <div>5-2：{Math.ceil(senkaleft/1.995)}次,平均每天{(senkaleft/daysleft/1.995).toFixed(1)}次</div>
+              <div>1-5：{Math.ceil(senkaleft/0.8925)}次,平均每天{(senkaleft/daysleft/0.8925).toFixed(1)}次</div>
             </Panel>
           </Col>
           <Col xs={12}>
