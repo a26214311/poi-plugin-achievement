@@ -5,7 +5,7 @@ import {createSelector} from 'reselect'
 import {store} from 'views/create-store'
 
 import {join} from 'path'
-import {FormGroup, FormControl, ListGroup, ListGroupItem, Button, Row, Col,Checkbox} from 'react-bootstrap'
+import {Row, Col, Checkbox, Panel, FormGroup, FormControl, Button} from 'react-bootstrap'
 import FontAwesome from 'react-fontawesome'
 
 
@@ -275,42 +275,61 @@ export const reactClass = connect(
     return (
       <div id="achievement" className="achievement">
         <link rel="stylesheet" href={join(__dirname, 'achievement.css')}/>
-        <div>
-          <div>第1名：{r1.toFixed(1)}|||{r1tsstr}</div>
-          <div>第501名：{r501.toFixed(1)}|||{r501tsstr}</div>
-          <div>我的排名：{myno}</div>
-          <div>我的战果：{mysenka.toFixed(1)}</div>
-          <div>更新时间：{mynostr}</div>
-          <div>上升预测：{(mysenka+upsenka).toFixed(1)}↑{upsenka.toFixed(1)}</div>
-        </div>
-
-        <div>
-          <div>计算器：</div>
-          <div>
-            目标战果：<FormControl style={{width:'200px'}} value={this.state.targetsenka} type="text" placeholder="target senka" onChange={this.handleChangeTarget}></FormControl>
-          </div>
-          <div>剩余战果：{senkaleft.toFixed(1)}</div>
-          <div>5-4：{Math.ceil(senkaleft/2.2)}次,平均每天{(senkaleft/daysleft/2.2).toFixed(1)}次</div>
-          <div>5-2：{Math.ceil(senkaleft/1.85)}次,平均每天{(senkaleft/daysleft/1.85).toFixed(1)}次</div>
-          <div>2-3：{Math.ceil(senkaleft/1.55)}次,平均每天{(senkaleft/daysleft/1.55).toFixed(1)}次</div>
-          <div>
-            不准备攻略的EX：
-            {
-              unclearedex.map(function(exid){
-                var checked=ignoreex[exid];
-                return(
-                  <Checkbox inline checked={checked} value={exid} onChange={that.handleExChange.bind(that)}>
-                    {exid}
-                  </Checkbox>
-                )
-              })
-            }
-          </div>
-        </div>
-        <div>
-          本月战果记录：
-          {ret}
-        </div>
+        <Row>
+          <Col xs={6}>
+            <Panel header="战果信息" className="info">
+              <div>第1名：{r1.toFixed(1)}|||{r1tsstr}</div>
+              <div>第501名：{r501.toFixed(1)}|||{r501tsstr}</div>
+              <div>我的排名：{myno}</div>
+              <div>我的战果：{mysenka.toFixed(1)}</div>
+              <div>更新时间：{mynostr}</div>
+              <div>上升预测：{(mysenka+upsenka).toFixed(1)}↑{upsenka.toFixed(1)}</div>
+            </Panel>
+          </Col>
+          <Col xs={6}>
+            <Panel header="战果计算器" className="info">
+              <FormGroup bsClass="row">
+                <Col sm={2}>
+                  目标战果
+                </Col>
+                <Col sm={10}>
+                  <FormControl
+                    value={this.state.targetsenka}
+                    type="text"
+                    placeholder="target senka"
+                    onChange={this.handleChangeTarget}
+                  />
+                </Col>
+              </FormGroup>
+              <div>剩余战果：{senkaleft.toFixed(1)}</div>
+              <div>5-4：{Math.ceil(senkaleft/2.2)}次,平均每天{(senkaleft/daysleft/2.2).toFixed(1)}次</div>
+              <div>5-2：{Math.ceil(senkaleft/1.85)}次,平均每天{(senkaleft/daysleft/1.85).toFixed(1)}次</div>
+              <div>2-3：{Math.ceil(senkaleft/1.55)}次,平均每天{(senkaleft/daysleft/1.55).toFixed(1)}次</div>
+            </Panel>
+          </Col>
+          <Col xs={12}>
+            <Panel header="预想要攻略的EX图">
+              <div>
+                不准备攻略的EX：
+                {
+                  unclearedex.map(function(exid){
+                    var checked=ignoreex[exid];
+                    return(
+                      <Checkbox inline checked={checked} value={exid} onChange={that.handleExChange.bind(that)}>
+                        {exid}
+                      </Checkbox>
+                    )
+                  })
+                }
+              </div>
+            </Panel>
+          </Col>
+          <Col xs={12}>
+            <Panel header="战果日历">
+              {ret}
+            </Panel>
+          </Col>
+        </Row>
       </div>
     )
   }
