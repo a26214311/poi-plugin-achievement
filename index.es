@@ -262,7 +262,7 @@ export const reactClass = connect(
     });
     var ignoreex = this.state.ignoreex;
     var now = new Date();
-    var day = now.getDay();
+    var day = now.getDate();
     var month = now.getMonth();
     var dayofMonth = [31,28,31,30,31,30,31,31,30,31,30,31];
     var daysleft = dayofMonth[month]-day;
