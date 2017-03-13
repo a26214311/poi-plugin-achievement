@@ -44,7 +44,6 @@ export const reactClass = connect(
   }
 
   componentWillReceiveProps(nextProps) {
-    console.log(11111);
     var basic = nextProps.basic;
     var exp = basic.api_experience;
     var now = new Date();
@@ -52,7 +51,6 @@ export const reactClass = connect(
     var no = this.getDateNo(now);
     var achieve = {};
     var data = this.loadlist();
-    console.log(data);
     var exphistory = data.exphis;
     var lastmonth = data.lastmonth;
     var needupdate=false;
@@ -68,8 +66,7 @@ export const reactClass = connect(
       needupdate=true;
     }
     if(needupdate){
-      this.savelist();
-      this.setState(achieve);
+      this.setState(achieve,()=>this.savelist());
     }
   }
 
@@ -107,8 +104,7 @@ export const reactClass = connect(
       }else{
 
       }
-      this.savelist();
-      this.setState(achieve);
+      this.setState(achieve,()=>this.savelist());
     }
   };
 
@@ -139,7 +135,10 @@ export const reactClass = connect(
 
   savelist() {
     try {
+      console.log(this.state);
       let data = this.loadlist();
+      console.log("save");
+      console.log(data);
       let savepath = join(window.APPDATA_PATH, 'achieve', 'achieve.json');
       fs.writeFileSync(savepath, JSON.stringify(data));
     } catch (e) {
@@ -161,10 +160,8 @@ export const reactClass = connect(
         let savedpath = join(window.APPDATA_PATH, 'achieve', 'achieve.json');
         let datastr = fs.readFileSync(savedpath, 'utf-8');
         let data = eval("(" + datastr + ")");
-        console.log("loadingstate");
-        console.log(data);
         data.need_load=false;
-        this.setState(data);
+        this.setState(data,() => {});
         return data;
       } catch (e) {
         console.log(e);
