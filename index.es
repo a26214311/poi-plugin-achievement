@@ -5,7 +5,7 @@ import {createSelector} from 'reselect'
 import {store} from 'views/create-store'
 
 import {join} from 'path'
-import {Row, Col, Checkbox, Panel, FormGroup, FormControl, Button} from 'react-bootstrap'
+import {Row, Col, Checkbox, Panel, FormGroup, FormControl, Button,Table} from 'react-bootstrap'
 import FontAwesome from 'react-fontawesome'
 
 
@@ -44,13 +44,15 @@ export const reactClass = connect(
   }
 
   componentWillReceiveProps(nextProps) {
-    var basic = this.props.basic;
+    console.log(11111);
+    var basic = nextProps.basic;
     var exp = basic.api_experience;
     var now = new Date();
     var month = now.getMonth();
     var no = this.getDateNo(now);
     var achieve = {};
     var data = this.loadlist();
+    console.log(data);
     var exphistory = data.exphis;
     var lastmonth = data.lastmonth;
     var needupdate=false;
@@ -113,7 +115,14 @@ export const reactClass = connect(
   getDateNo(now){
     var date = now.getDate();
     var hour = now.getHours();
-    var no = (date-1)*2+((hour>13)?1:0);
+    var no = (date-1)*2+((hour>=13)?1:0);
+    return no;
+  }
+
+  getRankDateNo(now){
+    var date = now.getDate();
+    var hour = now.getHours();
+    var no = (date-1)*2+((hour>=14)?1:0);
     return no;
   }
 
@@ -130,14 +139,13 @@ export const reactClass = connect(
 
   savelist() {
     try {
-      console.log("save");
-      let data = this.state;
+      let data = this.loadlist();
       let savepath = join(window.APPDATA_PATH, 'achieve', 'achieve.json');
       fs.writeFileSync(savepath, JSON.stringify(data));
     } catch (e) {
       fs.mkdir(join(window.APPDATA_PATH, 'achieve'));
       try {
-        let data = this.state;
+        let data = this.loadlist();
         let savepath = join(window.APPDATA_PATH, 'achieve', 'achieve.json');
         fs.writeFileSync(savepath, JSON.stringify(data));
       } catch (e2) {
@@ -210,10 +218,10 @@ export const reactClass = connect(
     var r501 = achieve.r501?achieve.r501:0;
 
     var r1time = new Date(achieve.r1time?achieve.r1time:0);
-    var r1no = this.getDateNo(r1time);
+    var r1no = this.getRankDateNo(r1time);
     var r1tsstr = (Math.floor((parseInt(r1no))/2)+1) + "日" + ((parseInt(r1no)%2==0)?"上午":"下午");
     var r501time = new Date(achieve.r501time?achieve.r501time:0);
-    var r501no = this.getDateNo(r501time);
+    var r501no = this.getRankDateNo(r501time);
     var r501tsstr = (Math.floor((parseInt(r501no))/2)+1) + "日" + ((parseInt(r501no)%2==0)?"上午":"下午");
 
 
@@ -222,7 +230,7 @@ export const reactClass = connect(
     var myno=achieve.myno?achieve.myno:0;
 
     var exp = this.props.basic.api_experience;
-    var no = this.getDateNo(ranktime);
+    var no = this.getRankDateNo(ranktime);
     var mynostr = (Math.floor((parseInt(no))/2)+1) + "日" + ((parseInt(no)%2==0)?"上午":"下午");
     var exphis = this.state.exphis;
     var hiskey = Object.keys(exphis);
@@ -278,12 +286,22 @@ export const reactClass = connect(
         <Row>
           <Col xs={6}>
             <Panel header="战果信息" className="info">
-              <div>第1名：{r1.toFixed(1)}|||{r1tsstr}</div>
-              <div>第501名：{r501.toFixed(1)}|||{r501tsstr}</div>
-              <div>我的排名：{myno}</div>
-              <div>我的战果：{mysenka.toFixed(1)}</div>
-              <div>更新时间：{mynostr}</div>
-              <div>上升预测：{(mysenka+upsenka).toFixed(1)}↑{upsenka.toFixed(1)}</div>
+
+              <Table striped bordered condensed hover>
+                <thead>
+                </thead>
+                <tbody>
+                <tr><td>1位</td><td>{r1.toFixed(0)}</td><td>{r1tsstr}</td></tr>
+                <tr><td>501位</td><td>{r501.toFixed(0)}</td><td>{r1tsstr}</td></tr>
+                <tr><td>
+                  <div>{myno}位</div>
+                </td><td>
+                  <div>{mysenka.toFixed(0)}</div>
+                  <div>{(mysenka+upsenka).toFixed(1)}</div>
+                  <div>↑{upsenka.toFixed(1)}</div>
+                </td><td>{mynostr}</td></tr>
+                </tbody>
+              </Table>
             </Panel>
           </Col>
           <Col xs={6}>
