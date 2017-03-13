@@ -189,7 +189,10 @@ export const reactClass = connect(
       return (
         <div>
           <div>
-            unknown error
+            {e.message}
+          </div>
+          <div>
+            {e.stack}
           </div>
         </div>
       )
@@ -197,8 +200,13 @@ export const reactClass = connect(
   }
 
   handleChangeTarget = e =>{
-    console.log(e);
     var value = e.target.value;
+    if(parseInt(value)>66666){
+      value=66666;
+    }
+    if(parseInt(value)<0){
+      value=0;
+    }
     this.setState({targetsenka:value})
   }
   handleExChange = e =>{
@@ -283,19 +291,18 @@ export const reactClass = connect(
         <Row>
           <Col xs={6}>
             <Panel header="战果信息" className="info">
-
               <Table striped bordered condensed hover>
                 <thead>
                 </thead>
                 <tbody>
                 <tr><td>1位</td><td>{r1.toFixed(0)}</td><td>{r1tsstr}</td></tr>
-                <tr><td>501位</td><td>{r501.toFixed(0)}</td><td>{r1tsstr}</td></tr>
+                <tr><td>501位</td><td>{r501.toFixed(0)}</td><td>{r501tsstr}</td></tr>
                 <tr><td>
                   <div>{myno}位</div>
                 </td><td>
                   <div>{mysenka.toFixed(0)}</div>
-                  <div>{(mysenka+upsenka).toFixed(1)}</div>
                   <div>↑{upsenka.toFixed(1)}</div>
+                  <div>{(mysenka+upsenka).toFixed(1)}</div>
                 </td><td>{mynostr}</td></tr>
                 </tbody>
               </Table>
@@ -304,22 +311,40 @@ export const reactClass = connect(
           <Col xs={6}>
             <Panel header="战果计算器" className="info">
               <FormGroup bsClass="row">
-                <Col sm={4}>
-                  目标战果
-                </Col>
-                <Col sm={8}>
-                  <FormControl
-                    value={this.state.targetsenka}
-                    type="text"
-                    placeholder="target senka"
-                    onChange={this.handleChangeTarget}
-                  />
-                </Col>
+                <Row>
+                  <Col sm={6}>
+                    目标战果
+                  </Col>
+                  <Col sm={6}>
+                    <FormControl
+                      value={this.state.targetsenka}
+                      type="text"
+                      placeholder="目标战果"
+                      onChange={this.handleChangeTarget}
+                    />
+                  </Col>
+                </Row>
+                <Row>
+                  <Col sm={6}>
+                    剩余战果
+                  </Col>
+                  <Col sm={6}>
+                    {senkaleft.toFixed(1)}
+                  </Col>
+                </Row>
               </FormGroup>
-              <div>剩余战果：{senkaleft.toFixed(1)}</div>
-              <div>5-4：{Math.ceil(senkaleft/2.282)}次,平均每天{(senkaleft/daysleft/2.282).toFixed(1)}次</div>
-              <div>5-2：{Math.ceil(senkaleft/1.995)}次,平均每天{(senkaleft/daysleft/1.995).toFixed(1)}次</div>
-              <div>1-5：{Math.ceil(senkaleft/0.8925)}次,平均每天{(senkaleft/daysleft/0.8925).toFixed(1)}次</div>
+              <Table striped bordered condensed hover>
+                <thead>
+                <tr><td>MAP</td><td>次数</td><td>每天</td></tr>
+                </thead>
+                <tbody>
+                <tr><td>5-4</td><td>{Math.ceil(senkaleft/2.282)}</td><td>{(senkaleft/daysleft/2.282).toFixed(1)}</td></tr>
+                <tr><td>5-2</td><td>{Math.ceil(senkaleft/1.995)}</td><td>{(senkaleft/daysleft/1.995).toFixed(1)}</td></tr>
+                <tr><td>1-5</td><td>{Math.ceil(senkaleft/0.8925)}</td><td>{(senkaleft/daysleft/0.8925).toFixed(1)}</td></tr>
+                </tbody>
+              </Table>
+
+
             </Panel>
           </Col>
           <Col xs={12}>
