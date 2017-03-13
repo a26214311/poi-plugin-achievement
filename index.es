@@ -224,10 +224,10 @@ export const reactClass = connect(
 
     var r1time = new Date(achieve.r1time?achieve.r1time:0);
     var r1no = this.getRankDateNo(r1time);
-    var r1tsstr = (Math.floor((parseInt(r1no))/2)+1) + "日" + ((parseInt(r1no)%2==0)?"上午":"下午");
+    var r1tsstr = [(Math.floor((parseInt(r1no))/2)+1) + "日", parseInt(r1no)%2==0?<FontAwesome name="sun-o"/> : <FontAwesome name="moon-o"/>];
     var r501time = new Date(achieve.r501time?achieve.r501time:0);
     var r501no = this.getRankDateNo(r501time);
-    var r501tsstr = (Math.floor((parseInt(r501no))/2)+1) + "日" + ((parseInt(r501no)%2==0)?"上午":"下午");
+    var r501tsstr = [(Math.floor((parseInt(r501no))/2)+1) + "日", parseInt(r1no)%2==0?<FontAwesome name="sun-o"/> : <FontAwesome name="moon-o"/>];
 
 
     var ranktime =new Date(achieve.ranktime?achieve.ranktime:0);
@@ -236,7 +236,7 @@ export const reactClass = connect(
 
     var exp = this.props.basic.api_experience;
     var no = this.getRankDateNo(ranktime);
-    var mynostr = (Math.floor((parseInt(no))/2)+1) + "日" + ((parseInt(no)%2==0)?"上午":"下午");
+    var mynostr = [(Math.floor((parseInt(no))/2)+1) + "日", parseInt(r1no)%2==0?<FontAwesome name="sun-o"/> : <FontAwesome name="moon-o"/>];
     var exphis = this.state.exphis;
     var hiskey = Object.keys(exphis);
 
@@ -245,7 +245,7 @@ export const reactClass = connect(
     var ret = [];
     hiskey.map(function(key){
       if(key!=hiskey[0]) {
-        var tsstr = (Math.floor((parseInt(key)+1)/2)) + "日" + ((parseInt(key)%2==1)?"上午":"下午");
+        var tsstr = [(Math.floor((parseInt(key)+1)/2)) + "日", parseInt(r1no)%2==0?<FontAwesome name="sun-o"/> : <FontAwesome name="moon-o"/>];
         var addsenka = (exphis[key] - exphis[lastkey])/50000*35;
         if(addsenka>0.1){
           ret.push(<div>{tsstr}:{addsenka.toFixed(1)}</div>);
