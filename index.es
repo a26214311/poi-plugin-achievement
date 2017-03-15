@@ -131,6 +131,10 @@ export const reactClass = connect(
   getDateNo(now){
     var date = now.getDate();
     var hour = now.getHours();
+    if(hour<1){
+      date = date -1;
+      hour = hour + 24;
+    }
     var no = (date-1)*2+((hour>=13)?1:0);
     return no;
   }
@@ -138,6 +142,10 @@ export const reactClass = connect(
   getRankDateNo(now){
     var date = now.getDate();
     var hour = now.getHours();
+    if(hour<1){
+      date = date -1;
+      hour = hour + 24;
+    }
     var no = (date-1)*2+((hour>=14)?1:0);
     return no;
   }
