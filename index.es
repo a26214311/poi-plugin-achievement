@@ -269,9 +269,8 @@ export const reactClass = connect(
     var expadd=[];
     hiskey.map(function(key){
       if(key!=hiskey[0]) {
-        var tsstr = ["更新时间: " + (Math.floor((parseInt(key)+1)/2)) + "日", parseInt(r1no)%2==0?<FontAwesome name="sun-o"/> : <FontAwesome name="moon-o"/>];
+        var tsstr = ["" + (Math.floor((parseInt(key)+1)/2)) + "日", parseInt(r1no)%2==0?<FontAwesome name="sun-o"/> : <FontAwesome name="moon-o"/>];
         var addsenka = (exphis[key] - exphis[lastkey])/50000*35;
-        console.log(key,addsenka);
         expadd[key]=addsenka;
         if(addsenka>0.1){
           ret.push(<div>{tsstr}:{addsenka.toFixed(1)}</div>);
@@ -279,8 +278,6 @@ export const reactClass = connect(
         lastkey = key;
       }
     });
-    console.log(expadd);
-
     var upsenka = (exp - exphis[no])/50000*35;
     var exlist=["1-5","1-6","2-5","3-5","4-5","5-5","6-5"];
     var exvalue={"1-5":75,"1-6":75,"2-5":100,"3-5":150,"4-5":180,"5-5":200,"6-5":250};
@@ -358,11 +355,10 @@ export const reactClass = connect(
                 <tr>
                   <td>1位</td>
                   <td className="pob">
-
                     <OverlayTrigger placement="bottom" overlay={
                       <Tooltip>
                         <div>战果增加： {(r1-this.state.r1last).toFixed(0)}<FontAwesome name="arrow-up"/></div>
-                        <div>{"更新时间: " + (Math.floor((parseInt(this.state.r1lasttime))/2)+1) + "日"}
+                        <div>{"上次更新: " + (Math.floor((parseInt(this.state.r1lasttime))/2)+1) + "日"}
                           {(parseInt(this.state.r1lasttime)%2==0?<FontAwesome name="sun-o"/> : <FontAwesome name="moon-o"/>)}
                         </div>
                       </Tooltip>
@@ -377,7 +373,7 @@ export const reactClass = connect(
                     <OverlayTrigger placement="bottom" overlay={
                       <Tooltip>
                         <div>战果增加： {(r501-this.state.r501last).toFixed(0)}<FontAwesome name="arrow-up"/></div>
-                        <div> {"更新时间: " + (Math.floor((parseInt(this.state.r501lasttime))/2)+1)+"日"}
+                        <div> {"上次更新: " + (Math.floor((parseInt(this.state.r501lasttime))/2)+1)+"日"}
                           {(parseInt(this.state.r501lasttime)%2==0?<FontAwesome name="sun-o"/> : <FontAwesome name="moon-o"/>)}
                         </div>
                       </Tooltip>
