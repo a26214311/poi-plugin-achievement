@@ -36,6 +36,10 @@ export const reactClass = connect(
       ranktime:0,
       r1time:0,
       r501time:0,
+      r1last:0,
+      r501last:0,
+      r1lasttime:0,
+      r501lasttime:0,
       mysenka:0,
       targetsenka:2400,
       ignoreex:{},
@@ -93,14 +97,30 @@ export const reactClass = connect(
         var no=list[0].api_mxltvkpyuklh;
         var key = list[0].api_wuhnhojjxmke;
         var senka = this.getRate(no,key,myid);
+        var r1last = achieve.r1;
+        var r1time = achieve.r1time;
+        var r1timeno = this.getRankDateNo(new Date(r1time));
         achieve.r1=senka;
         achieve.r1time=now;
+        var timeno = this.getRankDateNo(now);
+        if(r1timeno!=timeno){
+          achieve.r1last=r1last;
+          achieve.r1lasttime=r1timeno;
+        }
       }else if(page==51){
         var no=list[0].api_mxltvkpyuklh;
         var key = list[0].api_wuhnhojjxmke;
         var senka = this.getRate(no,key,myid);
+        var timeno = this.getRankDateNo(now);
+        var r501last = achieve.r501;
+        var r501time = achieve.r501time;
+        var r501timeno = this.getRankDateNo(new Date(r501time));
         achieve.r501=senka;
         achieve.r501time=now;
+        if(r501timeno!=timeno){
+          achieve.r501last=r501last;
+          achieve.r501lasttime=r501timeno;
+        }
       }else{
 
       }
@@ -111,6 +131,10 @@ export const reactClass = connect(
   getDateNo(now){
     var date = now.getDate();
     var hour = now.getHours();
+    if(hour<1){
+      date = date -1;
+      hour = hour + 24;
+    }
     var no = (date-1)*2+((hour>=13)?1:0);
     return no;
   }
@@ -118,6 +142,10 @@ export const reactClass = connect(
   getRankDateNo(now){
     var date = now.getDate();
     var hour = now.getHours();
+    if(hour<1){
+      date = date -1;
+      hour = hour + 24;
+    }
     var no = (date-1)*2+((hour>=14)?1:0);
     return no;
   }
@@ -249,9 +277,8 @@ export const reactClass = connect(
     var expadd=[];
     hiskey.map(function(key){
       if(key!=hiskey[0]) {
-        var tsstr = ["更新时间: " + (Math.floor((parseInt(key)+1)/2)) + "日", parseInt(r1no)%2!=0?<FontAwesome name="sun-o"/> : <FontAwesome name="moon-o"/>];
+        var tsstr = ["" + (Math.floor((parseInt(key)+1)/2)) + "日", parseInt(r1no)%2==0?<FontAwesome name="sun-o"/> : <FontAwesome name="moon-o"/>];
         var addsenka = (exphis[key] - exphis[lastkey])/50000*35;
-        console.log(key,addsenka);
         expadd[key]=addsenka;
         if(addsenka>0.1){
           ret.push(<div>{tsstr}:{addsenka.toFixed(1)}</div>);
@@ -259,8 +286,6 @@ export const reactClass = connect(
         lastkey = key;
       }
     });
-    console.log(expadd);
-
     var upsenka = (exp - exphis[no])/50000*35;
     var exlist=["1-5","1-6","2-5","3-5","4-5","5-5","6-5"];
     var exvalue={"1-5":75,"1-6":75,"2-5":100,"3-5":150,"4-5":180,"5-5":200,"6-5":250};
@@ -340,12 +365,34 @@ export const reactClass = connect(
                 </thead>
                 <tbody>
                 <tr>
-                  <td className="pob">1位<div className="pos bg-primary">{r1tsstr}</div></td>
-                  <td>{r1.toFixed(0)}</td>
+                  <td>1位</td>
+                  <td className="pob">
+                    <OverlayTrigger placement="bottom" overlay={
+                      <Tooltip>
+                        <div>战果增加： {(r1-this.state.r1last).toFixed(0)}<FontAwesome name="arrow-up"/></div>
+                        <div>{"上次更新: " + (Math.floor((parseInt(this.state.r1lasttime))/2)+1) + "日"}
+                          {(parseInt(this.state.r1lasttime)%2==0?<FontAwesome name="sun-o"/> : <FontAwesome name="moon-o"/>)}
+                        </div>
+                      </Tooltip>
+                    }>
+                      <div>{r1.toFixed(0)}</div>
+                    </OverlayTrigger>
+                    <div className="day pos bg-primary">{r1tsstr}</div></td>
                 </tr>
                 <tr>
-                  <td className="pob">501位<div className="pos bg-primary">{r501tsstr}</div></td>
-                  <td>{r501.toFixed(0)}</td>
+                  <td>501位</td>
+                  <td className="pob">
+                    <OverlayTrigger placement="bottom" overlay={
+                      <Tooltip>
+                        <div>战果增加： {(r501-this.state.r501last).toFixed(0)}<FontAwesome name="arrow-up"/></div>
+                        <div> {"上次更新: " + (Math.floor((parseInt(this.state.r501lasttime))/2)+1)+"日"}
+                          {(parseInt(this.state.r501lasttime)%2==0?<FontAwesome name="sun-o"/> : <FontAwesome name="moon-o"/>)}
+                        </div>
+                      </Tooltip>
+                    }>
+                      <div>{r501.toFixed(0)}</div>
+                    </OverlayTrigger>
+                    <div className="day pos bg-primary">{r501tsstr}</div></td>
                 </tr>
                 <tr>
                   <td className="pob">
@@ -443,7 +490,6 @@ export const reactClass = connect(
                 {callendar}
                 </tbody>
               </Table>
-              {ret}
             </Panel>
           </Col>
         </Row>
