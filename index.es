@@ -350,7 +350,7 @@ export const reactClass = connect(
                   <td className="pob">
                     <OverlayTrigger placement="bottom" overlay={
                       <Tooltip>
-                        <div>预想战果增加： {upsenka.toFixed(1)}<FontAwesome name="arrow-up"/></div>
+                        <div>预想战果增加： <FontAwesome name="arrow-up"/>{upsenka.toFixed(1)}</div>
                         <div>战果预测值： {(mysenka+upsenka).toFixed(1)}</div>
                       </Tooltip>
                     }>
