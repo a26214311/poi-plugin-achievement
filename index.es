@@ -129,6 +129,7 @@ export const reactClass = connect(
   };
 
   getDateNo(now){
+    now = new Date(new Date(now).getTime()+(new Date().getTimezoneOffset()+480)*60000);
     var date = now.getDate();
     var hour = now.getHours();
     if(hour<1){
@@ -140,6 +141,7 @@ export const reactClass = connect(
   }
 
   getRankDateNo(now){
+    now = new Date(new Date(now).getTime()+(new Date().getTimezoneOffset()+480)*60000);
     var date = now.getDate();
     var hour = now.getHours();
     if(hour<1){
