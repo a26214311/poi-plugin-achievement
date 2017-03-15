@@ -12,12 +12,31 @@
 	padding-right: 2px;
 }
 
-#achievement .panel{
+#achievement .panel {
 	margin-bottom: 4px;
 }
 
-#achievement .panel.info .panel-body{
+#achievement .panel.info .panel-body {
 	height: 200px;
 	overflow: hidden;
 	padding: 4px;
+}
+
+/* 战果信息 */
+.senka-info .table tbody tr td{
+	padding-top: 25px;
+}
+.senka-info tr .pob{
+	position: relative;
+}
+
+.senka-info tr .pos {
+	position: absolute;
+	padding: 0 5px 0 18px;
+	line-height: 18px;
+	border-bottom-left-radius: 18px;
+	top: 0;
+	right: 0;
+	white-space: nowrap;
+	opacity: 0.9;
 }

@@ -5,7 +5,7 @@ import {createSelector} from 'reselect'
 import {store} from 'views/create-store'
 
 import {join} from 'path'
-import {Row, Col, Checkbox, Panel, FormGroup, FormControl, Button,Table} from 'react-bootstrap'
+import {Row, Col, Checkbox, Panel, FormGroup, FormControl, Button, Table, OverlayTrigger, Tooltip} from 'react-bootstrap'
 import FontAwesome from 'react-fontawesome'
 
 
@@ -224,10 +224,10 @@ export const reactClass = connect(
 
     var r1time = new Date(achieve.r1time?achieve.r1time:0);
     var r1no = this.getRankDateNo(r1time);
-    var r1tsstr = [(Math.floor((parseInt(r1no))/2)+1) + "日", parseInt(r1no)%2==0?<FontAwesome name="sun-o"/> : <FontAwesome name="moon-o"/>];
+    var r1tsstr = ["更新时间: " + (Math.floor((parseInt(r1no))/2)+1) + "日", parseInt(r1no)%2==0?<FontAwesome name="sun-o"/> : <FontAwesome name="moon-o"/>];
     var r501time = new Date(achieve.r501time?achieve.r501time:0);
     var r501no = this.getRankDateNo(r501time);
-    var r501tsstr = [(Math.floor((parseInt(r501no))/2)+1) + "日", parseInt(r1no)%2==0?<FontAwesome name="sun-o"/> : <FontAwesome name="moon-o"/>];
+    var r501tsstr = ["更新时间: " + (Math.floor((parseInt(r501no))/2)+1) + "日", parseInt(r1no)%2==0?<FontAwesome name="sun-o"/> : <FontAwesome name="moon-o"/>];
 
 
     var ranktime =new Date(achieve.ranktime?achieve.ranktime:0);
@@ -236,7 +236,7 @@ export const reactClass = connect(
 
     var exp = this.props.basic.api_experience;
     var no = this.getRankDateNo(ranktime);
-    var mynostr = [(Math.floor((parseInt(no))/2)+1) + "日", parseInt(r1no)%2==0?<FontAwesome name="sun-o"/> : <FontAwesome name="moon-o"/>];
+    var mynostr = ["更新时间: " + (Math.floor((parseInt(no))/2)+1) + "日", parseInt(r1no)%2==0?<FontAwesome name="sun-o"/> : <FontAwesome name="moon-o"/>];
     var exphis = this.state.exphis;
     var hiskey = Object.keys(exphis);
 
@@ -249,7 +249,7 @@ export const reactClass = connect(
     var expadd=[];
     hiskey.map(function(key){
       if(key!=hiskey[0]) {
-        var tsstr = [(Math.floor((parseInt(key)+1)/2)) + "日", parseInt(r1no)%2==0?<FontAwesome name="sun-o"/> : <FontAwesome name="moon-o"/>];
+        var tsstr = ["更新时间: " + (Math.floor((parseInt(key)+1)/2)) + "日", parseInt(r1no)%2==0?<FontAwesome name="sun-o"/> : <FontAwesome name="moon-o"/>];
         var addsenka = (exphis[key] - exphis[lastkey])/50000*35;
         console.log(key,addsenka);
         expadd[key]=addsenka;
@@ -326,26 +326,45 @@ export const reactClass = connect(
         <link rel="stylesheet" href={join(__dirname, 'achievement.css')}/>
         <Row>
           <Col xs={6}>
-            <Panel header="战果信息" className="info">
+            <Panel header="战果信息" className="info senka-info">
               <Table striped bordered condensed hover>
                 <thead>
+                <tr>
+                  <th>顺位</th>
+                  <th>战果</th>
+                </tr>
                 </thead>
                 <tbody>
-                <tr><td>1位</td><td>{r1.toFixed(0)}</td><td>{r1tsstr}</td></tr>
-                <tr><td>501位</td><td>{r501.toFixed(0)}</td><td>{r501tsstr}</td></tr>
-                <tr><td>
-                  <div>{myno}位</div>
-                </td><td>
-                  <div>{mysenka.toFixed(0)}</div>
-                  <div>↑{upsenka.toFixed(1)}</div>
-                  <div>{(mysenka+upsenka).toFixed(1)}</div>
-                </td><td>{mynostr}</td></tr>
+                <tr>
+                  <td>1位</td>
+                  <td className="pob">{r1.toFixed(0)}<div className="day pos bg-primary">{r1tsstr}</div></td>
+                </tr>
+                <tr>
+                  <td>501位</td>
+                  <td className="pob">{r501.toFixed(0)}<div className="day pos bg-primary">{r501tsstr}</div></td>
+                </tr>
+                <tr>
+                  <td>
+                    <div>{myno}位</div>
+                  </td>
+                  <td className="pob">
+                    <OverlayTrigger placement="bottom" overlay={
+                      <Tooltip>
+                        <div>预想战果增加： {upsenka.toFixed(1)}<FontAwesome name="arrow-up"/></div>
+                        <div>战果预测值： {(mysenka+upsenka).toFixed(1)}</div>
+                      </Tooltip>
+                    }>
+                      <div>{mysenka.toFixed(0)}</div>
+                    </OverlayTrigger>
+                    <div className="day pos bg-primary">{mynostr}</div>
+                  </td>
+                </tr>
                 </tbody>
               </Table>
             </Panel>
           </Col>
           <Col xs={6}>
-            <Panel header="战果计算器" className="info">
+            <Panel header="战果计算器" className="info senka-calc">
               <FormGroup bsClass="row">
                 <Row>
                   <Col sm={6}>
@@ -399,7 +418,7 @@ export const reactClass = connect(
           </Col>
           <Col xs={12}>
             <Panel header="战果日历">
-              <Table striped bordered condensed hover>
+              <Table striped bordered condensed>
                 <thead>
                   <tr><td>一</td><td>二</td><td>三</td><td>四</td><td>五</td><td>六</td><td>日</td></tr>
                 </thead>
