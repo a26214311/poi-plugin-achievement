@@ -254,10 +254,10 @@ export const reactClass = connect(
 
     var r1time = new Date(achieve.r1time?achieve.r1time:0);
     var r1no = this.getRankDateNo(r1time);
-    var r1tsstr = ["更新时间: " + (Math.floor((parseInt(r1no))/2)+1) + "日", parseInt(r1no)%2==0?<FontAwesome name="sun-o"/> : <FontAwesome name="moon-o"/>];
+    var r1tsstr = ["更新时间: " + (Math.floor((parseInt(r1no))/2)+1) + "日", parseInt(r1no)%2!=0?<FontAwesome name="sun-o"/> : <FontAwesome name="moon-o"/>];
     var r501time = new Date(achieve.r501time?achieve.r501time:0);
     var r501no = this.getRankDateNo(r501time);
-    var r501tsstr = ["更新时间: " + (Math.floor((parseInt(r501no))/2)+1) + "日", parseInt(r1no)%2==0?<FontAwesome name="sun-o"/> : <FontAwesome name="moon-o"/>];
+    var r501tsstr = ["更新时间: " + (Math.floor((parseInt(r501no))/2)+1) + "日", parseInt(r1no)%2!=0?<FontAwesome name="sun-o"/> : <FontAwesome name="moon-o"/>];
 
 
     var ranktime =new Date(achieve.ranktime?achieve.ranktime:0);
@@ -266,7 +266,7 @@ export const reactClass = connect(
 
     var exp = this.props.basic.api_experience;
     var no = this.getRankDateNo(ranktime);
-    var mynostr = ["更新时间: " + (Math.floor((parseInt(no))/2)+1) + "日", parseInt(r1no)%2==0?<FontAwesome name="sun-o"/> : <FontAwesome name="moon-o"/>];
+    var mynostr = ["更新时间: " + (Math.floor((parseInt(no))/2)+1) + "日", parseInt(r1no)%2!=0?<FontAwesome name="sun-o"/> : <FontAwesome name="moon-o"/>];
     var exphis = this.state.exphis;
     var hiskey = Object.keys(exphis);
 
@@ -353,11 +353,15 @@ export const reactClass = connect(
         <link rel="stylesheet" href={join(__dirname, 'achievement.css')}/>
         <Row>
           <Col xs={6}>
-            <Panel header="战果信息" className="info senka-info">
+            <Panel header={
+            <span>
+              <FontAwesome name="list-ol"/> 战果信息
+            </span>
+            } className="info senka-info">
               <Table striped bordered condensed hover>
                 <thead>
                 <tr>
-                  <th>顺位</th>
+                  <th className="senka-title">顺位</th>
                   <th>战果</th>
                 </tr>
                 </thead>
@@ -393,19 +397,22 @@ export const reactClass = connect(
                     <div className="day pos bg-primary">{r501tsstr}</div></td>
                 </tr>
                 <tr>
-                  <td>
-                    <div>{myno}位</div>
-                  </td>
                   <td className="pob">
+                    <div>{myno}位</div>
+                    <div className="pos bg-primary">{mynostr}</div>
+                  </td>
+                  <td>
                     <OverlayTrigger placement="bottom" overlay={
                       <Tooltip>
                         <div>预想战果增加： <FontAwesome name="arrow-up"/>{upsenka.toFixed(1)}</div>
                         <div>战果预测值： {(mysenka+upsenka).toFixed(1)}</div>
                       </Tooltip>
                     }>
-                      <div>{mysenka.toFixed(0)}</div>
+                      <div>
+                        {mysenka.toFixed(0)}
+                        <span className="senka-up">(<FontAwesome name="arrow-up"/>{upsenka.toFixed(1)})</span>
+                      </div>
                     </OverlayTrigger>
-                    <div className="day pos bg-primary">{mynostr}</div>
                   </td>
                 </tr>
                 </tbody>
@@ -413,30 +420,32 @@ export const reactClass = connect(
             </Panel>
           </Col>
           <Col xs={6}>
-            <Panel header="战果计算器" className="info senka-calc">
-              <FormGroup bsClass="row">
-                <Row>
-                  <Col sm={6}>
-                    目标战果
-                  </Col>
-                  <Col sm={6}>
-                    <FormControl
-                      value={this.state.targetsenka}
-                      type="text"
-                      placeholder="目标战果"
-                      onChange={this.handleChangeTarget}
-                    />
-                  </Col>
-                </Row>
-                <Row>
-                  <Col sm={6}>
-                    剩余战果
-                  </Col>
-                  <Col sm={6}>
-                    {senkaleft.toFixed(1)}
-                  </Col>
-                </Row>
-              </FormGroup>
+            <Panel header={
+              <span>
+                <FontAwesome name="calculator"/> 战果计算器
+              </span>
+            } className="info senka-calc">
+              <div className="senka-ipt flex">
+                <div>
+                  目标战果
+                </div>
+                <div className="flex-auto">
+                  <FormControl
+                    value={this.state.targetsenka}
+                    type="text"
+                    placeholder="目标战果"
+                    onChange={this.handleChangeTarget}
+                  />
+                </div>
+              </div>
+              <div className="senka-eq flex">
+                <div>
+                  剩余战果
+                </div>
+                <div className="flex-auto">
+                  {senkaleft.toFixed(1)}
+                </div>
+              </div>
               <Table striped bordered condensed hover>
                 <thead>
                 <tr><td>MAP</td><td>次数</td><td>每天</td></tr>
@@ -452,7 +461,11 @@ export const reactClass = connect(
             </Panel>
           </Col>
           <Col xs={12}>
-            <Panel header="预想要攻略的EX图">
+            <Panel header={
+              <span>
+                <FontAwesome name="cog"/> 预想要攻略的EX图
+              </span>
+            }>
               <div>
                 不准备攻略的EX：
                 {
@@ -466,7 +479,11 @@ export const reactClass = connect(
             </Panel>
           </Col>
           <Col xs={12}>
-            <Panel header="战果日历">
+            <Panel header={
+              <span>
+                <FontAwesome name="calendar"/> 战果日历
+              </span>
+            }>
               <Table striped bordered condensed>
                 <thead>
                   <tr><td>一</td><td>二</td><td>三</td><td>四</td><td>五</td><td>六</td><td>日</td></tr>

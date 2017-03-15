@@ -22,21 +22,59 @@
 	padding: 4px;
 }
 
-/* 战果信息 */
-.senka-info .table tbody tr td{
-	padding-top: 25px;
+#achievement .panel-title {
+	font-size: 14px;
 }
-.senka-info tr .pob{
+
+#achievement .panel-title .fa {
+	margin-right: 5px
+}
+
+/* 战果信息 */
+#achievement .senka-info .table tbody tr td {
+	padding-top: 25px;
+	white-space: nowrap;
+}
+
+#achievement .senka-info .senka-title {
+	width: 60px;
+}
+
+#achievement .senka-info tr .pob {
 	position: relative;
 }
 
-.senka-info tr .pos {
+#achievement .senka-info tr .senka-up {
+	opacity: 0.75;
+}
+
+#achievement .senka-info tr .pos {
 	position: absolute;
-	padding: 0 5px 0 18px;
+	padding: 0 18px 0 5px;
 	line-height: 18px;
-	border-bottom-left-radius: 18px;
+	border-bottom-right-radius: 18px;
 	top: 0;
-	right: 0;
+	left: 0;
 	white-space: nowrap;
 	opacity: 0.9;
+}
+
+/* 战果计算 */
+#achievement .senka-calc .flex {
+	display: flex;
+	line-height: 26px;
+	height: 26px;
+}
+
+#achievement .senka-calc .flex .flex-auto {
+	flex: 1;
+	padding-left: 10px;
+}
+
+#achievement .senka-calc .flex input {
+	height: 26px;
+}
+
+#achievement .senka-calc .table tbody tr td {
+	white-space: nowrap;
 }
