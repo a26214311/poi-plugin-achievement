@@ -465,8 +465,6 @@ export const reactClass = connect(
                 {callendar}
                 </tbody>
               </Table>
-
-              {ret}
             </Panel>
           </Col>
         </Row>
