@@ -367,7 +367,10 @@ export const reactClass = connect(
                 </thead>
                 <tbody>
                 <tr>
-                  <td>1位</td>
+                  <td className="pob">
+                    <div>1位</div>
+                    <div className="pos bg-primary">{r1tsstr}</div>
+                  </td>
                   <td className="pob">
                     <OverlayTrigger placement="bottom" overlay={
                       <Tooltip>
@@ -379,10 +382,13 @@ export const reactClass = connect(
                     }>
                       <div>{r1.toFixed(0)}</div>
                     </OverlayTrigger>
-                    <div className="day pos bg-primary">{r1tsstr}</div></td>
+                    </td>
                 </tr>
                 <tr>
-                  <td>501位</td>
+                  <td className="pob">
+                    <div>501位</div>
+                    <div className="pos bg-primary">{r501tsstr}</div>
+                  </td>
                   <td className="pob">
                     <OverlayTrigger placement="bottom" overlay={
                       <Tooltip>
@@ -394,7 +400,7 @@ export const reactClass = connect(
                     }>
                       <div>{r501.toFixed(0)}</div>
                     </OverlayTrigger>
-                    <div className="day pos bg-primary">{r501tsstr}</div></td>
+                    </td>
                 </tr>
                 <tr>
                   <td className="pob">
