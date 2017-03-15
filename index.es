@@ -36,6 +36,10 @@ export const reactClass = connect(
       ranktime:0,
       r1time:0,
       r501time:0,
+      r1last:0,
+      r501last:0,
+      r1lasttime:0,
+      r501lasttime:0,
       mysenka:0,
       targetsenka:2400,
       ignoreex:{},
@@ -93,14 +97,30 @@ export const reactClass = connect(
         var no=list[0].api_mxltvkpyuklh;
         var key = list[0].api_wuhnhojjxmke;
         var senka = this.getRate(no,key,myid);
+        var r1last = achieve.r1;
+        var r1time = achieve.r1time;
+        var r1timeno = this.getRankDateNo(new Date(r1time));
         achieve.r1=senka;
         achieve.r1time=now;
+        var timeno = this.getRankDateNo(now);
+        if(r1timeno!=timeno){
+          achieve.r1last=r1last;
+          achieve.r1lasttime=r1timeno;
+        }
       }else if(page==51){
         var no=list[0].api_mxltvkpyuklh;
         var key = list[0].api_wuhnhojjxmke;
         var senka = this.getRate(no,key,myid);
+        var timeno = this.getRankDateNo(now);
+        var r501last = achieve.r501;
+        var r501time = achieve.r501time;
+        var r501timeno = this.getRankDateNo(new Date(r501time));
         achieve.r501=senka;
         achieve.r501time=now;
+        if(r501timeno!=timeno){
+          achieve.r501last=r501last;
+          achieve.r501lasttime=r501timeno;
+        }
       }else{
 
       }
@@ -337,11 +357,34 @@ export const reactClass = connect(
                 <tbody>
                 <tr>
                   <td>1位</td>
-                  <td className="pob">{r1.toFixed(0)}<div className="day pos bg-primary">{r1tsstr}</div></td>
+                  <td className="pob">
+
+                    <OverlayTrigger placement="bottom" overlay={
+                      <Tooltip>
+                        <div>战果增加： {(r1-this.state.r1last).toFixed(0)}<FontAwesome name="arrow-up"/></div>
+                        <div>{"更新时间: " + (Math.floor((parseInt(this.state.r1lasttime))/2)+1) + "日"}
+                          {(parseInt(this.state.r1lasttime)%2==0?<FontAwesome name="sun-o"/> : <FontAwesome name="moon-o"/>)}
+                        </div>
+                      </Tooltip>
+                    }>
+                      <div>{r1.toFixed(0)}</div>
+                    </OverlayTrigger>
+                    <div className="day pos bg-primary">{r1tsstr}</div></td>
                 </tr>
                 <tr>
                   <td>501位</td>
-                  <td className="pob">{r501.toFixed(0)}<div className="day pos bg-primary">{r501tsstr}</div></td>
+                  <td className="pob">
+                    <OverlayTrigger placement="bottom" overlay={
+                      <Tooltip>
+                        <div>战果增加： {(r501-this.state.r501last).toFixed(0)}<FontAwesome name="arrow-up"/></div>
+                        <div> {"更新时间: " + (Math.floor((parseInt(this.state.r501lasttime))/2)+1)+"日"}
+                          {(parseInt(this.state.r501lasttime)%2==0?<FontAwesome name="sun-o"/> : <FontAwesome name="moon-o"/>)}
+                        </div>
+                      </Tooltip>
+                    }>
+                      <div>{r501.toFixed(0)}</div>
+                    </OverlayTrigger>
+                    <div className="day pos bg-primary">{r501tsstr}</div></td>
                 </tr>
                 <tr>
                   <td>
