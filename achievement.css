@@ -3,20 +3,78 @@
 }
 
 #achievement .row {
-	margin-left: -5px;
-	margin-right: -5px;
+	margin-left: -2px;
+	margin-right: -2px;
 }
 
 #achievement .row > div {
-	padding-left: 5px;
-	padding-right: 5px;
+	padding-left: 2px;
+	padding-right: 2px;
 }
 
-#achievement .panel{
-	margin-bottom: 10px;
+#achievement .panel {
+	margin-bottom: 4px;
 }
 
-#achievement .panel.info .panel-body{
+#achievement .panel.info .panel-body {
 	height: 200px;
 	overflow: hidden;
+	padding: 4px;
+}
+
+#achievement .panel-title {
+	font-size: 14px;
+}
+
+#achievement .panel-title .fa {
+	margin-right: 5px
+}
+
+/* 战果信息 */
+#achievement .senka-info .table tbody tr td {
+	padding-top: 25px;
+	white-space: nowrap;
+}
+
+#achievement .senka-info .senka-title {
+	width: 60px;
+}
+
+#achievement .senka-info tr .pob {
+	position: relative;
+}
+
+#achievement .senka-info tr .senka-up {
+	opacity: 0.75;
+}
+
+#achievement .senka-info tr .pos {
+	position: absolute;
+	padding: 0 18px 0 5px;
+	line-height: 18px;
+	border-bottom-right-radius: 18px;
+	top: 0;
+	left: 0;
+	white-space: nowrap;
+	opacity: 0.9;
+}
+
+/* 战果计算 */
+#achievement .senka-calc .flex {
+	display: flex;
+	line-height: 26px;
+	height: 26px;
+}
+
+#achievement .senka-calc .flex .flex-auto {
+	flex: 1;
+	padding-left: 10px;
+}
+
+#achievement .senka-calc .flex input {
+	height: 26px;
+}
+
+#achievement .senka-calc .table tbody tr td {
+	white-space: nowrap;
 }

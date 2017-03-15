@@ -5,7 +5,7 @@ import {createSelector} from 'reselect'
 import {store} from 'views/create-store'
 
 import {join} from 'path'
-import {Row, Col, Checkbox, Panel, FormGroup, FormControl, Button} from 'react-bootstrap'
+import {Row, Col, Checkbox, Panel, FormGroup, FormControl, Button, Table, OverlayTrigger, Tooltip} from 'react-bootstrap'
 import FontAwesome from 'react-fontawesome'
 
 
@@ -36,6 +36,10 @@ export const reactClass = connect(
       ranktime:0,
       r1time:0,
       r501time:0,
+      r1last:0,
+      r501last:0,
+      r1lasttime:0,
+      r501lasttime:0,
       mysenka:0,
       targetsenka:2400,
       ignoreex:{},
@@ -44,7 +48,7 @@ export const reactClass = connect(
   }
 
   componentWillReceiveProps(nextProps) {
-    var basic = this.props.basic;
+    var basic = nextProps.basic;
     var exp = basic.api_experience;
     var now = new Date();
     var month = now.getMonth();
@@ -66,8 +70,7 @@ export const reactClass = connect(
       needupdate=true;
     }
     if(needupdate){
-      this.savelist();
-      this.setState(achieve);
+      this.setState(achieve,()=>this.savelist());
     }
   }
 
@@ -94,26 +97,58 @@ export const reactClass = connect(
         var no=list[0].api_mxltvkpyuklh;
         var key = list[0].api_wuhnhojjxmke;
         var senka = this.getRate(no,key,myid);
+        var r1last = achieve.r1;
+        var r1time = achieve.r1time;
+        var r1timeno = this.getRankDateNo(new Date(r1time));
         achieve.r1=senka;
         achieve.r1time=now;
+        var timeno = this.getRankDateNo(now);
+        if(r1timeno!=timeno){
+          achieve.r1last=r1last;
+          achieve.r1lasttime=r1timeno;
+        }
       }else if(page==51){
         var no=list[0].api_mxltvkpyuklh;
         var key = list[0].api_wuhnhojjxmke;
         var senka = this.getRate(no,key,myid);
+        var timeno = this.getRankDateNo(now);
+        var r501last = achieve.r501;
+        var r501time = achieve.r501time;
+        var r501timeno = this.getRankDateNo(new Date(r501time));
         achieve.r501=senka;
         achieve.r501time=now;
+        if(r501timeno!=timeno){
+          achieve.r501last=r501last;
+          achieve.r501lasttime=r501timeno;
+        }
       }else{
 
       }
-      this.savelist();
-      this.setState(achieve);
+      this.setState(achieve,()=>this.savelist());
     }
   };
 
   getDateNo(now){
+    now = new Date(new Date(now).getTime()+(new Date().getTimezoneOffset()+480)*60000);
     var date = now.getDate();
     var hour = now.getHours();
-    var no = (date-1)*2+((hour>13)?1:0);
+    if(hour<1){
+      date = date -1;
+      hour = hour + 24;
+    }
+    var no = (date-1)*2+((hour>=13)?1:0);
+    return no;
+  }
+
+  getRankDateNo(now){
+    now = new Date(new Date(now).getTime()+(new Date().getTimezoneOffset()+480)*60000);
+    var date = now.getDate();
+    var hour = now.getHours();
+    if(hour<1){
+      date = date -1;
+      hour = hour + 24;
+    }
+    var no = (date-1)*2+((hour>=14)?1:0);
     return no;
   }
 
@@ -130,14 +165,16 @@ export const reactClass = connect(
 
   savelist() {
     try {
+      console.log(this.state);
+      let data = this.loadlist();
       console.log("save");
-      let data = this.state;
+      console.log(data);
       let savepath = join(window.APPDATA_PATH, 'achieve', 'achieve.json');
       fs.writeFileSync(savepath, JSON.stringify(data));
     } catch (e) {
       fs.mkdir(join(window.APPDATA_PATH, 'achieve'));
       try {
-        let data = this.state;
+        let data = this.loadlist();
         let savepath = join(window.APPDATA_PATH, 'achieve', 'achieve.json');
         fs.writeFileSync(savepath, JSON.stringify(data));
       } catch (e2) {
@@ -153,10 +190,8 @@ export const reactClass = connect(
         let savedpath = join(window.APPDATA_PATH, 'achieve', 'achieve.json');
         let datastr = fs.readFileSync(savedpath, 'utf-8');
         let data = eval("(" + datastr + ")");
-        console.log("loadingstate");
-        console.log(data);
         data.need_load=false;
-        this.setState(data);
+        this.setState(data,() => {});
         return data;
       } catch (e) {
         console.log(e);
@@ -184,7 +219,10 @@ export const reactClass = connect(
       return (
         <div>
           <div>
-            unknown error
+            {e.message}
+          </div>
+          <div>
+            {e.stack}
           </div>
         </div>
       )
@@ -192,8 +230,13 @@ export const reactClass = connect(
   }
 
   handleChangeTarget = e =>{
-    console.log(e);
     var value = e.target.value;
+    if(parseInt(value)>66666){
+      value=66666;
+    }
+    if(parseInt(value)<0){
+      value=0;
+    }
     this.setState({targetsenka:value})
   }
   handleExChange = e =>{
@@ -210,11 +253,11 @@ export const reactClass = connect(
     var r501 = achieve.r501?achieve.r501:0;
 
     var r1time = new Date(achieve.r1time?achieve.r1time:0);
-    var r1no = this.getDateNo(r1time);
-    var r1tsstr = (Math.floor((parseInt(r1no))/2)+1) + "日" + ((parseInt(r1no)%2==0)?"上午":"下午");
+    var r1no = this.getRankDateNo(r1time);
+    var r1tsstr = ["更新时间: " + (Math.floor((parseInt(r1no))/2)+1) + "日", parseInt(r1no)%2!=0?<FontAwesome name="sun-o"/> : <FontAwesome name="moon-o"/>];
     var r501time = new Date(achieve.r501time?achieve.r501time:0);
-    var r501no = this.getDateNo(r501time);
-    var r501tsstr = (Math.floor((parseInt(r501no))/2)+1) + "日" + ((parseInt(r501no)%2==0)?"上午":"下午");
+    var r501no = this.getRankDateNo(r501time);
+    var r501tsstr = ["更新时间: " + (Math.floor((parseInt(r501no))/2)+1) + "日", parseInt(r1no)%2!=0?<FontAwesome name="sun-o"/> : <FontAwesome name="moon-o"/>];
 
 
     var ranktime =new Date(achieve.ranktime?achieve.ranktime:0);
@@ -222,18 +265,23 @@ export const reactClass = connect(
     var myno=achieve.myno?achieve.myno:0;
 
     var exp = this.props.basic.api_experience;
-    var no = this.getDateNo(ranktime);
-    var mynostr = (Math.floor((parseInt(no))/2)+1) + "日" + ((parseInt(no)%2==0)?"上午":"下午");
+    var no = this.getRankDateNo(ranktime);
+    var mynostr = ["更新时间: " + (Math.floor((parseInt(no))/2)+1) + "日", parseInt(r1no)%2!=0?<FontAwesome name="sun-o"/> : <FontAwesome name="moon-o"/>];
     var exphis = this.state.exphis;
     var hiskey = Object.keys(exphis);
 
     hiskey.sort(function (a,b) {return(parseInt(a)-parseInt(b))});
     var lastkey = hiskey[0];
     var ret = [];
+
+
+
+    var expadd=[];
     hiskey.map(function(key){
       if(key!=hiskey[0]) {
-        var tsstr = (Math.floor((parseInt(key)+1)/2)) + "日" + ((parseInt(key)%2==1)?"上午":"下午");
+        var tsstr = ["" + (Math.floor((parseInt(key)+1)/2)) + "日", parseInt(r1no)%2==0?<FontAwesome name="sun-o"/> : <FontAwesome name="moon-o"/>];
         var addsenka = (exphis[key] - exphis[lastkey])/50000*35;
+        expadd[key]=addsenka;
         if(addsenka>0.1){
           ret.push(<div>{tsstr}:{addsenka.toFixed(1)}</div>);
         }
@@ -272,43 +320,158 @@ export const reactClass = connect(
         senkaleft=senkaleft-exvalue[unclearedex[i]];
       }
     }
+
+
+    var firstday = new Date();
+    firstday.setDate(1);
+    var firstdayofWeek = firstday.getDay();
+    var callendar = [];
+    var frontblanknum=(6+firstdayofWeek)%7;
+    var days = dayofMonth[month];
+    var lines = Math.ceil((days+frontblanknum)/7);
+    for(var i=0;i<lines;i++){
+      var weeks = [];
+      for(var j=1;j<=7;j++){
+        var day = i*7+j-frontblanknum;
+        if(day<1){
+          weeks.push(<td><div></div><div></div></td>)
+        }else if(day>days){
+          weeks.push(<td><div></div><div></div></td>)
+        }else{
+          var expmorning = expadd[day*2-1]?expadd[day*2-1]:0;
+          var expafternoon = expadd[day*2]?expadd[day*2]:0;
+          var totalexp = expmorning+expafternoon;
+          weeks.push(<td><div>{day}</div><div>{
+            totalexp>0.1?totalexp.toFixed(1):'--'
+          }</div></td>)
+        }
+      }
+      callendar.push(<tr>{weeks}</tr>)
+    }
     return (
       <div id="achievement" className="achievement">
         <link rel="stylesheet" href={join(__dirname, 'achievement.css')}/>
         <Row>
           <Col xs={6}>
-            <Panel header="战果信息" className="info">
-              <div>第1名：{r1.toFixed(1)}|||{r1tsstr}</div>
-              <div>第501名：{r501.toFixed(1)}|||{r501tsstr}</div>
-              <div>我的排名：{myno}</div>
-              <div>我的战果：{mysenka.toFixed(1)}</div>
-              <div>更新时间：{mynostr}</div>
-              <div>上升预测：{(mysenka+upsenka).toFixed(1)}↑{upsenka.toFixed(1)}</div>
+            <Panel header={
+            <span>
+              <FontAwesome name="list-ol"/> 战果信息
+            </span>
+            } className="info senka-info">
+              <Table striped bordered condensed hover>
+                <thead>
+                <tr>
+                  <th className="senka-title">顺位</th>
+                  <th>战果</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                  <td className="pob">
+                    <div>1位</div>
+                    <div className="pos bg-primary">{r1tsstr}</div>
+                  </td>
+                  <td className="pob">
+                    <OverlayTrigger placement="bottom" overlay={
+                      <Tooltip>
+                        <div>战果增加： {(r1-this.state.r1last).toFixed(0)}<FontAwesome name="arrow-up"/></div>
+                        <div>{"上次更新: " + (Math.floor((parseInt(this.state.r1lasttime))/2)+1) + "日"}
+                          {(parseInt(this.state.r1lasttime)%2==0?<FontAwesome name="sun-o"/> : <FontAwesome name="moon-o"/>)}
+                        </div>
+                      </Tooltip>
+                    }>
+                      <div>{r1.toFixed(0)}</div>
+                    </OverlayTrigger>
+                    </td>
+                </tr>
+                <tr>
+                  <td className="pob">
+                    <div>501位</div>
+                    <div className="pos bg-primary">{r501tsstr}</div>
+                  </td>
+                  <td className="pob">
+                    <OverlayTrigger placement="bottom" overlay={
+                      <Tooltip>
+                        <div>战果增加： {(r501-this.state.r501last).toFixed(0)}<FontAwesome name="arrow-up"/></div>
+                        <div> {"上次更新: " + (Math.floor((parseInt(this.state.r501lasttime))/2)+1)+"日"}
+                          {(parseInt(this.state.r501lasttime)%2==0?<FontAwesome name="sun-o"/> : <FontAwesome name="moon-o"/>)}
+                        </div>
+                      </Tooltip>
+                    }>
+                      <div>{r501.toFixed(0)}</div>
+                    </OverlayTrigger>
+                    </td>
+                </tr>
+                <tr>
+                  <td className="pob">
+                    <div>{myno}位</div>
+                    <div className="pos bg-primary">{mynostr}</div>
+                  </td>
+                  <td>
+                    <OverlayTrigger placement="bottom" overlay={
+                      <Tooltip>
+                        <div>预想战果增加： <FontAwesome name="arrow-up"/>{upsenka.toFixed(1)}</div>
+                        <div>战果预测值： {(mysenka+upsenka).toFixed(1)}</div>
+                      </Tooltip>
+                    }>
+                      <div>
+                        {mysenka.toFixed(0)}
+                        <span className="senka-up">(<FontAwesome name="arrow-up"/>{upsenka.toFixed(1)})</span>
+                      </div>
+                    </OverlayTrigger>
+                  </td>
+                </tr>
+                </tbody>
+              </Table>
             </Panel>
           </Col>
           <Col xs={6}>
-            <Panel header="战果计算器" className="info">
-              <FormGroup bsClass="row">
-                <Col sm={4}>
+            <Panel header={
+              <span>
+                <FontAwesome name="calculator"/> 战果计算器
+              </span>
+            } className="info senka-calc">
+              <div className="senka-ipt flex">
+                <div>
                   目标战果
-                </Col>
-                <Col sm={8}>
+                </div>
+                <div className="flex-auto">
                   <FormControl
                     value={this.state.targetsenka}
                     type="text"
-                    placeholder="target senka"
+                    placeholder="目标战果"
                     onChange={this.handleChangeTarget}
                   />
-                </Col>
-              </FormGroup>
-              <div>剩余战果：{senkaleft.toFixed(1)}</div>
-              <div>5-4：{Math.ceil(senkaleft/2.282)}次,平均每天{(senkaleft/daysleft/2.282).toFixed(1)}次</div>
-              <div>5-2：{Math.ceil(senkaleft/1.995)}次,平均每天{(senkaleft/daysleft/1.995).toFixed(1)}次</div>
-              <div>1-5：{Math.ceil(senkaleft/0.8925)}次,平均每天{(senkaleft/daysleft/0.8925).toFixed(1)}次</div>
+                </div>
+              </div>
+              <div className="senka-eq flex">
+                <div>
+                  剩余战果
+                </div>
+                <div className="flex-auto">
+                  {senkaleft.toFixed(1)}
+                </div>
+              </div>
+              <Table striped bordered condensed hover>
+                <thead>
+                <tr><td>MAP</td><td>次数</td><td>每天</td></tr>
+                </thead>
+                <tbody>
+                <tr><td>5-4</td><td>{Math.ceil(senkaleft/2.282)}</td><td>{(senkaleft/daysleft/2.282).toFixed(1)}</td></tr>
+                <tr><td>5-2</td><td>{Math.ceil(senkaleft/1.995)}</td><td>{(senkaleft/daysleft/1.995).toFixed(1)}</td></tr>
+                <tr><td>1-5</td><td>{Math.ceil(senkaleft/0.8925)}</td><td>{(senkaleft/daysleft/0.8925).toFixed(1)}</td></tr>
+                </tbody>
+              </Table>
+
+
             </Panel>
           </Col>
           <Col xs={12}>
-            <Panel header="预想要攻略的EX图">
+            <Panel header={
+              <span>
+                <FontAwesome name="cog"/> 预想要攻略的EX图
+              </span>
+            }>
               <div>
                 不准备攻略的EX：
                 {
@@ -322,8 +485,19 @@ export const reactClass = connect(
             </Panel>
           </Col>
           <Col xs={12}>
-            <Panel header="战果日历">
-              {ret}
+            <Panel header={
+              <span>
+                <FontAwesome name="calendar"/> 战果日历
+              </span>
+            }>
+              <Table striped bordered condensed>
+                <thead>
+                  <tr><td>一</td><td>二</td><td>三</td><td>四</td><td>五</td><td>六</td><td>日</td></tr>
+                </thead>
+                <tbody>
+                {callendar}
+                </tbody>
+              </Table>
             </Panel>
           </Col>
         </Row>
