@@ -243,16 +243,24 @@ export const reactClass = connect(
     hiskey.sort(function (a,b) {return(parseInt(a)-parseInt(b))});
     var lastkey = hiskey[0];
     var ret = [];
+
+
+
+    var expadd=[];
     hiskey.map(function(key){
       if(key!=hiskey[0]) {
         var tsstr = [(Math.floor((parseInt(key)+1)/2)) + "日", parseInt(r1no)%2==0?<FontAwesome name="sun-o"/> : <FontAwesome name="moon-o"/>];
         var addsenka = (exphis[key] - exphis[lastkey])/50000*35;
+        console.log(key,addsenka);
+        expadd[key]=addsenka;
         if(addsenka>0.1){
           ret.push(<div>{tsstr}:{addsenka.toFixed(1)}</div>);
         }
         lastkey = key;
       }
     });
+    console.log(expadd);
+
     var upsenka = (exp - exphis[no])/50000*35;
     var exlist=["1-5","1-6","2-5","3-5","4-5","5-5","6-5"];
     var exvalue={"1-5":75,"1-6":75,"2-5":100,"3-5":150,"4-5":180,"5-5":200,"6-5":250};
@@ -284,6 +292,34 @@ export const reactClass = connect(
       if(!ignoreex[unclearedex[i]]){
         senkaleft=senkaleft-exvalue[unclearedex[i]];
       }
+    }
+
+
+    var firstday = new Date();
+    firstday.setDate(1);
+    var firstdayofWeek = firstday.getDay();
+    var callendar = [];
+    var frontblanknum=(6+firstdayofWeek)%7;
+    var days = dayofMonth[month];
+    var lines = Math.ceil((days+frontblanknum)/7);
+    for(var i=0;i<lines;i++){
+      var weeks = [];
+      for(var j=1;j<=7;j++){
+        var day = i*7+j-frontblanknum;
+        if(day<1){
+          weeks.push(<td><div></div><div></div></td>)
+        }else if(day>days){
+          weeks.push(<td><div></div><div></div></td>)
+        }else{
+          var expmorning = expadd[day*2-1]?expadd[day*2-1]:0;
+          var expafternoon = expadd[day*2]?expadd[day*2]:0;
+          var totalexp = expmorning+expafternoon;
+          weeks.push(<td><div>{day}</div><div>{
+            totalexp>0.1?totalexp.toFixed(1):'--'
+          }</div></td>)
+        }
+      }
+      callendar.push(<tr>{weeks}</tr>)
     }
     return (
       <div id="achievement" className="achievement">
@@ -363,6 +399,15 @@ export const reactClass = connect(
           </Col>
           <Col xs={12}>
             <Panel header="战果日历">
+              <Table striped bordered condensed hover>
+                <thead>
+                  <tr><td>一</td><td>二</td><td>三</td><td>四</td><td>五</td><td>六</td><td>日</td></tr>
+                </thead>
+                <tbody>
+                {callendar}
+                </tbody>
+              </Table>
+
               {ret}
             </Panel>
           </Col>
