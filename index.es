@@ -376,7 +376,7 @@ export const reactClass = connect(
                       <Tooltip>
                         <div>战果增加： {(r1-this.state.r1last).toFixed(0)}<FontAwesome name="arrow-up"/></div>
                         <div>{"上次更新: " + (Math.floor((parseInt(this.state.r1lasttime))/2)+1) + "日"}
-                          {(parseInt(this.state.r1lasttime)%2==0?<FontAwesome name="sun-o"/> : <FontAwesome name="moon-o"/>)}
+                          {(parseInt(this.state.r1lasttime)%2!=0?<FontAwesome name="sun-o"/> : <FontAwesome name="moon-o"/>)}
                         </div>
                       </Tooltip>
                     }>
@@ -394,7 +394,7 @@ export const reactClass = connect(
                       <Tooltip>
                         <div>战果增加： {(r501-this.state.r501last).toFixed(0)}<FontAwesome name="arrow-up"/></div>
                         <div> {"上次更新: " + (Math.floor((parseInt(this.state.r501lasttime))/2)+1)+"日"}
-                          {(parseInt(this.state.r501lasttime)%2==0?<FontAwesome name="sun-o"/> : <FontAwesome name="moon-o"/>)}
+                          {(parseInt(this.state.r501lasttime)%2!=0?<FontAwesome name="sun-o"/> : <FontAwesome name="moon-o"/>)}
                         </div>
                       </Tooltip>
                     }>
