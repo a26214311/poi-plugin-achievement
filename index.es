@@ -12,7 +12,8 @@ import FontAwesome from 'react-fontawesome'
 import {extensionSelectorFactory} from 'views/utils/selectors'
 const fs = require('fs')
 const zh = "阿八嚓哒妸发旮哈或讥咔垃麻拏噢妑七呥撒它拖脱穵夕丫帀坐".split('');
-
+const exlist=["1-5","1-6","2-5","3-5","4-5","5-5","6-5"];
+const exvalue={"1-5":75,"1-6":75,"2-5":100,"3-5":150,"4-5":180,"5-5":200,"6-5":250};
 
 export const reactClass = connect(
   state => ({
@@ -46,7 +47,8 @@ export const reactClass = connect(
       need_load: true,
       ensureexp: 0,
       ensurets: 0,
-      ensuresenka: 0
+      ensuresenka: 0,
+      ensureuex:exlist
     }
   }
 
@@ -80,15 +82,15 @@ export const reactClass = connect(
   starttimer(){
     var now = new Date();
     now = new Date(new Date(now).getTime()+(new Date().getTimezoneOffset()+480)*60000);
-    var left = (43200000-(now.getTime()-18000000)%43200000);
-    console.log(now);
+    var left = (43200000-(now.getTime()-18030000)%43200000);
+    console.log("next:"+left);
     setTimeout(() =>{
-      console.log(now);
       var exp = this.props.basic.api_experience;
       var nowtime = new Date();
-      var achieve = {ensureexp:exp,ensurets:nowtime};
+      var unclearedex = this.getUnclearedEx();
+      var achieve = {ensureexp:exp,ensurets:nowtime,ensureuex:unclearedex};
       this.setState(achieve,()=>this.savelist());
-    },60000);
+    },30000);
   }
 
 
@@ -111,7 +113,7 @@ export const reactClass = connect(
           achieve.myno=no;
           achieve.ranktime = now;
           var sub = now.getTime()-ensurets.getTime();
-          if(sub>3600000&&sub<3600000*13){
+          if(sub>3600000+30000&&sub<3600000*13-30000){
 
           }
         }
@@ -234,6 +236,38 @@ export const reactClass = connect(
     return rate > 0 ? rate : 0
   }
 
+  getUnclearedEx(){
+    var maps = this.props.maps;
+    var unclearedex = [];
+    exlist.map(function(mapidstr,index){
+      var mapid = mapidstr.split("-").join('');
+      if(maps[mapid]){
+        if(maps[mapid].api_cleared==1){
+        }else{
+          unclearedex.push(mapidstr);
+        }
+      }else{
+        unclearedex.push(mapidstr);
+      }
+    });
+    return unclearedex;
+  }
+
+  addExSenka(uexnow,uexthen){
+    var hash={};
+    for(var i=0;i<uexnow.length;i++){
+      hash[uexnow[i]]=1;
+    }
+    var r=0
+    for(var i=0;i<uexthen.length;i++){
+      var map=uexthen[i];
+      if(!hash[map]){
+        r=r+exvalue[map];
+      }
+    }
+    return r;
+  }
+
 
   render() {
     try {
@@ -288,6 +322,9 @@ export const reactClass = connect(
     var mysenka = achieve.mysenka?achieve.mysenka:0;
     var myno=achieve.myno?achieve.myno:0;
 
+
+
+
     var exp = this.props.basic.api_experience;
     var no = this.getRankDateNo(ranktime);
     var mynostr = ["更新时间: " + (Math.floor((parseInt(no))/2)+1) + "日", parseInt(no)%2!=0?<FontAwesome name="sun-o"/> : <FontAwesome name="moon-o"/>];
@@ -298,7 +335,7 @@ export const reactClass = connect(
     var lastkey = hiskey[0];
     var ret = [];
 
-
+    var unclearedex = this.getUnclearedEx();
 
     var expadd=[];
     hiskey.map(function(key){
@@ -313,25 +350,20 @@ export const reactClass = connect(
       }
     });
     var upsenka = (exp - exphis[no])/50000*35;
-    var exlist=["1-5","1-6","2-5","3-5","4-5","5-5","6-5"];
-    var exvalue={"1-5":75,"1-6":75,"2-5":100,"3-5":150,"4-5":180,"5-5":200,"6-5":250};
-    var maps = this.props.maps;
-    var exret = [];
-    var unclearedex = [];
-    exlist.map(function(mapidstr,index){
-      var mapid = mapidstr.split("-").join('');
-      if(maps[mapid]){
-        if(maps[mapid].api_cleared==1){
-          exret.push(<div>{mapidstr}:已完成</div>);
-        }else{
-          unclearedex.push(mapidstr);
-          exret.push(<div>{mapidstr}:未完成</div>);
-        }
-      }else{
-        unclearedex.push(mapidstr);
-        exret.push(<div>{mapidstr}:未完成</div>);
-      }
-    });
+
+    var ensuresenka=achieve.ensuresenka;
+    var ensurets = achieve.ensurets;
+    var ensureexp = achieve.ensureexp;
+    var ensureuex = achieve.ensureuex;
+    var ensure=false;
+    if(ensuresenka>0&&ensureexp>0){
+      upsenka = (exp-ensureexp)/50000*35+ensuresenka-mysenka+this.addExSenka(unclearedex,ensureuex);
+    }
+
+
+
+
+
     var ignoreex = this.state.ignoreex;
     var now = new Date();
     var day = now.getDate();
