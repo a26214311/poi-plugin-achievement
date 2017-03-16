@@ -90,7 +90,7 @@ export const reactClass = connect(
       var unclearedex = this.getUnclearedEx();
       var achieve = {ensureexp:exp,ensurets:nowtime,ensureuex:unclearedex};
       this.setState(achieve,()=>this.savelist());
-    },30000);
+    },left);
   }
 
 
