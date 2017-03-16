@@ -257,7 +257,7 @@ export const reactClass = connect(
     var r1tsstr = ["更新时间: " + (Math.floor((parseInt(r1no))/2)+1) + "日", parseInt(r1no)%2!=0?<FontAwesome name="sun-o"/> : <FontAwesome name="moon-o"/>];
     var r501time = new Date(achieve.r501time?achieve.r501time:0);
     var r501no = this.getRankDateNo(r501time);
-    var r501tsstr = ["更新时间: " + (Math.floor((parseInt(r501no))/2)+1) + "日", parseInt(r1no)%2!=0?<FontAwesome name="sun-o"/> : <FontAwesome name="moon-o"/>];
+    var r501tsstr = ["更新时间: " + (Math.floor((parseInt(r501no))/2)+1) + "日", parseInt(r501no)%2!=0?<FontAwesome name="sun-o"/> : <FontAwesome name="moon-o"/>];
 
 
     var ranktime =new Date(achieve.ranktime?achieve.ranktime:0);
@@ -266,7 +266,7 @@ export const reactClass = connect(
 
     var exp = this.props.basic.api_experience;
     var no = this.getRankDateNo(ranktime);
-    var mynostr = ["更新时间: " + (Math.floor((parseInt(no))/2)+1) + "日", parseInt(r1no)%2!=0?<FontAwesome name="sun-o"/> : <FontAwesome name="moon-o"/>];
+    var mynostr = ["更新时间: " + (Math.floor((parseInt(no))/2)+1) + "日", parseInt(no)%2!=0?<FontAwesome name="sun-o"/> : <FontAwesome name="moon-o"/>];
     var exphis = this.state.exphis;
     var hiskey = Object.keys(exphis);
 
