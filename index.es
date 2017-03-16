@@ -26,28 +26,31 @@ export const reactClass = connect(
   constructor(props) {
     super(props)
     this.state = {
-      achieve:{
-        exphis:{}
+      achieve: {
+        exphis: {}
       },
-      exphis:{},
-      lastmonth:-1,
-      r1:0,
-      r501:0,
-      ranktime:0,
-      r1time:0,
-      r501time:0,
-      r1last:0,
-      r501last:0,
-      r1lasttime:0,
-      r501lasttime:0,
-      mysenka:0,
-      targetsenka:2400,
-      ignoreex:{},
-      need_load:true
+      exphis: {},
+      lastmonth: -1,
+      r1: 0,
+      r501: 0,
+      ranktime: 0,
+      r1time: 0,
+      r501time: 0,
+      r1last: 0,
+      r501last: 0,
+      r1lasttime: 0,
+      r501lasttime: 0,
+      mysenka: 0,
+      targetsenka: 2400,
+      ignoreex: {},
+      need_load: true,
+      ensureexp: 0,
+      ensurets: 0,
+      ensuresenka: 0
     }
   }
 
-  componentWillReceiveProps(nextProps) {
+  componentWillReceiveProps(nextProps){
     var basic = nextProps.basic;
     var exp = basic.api_experience;
     var now = new Date();
@@ -74,6 +77,21 @@ export const reactClass = connect(
     }
   }
 
+  starttimer(){
+    var now = new Date();
+    now = new Date(new Date(now).getTime()+(new Date().getTimezoneOffset()+480)*60000);
+    var left = (43200000-(now.getTime()-18000000)%43200000);
+    console.log(now);
+    setTimeout(() =>{
+      console.log(now);
+      var exp = this.props.basic.api_experience;
+      var nowtime = new Date();
+      var achieve = {ensureexp:exp,ensurets:nowtime};
+      this.setState(achieve,()=>this.savelist());
+    },60000);
+  }
+
+
   handleResponse = e => {
     const {path, body} = e.detail;
     if(path=="/kcsapi/api_req_ranking/mxltvkpyuklh"){
@@ -83,6 +101,7 @@ export const reactClass = connect(
       var page = body.api_disp_page;
       var list = body.api_list;
       var now = new Date();
+      var ensurets = achieve.ensurets;
       for(var i=0;i<list.length;i++){
         if(list[i].api_mtjmdcwtvhdr==myname){
           var no=list[i].api_mxltvkpyuklh;
@@ -91,6 +110,10 @@ export const reactClass = connect(
           achieve.mysenka=senka;
           achieve.myno=no;
           achieve.ranktime = now;
+          var sub = now.getTime()-ensurets.getTime();
+          if(sub>3600000&&sub<3600000*13){
+
+          }
         }
       }
       if(page==1){
@@ -126,7 +149,7 @@ export const reactClass = connect(
       }
       this.setState(achieve,()=>this.savelist());
     }
-  };
+  }
 
   getDateNo(now){
     now = new Date(new Date(now).getTime()+(new Date().getTimezoneOffset()+480)*60000);
@@ -155,7 +178,6 @@ export const reactClass = connect(
 
   componentDidMount = () => {
     window.addEventListener('game.response', this.handleResponse);
-
     this.loadlist();
   };
 
@@ -163,7 +185,7 @@ export const reactClass = connect(
     window.removeEventListener('game.response', this.handleResponse)
   };
 
-  savelist() {
+  savelist(){
     try {
       console.log(this.state);
       let data = this.loadlist();
@@ -191,7 +213,9 @@ export const reactClass = connect(
         let datastr = fs.readFileSync(savedpath, 'utf-8');
         let data = eval("(" + datastr + ")");
         data.need_load=false;
-        this.setState(data,() => {});
+        this.setState(data,() => {
+          this.starttimer();
+        });
         return data;
       } catch (e) {
         console.log(e);
