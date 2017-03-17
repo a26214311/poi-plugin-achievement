@@ -68,6 +68,13 @@ export const reactClass = connect(
       exphistory={};
       achieve.exphis=exphistory;
       achieve.lastmonth=month;
+      achieve.ensureexp=0;
+      achieve.ensurets=0;
+      achieve.ensuresenka=0;
+      achieve.ensureuex=exlist;
+      achieve.r1=0;
+      achieve.r501=0;
+      achieve.mysenka=0;
       needupdate=true;
     }
     if(!exphistory[no]){
@@ -98,6 +105,7 @@ export const reactClass = connect(
   handleResponse = e => {
     const {path, body} = e.detail;
     if(path=="/kcsapi/api_req_ranking/mxltvkpyuklh"){
+      console.log(body);
       var myname = this.props.basic.api_nickname;
       var myid = this.props.basic.api_member_id;
       var achieve = this.state;
@@ -114,7 +122,7 @@ export const reactClass = connect(
           achieve.myno=no;
           achieve.ranktime = now;
           achieve.rankuex = this.getUnclearedEx();
-          var sub = now.getTime()-ensurets.getTime();
+          var sub = now.getTime()-new Date(ensurets).getTime();
           if(sub>3600000+30000&&sub<3600000*13-30000){
             achieve.ensuresenka=senka;
           }
@@ -233,7 +241,8 @@ export const reactClass = connect(
 
   getRate(rankNo, obfsRate, memberId) {
     const MAGIC_R_NUMS = [ 8931, 1201, 1156, 5061, 4569, 4732, 3779, 4568, 5695, 4619, 4912, 5669, 6586 ]
-    const MAGIC_L_NUMS = [ 25, 92, 79, 52, 58, 36, 93, 92, 58, 82 ]
+    //const MAGIC_L_NUMS = [ 25, 92, 79, 52, 58, 36, 93, 92, 58, 82 ]
+    const MAGIC_L_NUMS = [ 25, 92, 79, 52, 58, 36, 45, 92, 58, 82 ]
     const rate = obfsRate / MAGIC_R_NUMS[rankNo % 13] / MAGIC_L_NUMS[memberId % 10] - 73 - 18
     return rate > 0 ? rate : 0
   }
@@ -522,8 +531,6 @@ export const reactClass = connect(
                 <tr><td>1-5</td><td>{Math.ceil(senkaleft/0.8925)}</td><td>{(senkaleft/daysleft/0.8925).toFixed(1)}</td></tr>
                 </tbody>
               </Table>
-
-
             </Panel>
           </Col>
           <Col xs={12}>
@@ -552,7 +559,8 @@ export const reactClass = connect(
             }>
               <Table striped bordered condensed>
                 <thead>
-                  <tr><td>一</td><td>二</td><td>三</td><td>四</td><td>五</td><td>六</td><td>日</td></tr>
+                <tr><td>一</td><td>二</td><td>三</td><td>四</td><td>五</td>
+                  <td><font color={"red"}>六</font></td><td><font color={"red"}>日</font></td></tr>
                 </thead>
                 <tbody>
                 {callendar}
