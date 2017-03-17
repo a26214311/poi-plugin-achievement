@@ -12,7 +12,8 @@ import FontAwesome from 'react-fontawesome'
 import {extensionSelectorFactory} from 'views/utils/selectors'
 const fs = require('fs')
 const zh = "阿八嚓哒妸发旮哈或讥咔垃麻拏噢妑七呥撒它拖脱穵夕丫帀坐".split('');
-
+const exlist=["1-5","1-6","2-5","3-5","4-5","5-5","6-5"];
+const exvalue={"1-5":75,"1-6":75,"2-5":100,"3-5":150,"4-5":180,"5-5":200,"6-5":250};
 
 export const reactClass = connect(
   state => ({
@@ -26,28 +27,33 @@ export const reactClass = connect(
   constructor(props) {
     super(props)
     this.state = {
-      achieve:{
-        exphis:{}
+      achieve: {
+        exphis: {}
       },
-      exphis:{},
-      lastmonth:-1,
-      r1:0,
-      r501:0,
-      ranktime:0,
-      r1time:0,
-      r501time:0,
-      r1last:0,
-      r501last:0,
-      r1lasttime:0,
-      r501lasttime:0,
-      mysenka:0,
-      targetsenka:2400,
-      ignoreex:{},
-      need_load:true
+      exphis: {},
+      lastmonth: -1,
+      r1: 0,
+      r501: 0,
+      ranktime: 0,
+      rankuex:exlist,
+      r1time: 0,
+      r501time: 0,
+      r1last: 0,
+      r501last: 0,
+      r1lasttime: 0,
+      r501lasttime: 0,
+      mysenka: 0,
+      targetsenka: 2400,
+      ignoreex: {},
+      need_load: true,
+      ensureexp: 0,
+      ensurets: 0,
+      ensuresenka: 0,
+      ensureuex:exlist
     }
   }
 
-  componentWillReceiveProps(nextProps) {
+  componentWillReceiveProps(nextProps){
     var basic = nextProps.basic;
     var exp = basic.api_experience;
     var now = new Date();
@@ -62,6 +68,13 @@ export const reactClass = connect(
       exphistory={};
       achieve.exphis=exphistory;
       achieve.lastmonth=month;
+      achieve.ensureexp=0;
+      achieve.ensurets=0;
+      achieve.ensuresenka=0;
+      achieve.ensureuex=exlist;
+      achieve.r1=0;
+      achieve.r501=0;
+      achieve.mysenka=0;
       needupdate=true;
     }
     if(!exphistory[no]){
@@ -74,15 +87,32 @@ export const reactClass = connect(
     }
   }
 
+  starttimer(){
+    var now = new Date();
+    now = new Date(new Date(now).getTime()+(new Date().getTimezoneOffset()+480)*60000);
+    var left = (43200000-(now.getTime()-18030000)%43200000);
+    console.log("next:"+left);
+    setTimeout(() =>{
+      var exp = this.props.basic.api_experience;
+      var nowtime = new Date();
+      var unclearedex = this.getUnclearedEx();
+      var achieve = {ensureexp:exp,ensurets:nowtime,ensureuex:unclearedex};
+      this.setState(achieve,()=>this.savelist());
+    },left);
+  }
+
+
   handleResponse = e => {
     const {path, body} = e.detail;
     if(path=="/kcsapi/api_req_ranking/mxltvkpyuklh"){
+      console.log(body);
       var myname = this.props.basic.api_nickname;
       var myid = this.props.basic.api_member_id;
       var achieve = this.state;
       var page = body.api_disp_page;
       var list = body.api_list;
       var now = new Date();
+      var ensurets = achieve.ensurets;
       for(var i=0;i<list.length;i++){
         if(list[i].api_mtjmdcwtvhdr==myname){
           var no=list[i].api_mxltvkpyuklh;
@@ -91,6 +121,11 @@ export const reactClass = connect(
           achieve.mysenka=senka;
           achieve.myno=no;
           achieve.ranktime = now;
+          achieve.rankuex = this.getUnclearedEx();
+          var sub = now.getTime()-new Date(ensurets).getTime();
+          if(sub>3600000+30000&&sub<3600000*13-30000){
+            achieve.ensuresenka=senka;
+          }
         }
       }
       if(page==1){
@@ -126,7 +161,7 @@ export const reactClass = connect(
       }
       this.setState(achieve,()=>this.savelist());
     }
-  };
+  }
 
   getDateNo(now){
     now = new Date(new Date(now).getTime()+(new Date().getTimezoneOffset()+480)*60000);
@@ -155,7 +190,6 @@ export const reactClass = connect(
 
   componentDidMount = () => {
     window.addEventListener('game.response', this.handleResponse);
-
     this.loadlist();
   };
 
@@ -163,7 +197,7 @@ export const reactClass = connect(
     window.removeEventListener('game.response', this.handleResponse)
   };
 
-  savelist() {
+  savelist(){
     try {
       console.log(this.state);
       let data = this.loadlist();
@@ -191,7 +225,9 @@ export const reactClass = connect(
         let datastr = fs.readFileSync(savedpath, 'utf-8');
         let data = eval("(" + datastr + ")");
         data.need_load=false;
-        this.setState(data,() => {});
+        this.setState(data,() => {
+          this.starttimer();
+        });
         return data;
       } catch (e) {
         console.log(e);
@@ -205,9 +241,42 @@ export const reactClass = connect(
 
   getRate(rankNo, obfsRate, memberId) {
     const MAGIC_R_NUMS = [ 8931, 1201, 1156, 5061, 4569, 4732, 3779, 4568, 5695, 4619, 4912, 5669, 6586 ]
-    const MAGIC_L_NUMS = [ 25, 92, 79, 52, 58, 36, 93, 92, 58, 82 ]
+    //const MAGIC_L_NUMS = [ 25, 92, 79, 52, 58, 36, 93, 92, 58, 82 ]
+    const MAGIC_L_NUMS = [ 63, 30, 79, 52, 58, 36, 45, 88, 58, 82 ]  // 0 1 6 7 is correct
     const rate = obfsRate / MAGIC_R_NUMS[rankNo % 13] / MAGIC_L_NUMS[memberId % 10] - 73 - 18
     return rate > 0 ? rate : 0
+  }
+
+  getUnclearedEx(){
+    var maps = this.props.maps;
+    var unclearedex = [];
+    exlist.map(function(mapidstr,index){
+      var mapid = mapidstr.split("-").join('');
+      if(maps[mapid]){
+        if(maps[mapid].api_cleared==1){
+        }else{
+          unclearedex.push(mapidstr);
+        }
+      }else{
+        unclearedex.push(mapidstr);
+      }
+    });
+    return unclearedex;
+  }
+
+  addExSenka(uexnow,uexthen){
+    var hash={};
+    for(var i=0;i<uexnow.length;i++){
+      hash[uexnow[i]]=1;
+    }
+    var r=0
+    for(var i=0;i<uexthen.length;i++){
+      var map=uexthen[i];
+      if(!hash[map]){
+        r=r+exvalue[map];
+      }
+    }
+    return r;
   }
 
 
@@ -257,16 +326,19 @@ export const reactClass = connect(
     var r1tsstr = ["更新时间: " + (Math.floor((parseInt(r1no))/2)+1) + "日", parseInt(r1no)%2!=0?<FontAwesome name="sun-o"/> : <FontAwesome name="moon-o"/>];
     var r501time = new Date(achieve.r501time?achieve.r501time:0);
     var r501no = this.getRankDateNo(r501time);
-    var r501tsstr = ["更新时间: " + (Math.floor((parseInt(r501no))/2)+1) + "日", parseInt(r1no)%2!=0?<FontAwesome name="sun-o"/> : <FontAwesome name="moon-o"/>];
+    var r501tsstr = ["更新时间: " + (Math.floor((parseInt(r501no))/2)+1) + "日", parseInt(r501no)%2!=0?<FontAwesome name="sun-o"/> : <FontAwesome name="moon-o"/>];
 
 
     var ranktime =new Date(achieve.ranktime?achieve.ranktime:0);
     var mysenka = achieve.mysenka?achieve.mysenka:0;
     var myno=achieve.myno?achieve.myno:0;
 
+
+
+
     var exp = this.props.basic.api_experience;
     var no = this.getRankDateNo(ranktime);
-    var mynostr = ["更新时间: " + (Math.floor((parseInt(no))/2)+1) + "日", parseInt(r1no)%2!=0?<FontAwesome name="sun-o"/> : <FontAwesome name="moon-o"/>];
+    var mynostr = ["更新时间: " + (Math.floor((parseInt(no))/2)+1) + "日", parseInt(no)%2!=0?<FontAwesome name="sun-o"/> : <FontAwesome name="moon-o"/>];
     var exphis = this.state.exphis;
     var hiskey = Object.keys(exphis);
 
@@ -274,7 +346,7 @@ export const reactClass = connect(
     var lastkey = hiskey[0];
     var ret = [];
 
-
+    var unclearedex = this.getUnclearedEx();
 
     var expadd=[];
     hiskey.map(function(key){
@@ -288,26 +360,23 @@ export const reactClass = connect(
         lastkey = key;
       }
     });
-    var upsenka = (exp - exphis[no])/50000*35;
-    var exlist=["1-5","1-6","2-5","3-5","4-5","5-5","6-5"];
-    var exvalue={"1-5":75,"1-6":75,"2-5":100,"3-5":150,"4-5":180,"5-5":200,"6-5":250};
-    var maps = this.props.maps;
-    var exret = [];
-    var unclearedex = [];
-    exlist.map(function(mapidstr,index){
-      var mapid = mapidstr.split("-").join('');
-      if(maps[mapid]){
-        if(maps[mapid].api_cleared==1){
-          exret.push(<div>{mapidstr}:已完成</div>);
-        }else{
-          unclearedex.push(mapidstr);
-          exret.push(<div>{mapidstr}:未完成</div>);
-        }
-      }else{
-        unclearedex.push(mapidstr);
-        exret.push(<div>{mapidstr}:未完成</div>);
-      }
-    });
+    var upsenka;
+
+    var ensuresenka=achieve.ensuresenka;
+    var ensurets = achieve.ensurets;
+    var ensureexp = achieve.ensureexp;
+    var ensureuex = achieve.ensureuex;
+    var ensure=false;
+    if(ensuresenka>0&&ensureexp>0){
+      upsenka = (exp-ensureexp)/50000*35+ensuresenka-mysenka+this.addExSenka(unclearedex,ensureuex);
+    }else{
+      upsenka = (exp - exphis[no])/50000*35 + this.addExSenka(unclearedex,this.state.rankuex);
+    }
+
+
+
+
+
     var ignoreex = this.state.ignoreex;
     var now = new Date();
     var day = now.getDate();
@@ -376,7 +445,7 @@ export const reactClass = connect(
                       <Tooltip>
                         <div>战果增加： {(r1-this.state.r1last).toFixed(0)}<FontAwesome name="arrow-up"/></div>
                         <div>{"上次更新: " + (Math.floor((parseInt(this.state.r1lasttime))/2)+1) + "日"}
-                          {(parseInt(this.state.r1lasttime)%2==0?<FontAwesome name="sun-o"/> : <FontAwesome name="moon-o"/>)}
+                          {(parseInt(this.state.r1lasttime)%2!=0?<FontAwesome name="sun-o"/> : <FontAwesome name="moon-o"/>)}
                         </div>
                       </Tooltip>
                     }>
@@ -394,7 +463,7 @@ export const reactClass = connect(
                       <Tooltip>
                         <div>战果增加： {(r501-this.state.r501last).toFixed(0)}<FontAwesome name="arrow-up"/></div>
                         <div> {"上次更新: " + (Math.floor((parseInt(this.state.r501lasttime))/2)+1)+"日"}
-                          {(parseInt(this.state.r501lasttime)%2==0?<FontAwesome name="sun-o"/> : <FontAwesome name="moon-o"/>)}
+                          {(parseInt(this.state.r501lasttime)%2!=0?<FontAwesome name="sun-o"/> : <FontAwesome name="moon-o"/>)}
                         </div>
                       </Tooltip>
                     }>
@@ -462,8 +531,6 @@ export const reactClass = connect(
                 <tr><td>1-5</td><td>{Math.ceil(senkaleft/0.8925)}</td><td>{(senkaleft/daysleft/0.8925).toFixed(1)}</td></tr>
                 </tbody>
               </Table>
-
-
             </Panel>
           </Col>
           <Col xs={12}>
@@ -492,7 +559,8 @@ export const reactClass = connect(
             }>
               <Table striped bordered condensed>
                 <thead>
-                  <tr><td>一</td><td>二</td><td>三</td><td>四</td><td>五</td><td>六</td><td>日</td></tr>
+                <tr><td>一</td><td>二</td><td>三</td><td>四</td><td>五</td>
+                  <td><font color={"red"}>六</font></td><td><font color={"red"}>日</font></td></tr>
                 </thead>
                 <tbody>
                 {callendar}
