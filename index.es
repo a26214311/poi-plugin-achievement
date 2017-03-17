@@ -242,7 +242,7 @@ export const reactClass = connect(
   getRate(rankNo, obfsRate, memberId) {
     const MAGIC_R_NUMS = [ 8931, 1201, 1156, 5061, 4569, 4732, 3779, 4568, 5695, 4619, 4912, 5669, 6586 ]
     //const MAGIC_L_NUMS = [ 25, 92, 79, 52, 58, 36, 93, 92, 58, 82 ]
-    const MAGIC_L_NUMS = [ 25, 30, 79, 52, 58, 36, 45, 88, 58, 82 ]
+    const MAGIC_L_NUMS = [ 63, 30, 79, 52, 58, 36, 45, 88, 58, 82 ]  // 0 1 6 7 is correct
     const rate = obfsRate / MAGIC_R_NUMS[rankNo % 13] / MAGIC_L_NUMS[memberId % 10] - 73 - 18
     return rate > 0 ? rate : 0
   }
