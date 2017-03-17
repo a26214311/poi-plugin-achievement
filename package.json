@@ -1,6 +1,6 @@
 {
   "name": "poi-plugin-achievement",
-  "version": "0.4.2",
+  "version": "0.4.3",
   "main": "index.es",
   "description": "A plugin for view achievement",
   "author": {
