@@ -35,6 +35,7 @@ export const reactClass = connect(
       r1: 0,
       r501: 0,
       ranktime: 0,
+      rankuex:exlist,
       r1time: 0,
       r501time: 0,
       r1last: 0,
@@ -112,9 +113,10 @@ export const reactClass = connect(
           achieve.mysenka=senka;
           achieve.myno=no;
           achieve.ranktime = now;
+          achieve.rankuex = this.getUnclearedEx();
           var sub = now.getTime()-ensurets.getTime();
           if(sub>3600000+30000&&sub<3600000*13-30000){
-
+            achieve.ensuresenka=senka;
           }
         }
       }
@@ -349,7 +351,7 @@ export const reactClass = connect(
         lastkey = key;
       }
     });
-    var upsenka = (exp - exphis[no])/50000*35;
+    var upsenka;
 
     var ensuresenka=achieve.ensuresenka;
     var ensurets = achieve.ensurets;
@@ -358,6 +360,8 @@ export const reactClass = connect(
     var ensure=false;
     if(ensuresenka>0&&ensureexp>0){
       upsenka = (exp-ensureexp)/50000*35+ensuresenka-mysenka+this.addExSenka(unclearedex,ensureuex);
+    }else{
+      upsenka = (exp - exphis[no])/50000*35 + this.addExSenka(unclearedex,this.state.rankuex);
     }
 
 
