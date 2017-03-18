@@ -46,13 +46,13 @@ export const reactClass = connect(
       targetsenka: 2400,
       ignoreex: {},
       need_load: true,
-      ensureexp: 0,
-      ensurets: 0,
-      ensuresenka: 0,
+      fensureexp: 0,
+      fensurets: 0,
+      fensuresenka: 0,
       tensureexp:0,
       tensurets:0,
       tensureuex:exlist,
-      ensureuex:exlist
+      fensureuex:exlist
     }
   }
 
@@ -71,10 +71,10 @@ export const reactClass = connect(
       exphistory={};
       achieve.exphis=exphistory;
       achieve.lastmonth=month;
-      achieve.ensureexp=0;
-      achieve.ensurets=0;
-      achieve.ensuresenka=0;
-      achieve.ensureuex=exlist;
+      achieve.fensureexp=0;
+      achieve.fensurets=0;
+      achieve.fensuresenka=0;
+      achieve.fensureuex=exlist;
       achieve.r1=0;
       achieve.r501=0;
       achieve.mysenka=0;
@@ -96,6 +96,7 @@ export const reactClass = connect(
     var left = (43200000-(now.getTime()-18030000)%43200000);
     console.log("next:"+left);
     setTimeout(() =>{
+      console.log("will save");
       var exp = this.props.basic.api_experience;
       var nowtime = new Date();
       var unclearedex = this.getUnclearedEx();
@@ -127,16 +128,16 @@ export const reactClass = connect(
           achieve.rankuex = this.getUnclearedEx();
           var sub = now.getTime()-new Date(tensurets).getTime();
           if(sub>3600000+30000&&sub<3600000*13-30000){
-            achieve.ensuresenka=senka;
-            achieve.ensurets=achieve.tensurets;
-            achieve.ensureuex=achieve.tensureuex;
-            achieve.ensureexp=achieve.tensureexp;
+            achieve.fensuresenka=senka;
+            achieve.fensurets=achieve.tensurets;
+            achieve.fensureuex=achieve.tensureuex;
+            achieve.fensureexp=achieve.tensureexp;
           }
         }
       }
-      if(page==1){
-        var no=list[0].api_mxltvkpyuklh;
-        var key = list[0].api_wuhnhojjxmke;
+      if(page==10){
+        var no=list[9].api_mxltvkpyuklh;
+        var key = list[9].api_wuhnhojjxmke;
         var senka = this.getRate(no,key,myid);
         var r1last = achieve.r1;
         var r1time = achieve.r1time;
@@ -322,60 +323,76 @@ export const reactClass = connect(
     this.setState({ignoreex:ignoreex});
   }
 
+  generateRankHtml(order,rx,rxtime,rxlast,rxlasttime){
+    rx=rx?rx:0;
+    rxlast = rxlast?rxlast:0;
+    rxtime = new Date(rxtime);
+    var rxno = this.getRankDateNo(rxtime);
+    var rxtsstr = ["更新时间: " + (Math.floor((parseInt(rxno))/2)+1) + "日", parseInt(rxno)%2!=0?<FontAwesome name="sun-o"/> : <FontAwesome name="moon-o"/>];
+    return(
+      <tr>
+        <td className="pob">
+          <div>{order}位</div>
+          <div className="pos bg-primary">{rxtsstr}</div>
+        </td>
+        <td className="pob">
+          <OverlayTrigger placement="bottom" overlay={
+            <Tooltip>
+              <div>战果增加： {(rx-rxlast).toFixed(0)}<FontAwesome name="arrow-up"/></div>
+              <div>{"上次更新: " + (Math.floor((parseInt(rxlasttime))/2)+1) + "日"}
+                {(parseInt(rxlasttime)%2!=0?<FontAwesome name="sun-o"/> : <FontAwesome name="moon-o"/>)}
+              </div>
+            </Tooltip>
+          }>
+            <div>{rx.toFixed(0)}</div>
+          </OverlayTrigger>
+        </td>
+      </tr>
+    )
+  }
+
+
   render_D() {
     var achieve = this.state;
     var r1 = achieve.r1?achieve.r1:0;
     var r501 = achieve.r501?achieve.r501:0;
 
     var r1time = new Date(achieve.r1time?achieve.r1time:0);
-    var r1no = this.getRankDateNo(r1time);
-    var r1tsstr = ["更新时间: " + (Math.floor((parseInt(r1no))/2)+1) + "日", parseInt(r1no)%2!=0?<FontAwesome name="sun-o"/> : <FontAwesome name="moon-o"/>];
     var r501time = new Date(achieve.r501time?achieve.r501time:0);
-    var r501no = this.getRankDateNo(r501time);
-    var r501tsstr = ["更新时间: " + (Math.floor((parseInt(r501no))/2)+1) + "日", parseInt(r501no)%2!=0?<FontAwesome name="sun-o"/> : <FontAwesome name="moon-o"/>];
 
 
     var ranktime =new Date(achieve.ranktime?achieve.ranktime:0);
     var mysenka = achieve.mysenka?achieve.mysenka:0;
     var myno=achieve.myno?achieve.myno:0;
-
-
-
-
     var exp = this.props.basic.api_experience;
     var no = this.getRankDateNo(ranktime);
     var mynostr = ["更新时间: " + (Math.floor((parseInt(no))/2)+1) + "日", parseInt(no)%2!=0?<FontAwesome name="sun-o"/> : <FontAwesome name="moon-o"/>];
     var exphis = this.state.exphis;
-    var hiskey = Object.keys(exphis);
 
+    var hiskey = Object.keys(exphis);
     hiskey.sort(function (a,b) {return(parseInt(a)-parseInt(b))});
     var lastkey = hiskey[0];
-    var ret = [];
-
     var unclearedex = this.getUnclearedEx();
 
     var expadd=[];
     hiskey.map(function(key){
       if(key!=hiskey[0]) {
-        var tsstr = ["" + (Math.floor((parseInt(key)+1)/2)) + "日", parseInt(r1no)%2==0?<FontAwesome name="sun-o"/> : <FontAwesome name="moon-o"/>];
+        var tsstr = ["" + (Math.floor((parseInt(key)+1)/2)) + "日", parseInt(key)%2==0?<FontAwesome name="sun-o"/> : <FontAwesome name="moon-o"/>];
         var addsenka = (exphis[key] - exphis[lastkey])/50000*35;
         expadd[key]=addsenka;
-        if(addsenka>0.1){
-          ret.push(<div>{tsstr}:{addsenka.toFixed(1)}</div>);
-        }
         lastkey = key;
       }
     });
     var upsenka;
 
-    var ensuresenka=achieve.ensuresenka;
-    var ensurets = achieve.ensurets;
-    var ensureexp = achieve.ensureexp;
-    var ensureuex = achieve.ensureuex;
-    var ensure=false;
+    var ensuresenka=achieve.fensuresenka;
+    var ensureexp = achieve.fensureexp;
+    var ensureuex = achieve.fensureuex;
     if(ensuresenka>0&&ensureexp>0){
+      console.log("ensure senka")
       upsenka = (exp-ensureexp)/50000*35+ensuresenka-mysenka+this.addExSenka(unclearedex,ensureuex);
     }else{
+      console.log("estimate senka");
       upsenka = (exp - exphis[no])/50000*35 + this.addExSenka(unclearedex,this.state.rankuex);
     }
 
@@ -395,8 +412,6 @@ export const reactClass = connect(
         senkaleft=senkaleft-exvalue[unclearedex[i]];
       }
     }
-
-
     var firstday = new Date();
     firstday.setDate(1);
     var firstdayofWeek = firstday.getDay();
@@ -441,42 +456,8 @@ export const reactClass = connect(
                 </tr>
                 </thead>
                 <tbody>
-                <tr>
-                  <td className="pob">
-                    <div>1位</div>
-                    <div className="pos bg-primary">{r1tsstr}</div>
-                  </td>
-                  <td className="pob">
-                    <OverlayTrigger placement="bottom" overlay={
-                      <Tooltip>
-                        <div>战果增加： {(r1-this.state.r1last).toFixed(0)}<FontAwesome name="arrow-up"/></div>
-                        <div>{"上次更新: " + (Math.floor((parseInt(this.state.r1lasttime))/2)+1) + "日"}
-                          {(parseInt(this.state.r1lasttime)%2!=0?<FontAwesome name="sun-o"/> : <FontAwesome name="moon-o"/>)}
-                        </div>
-                      </Tooltip>
-                    }>
-                      <div>{r1.toFixed(0)}</div>
-                    </OverlayTrigger>
-                    </td>
-                </tr>
-                <tr>
-                  <td className="pob">
-                    <div>501位</div>
-                    <div className="pos bg-primary">{r501tsstr}</div>
-                  </td>
-                  <td className="pob">
-                    <OverlayTrigger placement="bottom" overlay={
-                      <Tooltip>
-                        <div>战果增加： {(r501-this.state.r501last).toFixed(0)}<FontAwesome name="arrow-up"/></div>
-                        <div> {"上次更新: " + (Math.floor((parseInt(this.state.r501lasttime))/2)+1)+"日"}
-                          {(parseInt(this.state.r501lasttime)%2!=0?<FontAwesome name="sun-o"/> : <FontAwesome name="moon-o"/>)}
-                        </div>
-                      </Tooltip>
-                    }>
-                      <div>{r501.toFixed(0)}</div>
-                    </OverlayTrigger>
-                    </td>
-                </tr>
+                {this.generateRankHtml(100,r1,r1time,achieve.r1last,achieve.r1lasttime)}
+                {this.generateRankHtml(501,r501,r501time,achieve.r501last,achieve.r501lasttime)}
                 <tr>
                   <td className="pob">
                     <div>{myno}位</div>
