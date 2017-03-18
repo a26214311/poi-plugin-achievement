@@ -101,7 +101,7 @@ export const reactClass = connect(
       var unclearedex = this.getUnclearedEx();
       var achieve = {tensureexp:exp,tensurets:nowtime,tensureuex:unclearedex};
       this.setState(achieve,()=>this.savelist());
-    },30000);
+    },left);
   }
 
 
