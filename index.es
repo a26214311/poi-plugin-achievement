@@ -49,6 +49,9 @@ export const reactClass = connect(
       ensureexp: 0,
       ensurets: 0,
       ensuresenka: 0,
+      tensureexp:0,
+      tensurets:0,
+      tensureuex:exlist,
       ensureuex:exlist
     }
   }
@@ -96,9 +99,9 @@ export const reactClass = connect(
       var exp = this.props.basic.api_experience;
       var nowtime = new Date();
       var unclearedex = this.getUnclearedEx();
-      var achieve = {ensureexp:exp,ensurets:nowtime,ensureuex:unclearedex};
+      var achieve = {tensureexp:exp,tensurets:nowtime,tensureuex:unclearedex};
       this.setState(achieve,()=>this.savelist());
-    },left);
+    },30000);
   }
 
 
@@ -112,7 +115,7 @@ export const reactClass = connect(
       var page = body.api_disp_page;
       var list = body.api_list;
       var now = new Date();
-      var ensurets = achieve.ensurets;
+      var tensurets = achieve.tensurets;
       for(var i=0;i<list.length;i++){
         if(list[i].api_mtjmdcwtvhdr==myname){
           var no=list[i].api_mxltvkpyuklh;
@@ -122,9 +125,12 @@ export const reactClass = connect(
           achieve.myno=no;
           achieve.ranktime = now;
           achieve.rankuex = this.getUnclearedEx();
-          var sub = now.getTime()-new Date(ensurets).getTime();
+          var sub = now.getTime()-new Date(tensurets).getTime();
           if(sub>3600000+30000&&sub<3600000*13-30000){
             achieve.ensuresenka=senka;
+            achieve.ensurets=achieve.tensurets;
+            achieve.ensureuex=achieve.tensureuex;
+            achieve.ensureexp=achieve.tensureexp;
           }
         }
       }
