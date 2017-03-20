@@ -42,6 +42,18 @@ export const reactClass = connect(
       r501last: 0,
       r1lasttime: 0,
       r501lasttime: 0,
+
+      r5:0,
+      r5time:0,
+      r5last:0,
+      r5lasttime:0,
+      r20:0,
+      r20time:0,
+      r20last:0,
+      r20lasttime:0,
+
+
+
       mysenka: 0,
       targetsenka: 2400,
       ignoreex: {},
@@ -101,7 +113,12 @@ export const reactClass = connect(
       var nowtime = new Date();
       var unclearedex = this.getUnclearedEx();
       var achieve = {tensureexp:exp,tensurets:nowtime,tensureuex:unclearedex};
-      this.setState(achieve,()=>{this.savelist();this.starttimer()});
+      this.setState(achieve,()=>{
+        this.savelist();
+        setTimeout(()=>{
+          this.starttimer();
+        },600000);
+      });
     },left);
   }
 
@@ -165,6 +182,34 @@ export const reactClass = connect(
         if(r501timeno!=timeno){
           achieve.r501last=r501last;
           achieve.r501lasttime=r501timeno;
+        }
+      }else if(page==1){
+        var no=list[4].api_mxltvkpyuklh;
+        var key = list[4].api_wuhnhojjxmke;
+        var senka = this.getRate(no,key,myid);
+        var timeno = this.getRankDateNo(now);
+        var r5last = achieve.r5;
+        var r5time = achieve.r5time;
+        var r5timeno = this.getRankDateNo(new Date(r5time));
+        achieve.r5=senka;
+        achieve.r5time=now;
+        if(r5timeno!=timeno){
+          achieve.r5last=r5last;
+          achieve.r5lasttime=r5timeno;
+        }
+      }else if(page==2){
+        var no=list[9].api_mxltvkpyuklh;
+        var key = list[9].api_wuhnhojjxmke;
+        var senka = this.getRate(no,key,myid);
+        var timeno = this.getRankDateNo(now);
+        var r20last = achieve.r20;
+        var r20time = achieve.r20time;
+        var r20timeno = this.getRankDateNo(new Date(r20time));
+        achieve.r20=senka;
+        achieve.r20time=now;
+        if(r20timeno!=timeno){
+          achieve.r20last=r20last;
+          achieve.r20lasttime=r20timeno;
         }
       }else{
 
@@ -434,7 +479,7 @@ export const reactClass = connect(
           var expmorning = expadd[day*2-1]?expadd[day*2-1]:0;
           var expafternoon = expadd[day*2]?expadd[day*2]:0;
           var totalexp = expmorning+expafternoon;
-          weeks.push(<td><div>{day}</div><div>{
+          weeks.push(<td><div><font size={"4"}>{day}</font></div><div>{
             totalexp>0.1?totalexp.toFixed(1):'--'
           }</div></td>)
         }
@@ -459,6 +504,8 @@ export const reactClass = connect(
                 </tr>
                 </thead>
                 <tbody>
+                {this.generateRankHtml(5,achieve.r5,achieve.r5time,achieve.r5last,achieve.r5lasttime)}
+                {this.generateRankHtml(20,achieve.r20,achieve.r20time,achieve.r20last,achieve.r20lasttime)}
                 {this.generateRankHtml(100,r1,r1time,achieve.r1last,achieve.r1lasttime)}
                 {this.generateRankHtml(501,r501,r501time,achieve.r501last,achieve.r501lasttime)}
                 <tr>
