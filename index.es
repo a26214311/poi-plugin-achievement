@@ -93,7 +93,7 @@ export const reactClass = connect(
   starttimer(){
     var now = new Date();
     now = new Date(new Date(now).getTime()+(new Date().getTimezoneOffset()+480)*60000);
-    var left = (43200000-(now.getTime()-18030000)%43200000);
+    var left = (43200000-(now.getTime()-18001000)%43200000);
     console.log("next:"+left);
     setTimeout(() =>{
       console.log("will save");
@@ -101,7 +101,7 @@ export const reactClass = connect(
       var nowtime = new Date();
       var unclearedex = this.getUnclearedEx();
       var achieve = {tensureexp:exp,tensurets:nowtime,tensureuex:unclearedex};
-      this.setState(achieve,()=>this.savelist());
+      this.setState(achieve,()=>{this.savelist();this.starttimer()});
     },left);
   }
 
@@ -124,8 +124,11 @@ export const reactClass = connect(
           var senka = this.getRate(no,key,myid);
           achieve.mysenka=senka;
           achieve.myno=no;
+          var then = achieve.ranktime;
+          if(this.getRankDateNo(now)>this.getRankDateNo(new Date(then))){
+            achieve.rankuex = this.getUnclearedEx();
+          }
           achieve.ranktime = now;
-          achieve.rankuex = this.getUnclearedEx();
           var sub = now.getTime()-new Date(tensurets).getTime();
           if(sub>3600000+30000&&sub<3600000*13-30000){
             achieve.fensuresenka=senka;
