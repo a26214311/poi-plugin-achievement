@@ -5,7 +5,7 @@ import {createSelector} from 'reselect'
 import {store} from 'views/create-store'
 
 import {join} from 'path'
-import {Row, Col, Checkbox, Panel, FormGroup, FormControl, Button, Table, OverlayTrigger, Tooltip} from 'react-bootstrap'
+import {Row, Col, Checkbox, Panel, FormGroup, FormControl, ButtonGroup, Button, Table, OverlayTrigger, Tooltip} from 'react-bootstrap'
 import FontAwesome from 'react-fontawesome'
 
 
@@ -365,9 +365,11 @@ export const reactClass = connect(
   }
   handleExChange = e =>{
     var value = e.target.value;
-    var checked = e.target.checked;
     var ignoreex = this.state.ignoreex;
-    ignoreex[value]=checked;
+    if(!ignoreex[value])
+      ignoreex[value] = true;
+    else
+      ignoreex[value] = !ignoreex;
     this.setState({ignoreex:ignoreex});
   }
 
@@ -386,13 +388,14 @@ export const reactClass = connect(
         <td className="pob">
           <OverlayTrigger placement="bottom" overlay={
             <Tooltip>
-              <div>战果增加： {(rx-rxlast).toFixed(0)}<FontAwesome name="arrow-up"/></div>
-              <div>{"上次更新: " + (Math.floor((parseInt(rxlasttime))/2)+1) + "日"}
+              <div>战果增加： <FontAwesome name="arrow-up"/>{(rx-rxlast).toFixed(0)}</div>
+              <div>
+                {"上次更新: " + (Math.floor((parseInt(rxlasttime))/2)+1) + "日"}
                 {(parseInt(rxlasttime)%2!=0?<FontAwesome name="sun-o"/> : <FontAwesome name="moon-o"/>)}
               </div>
             </Tooltip>
           }>
-            <div>{rx.toFixed(0)}</div>
+            <div>{rx.toFixed(0)}<span className="senka-up">(<FontAwesome name="arrow-up"/>{(rx-rxlast).toFixed(0)})</span></div>
           </OverlayTrigger>
         </td>
       </tr>
@@ -449,6 +452,7 @@ export const reactClass = connect(
 
 
     var ignoreex = this.state.ignoreex;
+    let maps = this.props.maps;
     var now = new Date();
     var day = now.getDate();
     var month = now.getMonth();
@@ -568,24 +572,65 @@ export const reactClass = connect(
                 <tr><td>1-5</td><td>{Math.ceil(senkaleft/0.8925)}</td><td>{(senkaleft/daysleft/0.8925).toFixed(1)}</td></tr>
                 </tbody>
               </Table>
-            </Panel>
-          </Col>
-          <Col xs={12}>
-            <Panel header={
-              <span>
-                <FontAwesome name="cog"/> 预想要攻略的EX图
-              </span>
-            }>
-              <div>
-                不准备攻略的EX：
-                {
-                  unclearedex.map(exid =>
-                    <Checkbox inline checked={ignoreex[exid]} value={exid} onChange={this.handleExChange}>
-                      {exid}
-                    </Checkbox>
-                  )
-                }
-              </div>
+              <p>预想攻略的EX图</p>
+              <OverlayTrigger placement="top" overlay={
+                <Tooltip>
+                  <p className="text-left"><Button bsStyle='success' bsSize="xsmall"><FontAwesome name="check"/></Button>：计划攻略</p>
+                  <p className="text-left"><Button bsStyle='danger' bsSize="xsmall"><FontAwesome name="close"/></Button>：计划不攻略</p>
+                  <p className="text-left"><Button bsStyle='info' bsSize="xsmall"><FontAwesome name="star"/></Button>：已完成</p>
+                </Tooltip>
+              }>
+                <div>
+                  <ButtonGroup bsSize="xsmall" className="justified-group">
+                    {
+                      exlist.map((exid, idx) =>{
+                        if(idx < 4){
+                          let mapId = exid.split('-').join('');
+                          if(maps[mapId] && maps[mapId].api_cleared == 1){
+                            return (
+                              <Button bsStyle='info'>
+                                <FontAwesome name="star"/>
+                                {exid}
+                              </Button>
+                            )
+                          } else {
+                            return (
+                              <Button bsStyle={ignoreex[exid] ? 'danger' : 'success'} value={exid} onClick={this.handleExChange}>
+                                {ignoreex[exid] ? <FontAwesome name="close"/> : <FontAwesome name="check"/>}
+                                {exid}
+                              </Button>
+                            )
+                          }
+                        }
+                      })
+                    }
+                  </ButtonGroup>
+                  <ButtonGroup bsSize="xsmall" className="justified-group">
+                    {
+                      exlist.map((exid, idx) =>{
+                        if(idx >= 4){
+                          let mapId = exid.split('-').join('');
+                          if(maps[mapId] && maps[mapId].api_cleared == 1){
+                            return (
+                              <Button bsStyle='info'>
+                                <FontAwesome name="star"/>
+                                {exid}
+                              </Button>
+                            )
+                          } else {
+                            return (
+                              <Button bsStyle={ignoreex[exid] ? 'danger' : 'success'} value={exid} onClick={this.handleExChange}>
+                                {ignoreex[exid] ? <FontAwesome name="close"/> : <FontAwesome name="check"/>}
+                                {exid}
+                              </Button>
+                            )
+                          }
+                        }
+                      })
+                    }
+                  </ButtonGroup>
+                </div>
+              </OverlayTrigger>
             </Panel>
           </Col>
           <Col xs={12}>

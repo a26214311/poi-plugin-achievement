@@ -66,6 +66,10 @@
 	height: 26px;
 }
 
+#achievement .senka-calc table{
+	margin-bottom: 15px;
+}
+
 #achievement .senka-calc .flex .flex-auto {
 	flex: 1;
 	padding-left: 10px;
@@ -77,4 +81,17 @@
 
 #achievement .senka-calc .table tbody tr td {
 	white-space: nowrap;
+}
+
+#achievement .senka-calc .justified-group {
+	display: flex;
+	width: 100%;
+}
+
+#achievement .senka-calc .justified-group > .btn{
+	flex: 1;
+}
+
+#achievement .senka-calc .justified-group > .btn .fa{
+	margin-right: 2px;
 }
