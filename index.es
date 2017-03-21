@@ -89,6 +89,8 @@ export const reactClass = connect(
       achieve.fensureuex=exlist;
       achieve.r1=0;
       achieve.r501=0;
+      achieve.r5=0;
+      achieve.r20=0;
       achieve.mysenka=0;
       needupdate=true;
     }
@@ -106,9 +108,7 @@ export const reactClass = connect(
     var now = new Date();
     now = new Date(new Date(now).getTime()+(new Date().getTimezoneOffset()+480)*60000);
     var left = (43200000-(now.getTime()-18001000)%43200000);
-    console.log("next:"+left);
     setTimeout(() =>{
-      console.log("will save");
       var exp = this.props.basic.api_experience;
       var nowtime = new Date();
       var unclearedex = this.getUnclearedEx();
@@ -126,7 +126,6 @@ export const reactClass = connect(
   handleResponse = e => {
     const {path, body} = e.detail;
     if(path=="/kcsapi/api_req_ranking/mxltvkpyuklh"){
-      console.log(body);
       var myname = this.props.basic.api_nickname;
       var myid = this.props.basic.api_member_id;
       var achieve = this.state;
@@ -254,10 +253,7 @@ export const reactClass = connect(
 
   savelist(){
     try {
-      console.log(this.state);
       let data = this.loadlist();
-      console.log("save");
-      console.log(data);
       let savepath = join(window.APPDATA_PATH, 'achieve', 'achieve.json');
       fs.writeFileSync(savepath, JSON.stringify(data));
     } catch (e) {
@@ -310,6 +306,7 @@ export const reactClass = connect(
       var mapid = mapidstr.split("-").join('');
       if(maps[mapid]){
         if(maps[mapid].api_cleared==1){
+
         }else{
           unclearedex.push(mapidstr);
         }
@@ -325,7 +322,7 @@ export const reactClass = connect(
     for(var i=0;i<uexnow.length;i++){
       hash[uexnow[i]]=1;
     }
-    var r=0
+    var r=0;
     for(var i=0;i<uexthen.length;i++){
       var map=uexthen[i];
       if(!hash[map]){
@@ -429,7 +426,6 @@ export const reactClass = connect(
     var expadd=[];
     hiskey.map(function(key){
       if(key!=hiskey[0]) {
-        var tsstr = ["" + (Math.floor((parseInt(key)+1)/2)) + "日", parseInt(key)%2==0?<FontAwesome name="sun-o"/> : <FontAwesome name="moon-o"/>];
         var addsenka = (exphis[key] - exphis[lastkey])/50000*35;
         expadd[key]=addsenka;
         lastkey = key;
@@ -441,10 +437,8 @@ export const reactClass = connect(
     var ensureexp = achieve.fensureexp;
     var ensureuex = achieve.fensureuex;
     if(ensuresenka>0&&ensureexp>0){
-      console.log("ensure senka")
       upsenka = (exp-ensureexp)/50000*35+ensuresenka-mysenka+this.addExSenka(unclearedex,ensureuex);
     }else{
-      console.log("estimate senka");
       upsenka = (exp - exphis[no])/50000*35 + this.addExSenka(unclearedex,this.state.rankuex);
     }
 
