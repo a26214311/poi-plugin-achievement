@@ -364,12 +364,12 @@ export const reactClass = connect(
     this.setState({targetsenka:value})
   }
   handleExChange = e =>{
-    var value = e.target.value;
+    var value = e.currentTarget.value;
     var ignoreex = this.state.ignoreex;
-    if(!ignoreex[value])
+    if(ignoreex[value] == 'undefined')
       ignoreex[value] = true;
     else
-      ignoreex[value] = !ignoreex;
+      ignoreex[value] = !ignoreex[value];
     this.setState({ignoreex:ignoreex});
   }
 
