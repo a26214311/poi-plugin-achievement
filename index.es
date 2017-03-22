@@ -15,6 +15,12 @@ const zh = "阿八嚓哒妸发旮哈或讥咔垃麻拏噢妑七呥撒它拖脱�
 const exlist=["1-5","1-6","2-5","3-5","4-5","5-5","6-5"];
 const exvalue={"1-5":75,"1-6":75,"2-5":100,"3-5":150,"4-5":180,"5-5":200,"6-5":250};
 
+const MAGIC_R_NUMS = [ 8931, 1201, 1156, 5061, 4569, 4732, 3779, 4568, 5695, 4619, 4912, 5669, 6586 ]
+//const MAGIC_L_NUMS = [ 25, 92, 79, 52, 58, 36, 93, 92, 58, 82 ]  // 2017.2.28-2017.3.17
+const MAGIC_L_NUMS = [ 63, 30, 70, 83, 95, 52, 45, 88, 92, 83 ]     // 2017.3.17-2017.?
+//    const MAGIC_L_NUMS = [ 63, 30, 79, 52, 58, 36, 45, 88, 92, 82 ]  // 0 1 6 7 8 is correct
+
+
 export const reactClass = connect(
   state => ({
     horizontal: state.config.poi.layout || 'horizontal',
@@ -52,7 +58,7 @@ export const reactClass = connect(
       r20last:0,
       r20lasttime:0,
 
-
+      mymagic:-1,
 
       mysenka: 0,
       targetsenka: 2400,
@@ -122,6 +128,42 @@ export const reactClass = connect(
     },left);
   }
 
+  getRate(rankNo, obfsRate, memberId) {
+    const rate = obfsRate / MAGIC_R_NUMS[rankNo % 13] / MAGIC_L_NUMS[memberId % 10] - 73 - 18
+    return rate > 0 ? rate : 0
+  }
+
+  auto_magic(page,list){
+    var larray = [];
+    var oldmagic = this.state.mymagic;
+    var fixR=false;
+    for(var i=0;i<list.length;i++){
+      var no=list[i].api_mxltvkpyuklh;
+      var key = list[i].api_wuhnhojjxmke;
+      var Rno = no % 13;
+      if(key%MAGIC_R_NUMS[Rno]==0){//R magic is correct
+        var lrate = key /  MAGIC_R_NUMS[Rno];
+        larray.push(lrate);
+        var memno = this.props.basic.api_member_id%10;
+        if(key%memno==0){//L magic is correct ??
+
+        }else{
+
+        }
+      }else{
+        fixR=true;
+      }
+    }
+    var lsub=[];
+    for(var i=1;i<larray.length;i++){
+      var sub = larray[i-1] - larray[i];
+      if(sub>0){
+        lsub.push(sub);
+      }
+    }
+    console.log(lsub);
+  }
+
 
   handleResponse = e => {
     const {path, body} = e.detail;
@@ -133,6 +175,9 @@ export const reactClass = connect(
       var list = body.api_list;
       var now = new Date();
       var tensurets = achieve.tensurets;
+      if(page>=51){
+        this.auto_magic(page,list);
+      }
       for(var i=0;i<list.length;i++){
         if(list[i].api_mtjmdcwtvhdr==myname){
           var no=list[i].api_mxltvkpyuklh;
@@ -290,14 +335,7 @@ export const reactClass = connect(
   }
 
 
-  getRate(rankNo, obfsRate, memberId) {
-    const MAGIC_R_NUMS = [ 8931, 1201, 1156, 5061, 4569, 4732, 3779, 4568, 5695, 4619, 4912, 5669, 6586 ]
-    //const MAGIC_L_NUMS = [ 25, 92, 79, 52, 58, 36, 93, 92, 58, 82 ]  // 2017.2.28-2017.3.17
-    const MAGIC_L_NUMS = [ 63, 30, 70, 83, 95, 52, 45, 88, 92, 83 ]     // 2017.3.17-2017.?
-//    const MAGIC_L_NUMS = [ 63, 30, 79, 52, 58, 36, 45, 88, 92, 82 ]  // 0 1 6 7 8 is correct
-    const rate = obfsRate / MAGIC_R_NUMS[rankNo % 13] / MAGIC_L_NUMS[memberId % 10] - 73 - 18
-    return rate > 0 ? rate : 0
-  }
+
 
   getUnclearedEx(){
     var maps = this.props.maps;
@@ -493,6 +531,7 @@ export const reactClass = connect(
             <Panel header={
             <span>
               <FontAwesome name="list-ol"/> 战果信息
+              <Button>校准</Button>
             </span>
             } className="info senka-info">
               <Table striped bordered condensed hover>
