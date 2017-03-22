@@ -161,7 +161,10 @@ export const reactClass = connect(
         lsub.push(sub);
       }
     }
+    const ea = (max, min) => (max % min ? ea(min, max % min) : min);
+    const EAforArr = arr => arr.sort().reduce((pre, cur) => ea(cur, pre));
     console.log(lsub);
+    console.log(EAforArr(lsub))
   }
 
 
@@ -531,7 +534,6 @@ export const reactClass = connect(
             <Panel header={
             <span>
               <FontAwesome name="list-ol"/> 战果信息
-              <Button>校准</Button>
             </span>
             } className="info senka-info">
               <Table striped bordered condensed hover>
