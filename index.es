@@ -59,6 +59,9 @@ export const reactClass = connect(
       r20lasttime:0,
 
       mymagic:-1,
+      tmpexp:0,
+      tmpno:0,
+
 
       mysenka: 0,
       targetsenka: 2400,
@@ -101,8 +104,16 @@ export const reactClass = connect(
       needupdate=true;
     }
     if(!exphistory[no]){
+      if(!exphistory[data.tmpno+1]){
+        exphistory[data.tmpno]=data.tmpexp;
+      }
       exphistory[no]=exp;
       achieve.exphis=exphistory;
+      needupdate=true;
+    }
+    if(exp>data.tmpexp){
+      achieve.tmpexp=exp;
+      achieve.tmpno=no;
       needupdate=true;
     }
     if(needupdate){
