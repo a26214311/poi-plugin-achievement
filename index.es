@@ -73,7 +73,9 @@ export const reactClass = connect(
       tensureexp:0,
       tensurets:0,
       tensureuex:exlist,
-      fensureuex:exlist
+      fensureuex:exlist,
+
+      reviseType: 1 /* revise */
     }
   }
 
@@ -423,6 +425,18 @@ export const reactClass = connect(
     this.setState({ignoreex:ignoreex});
   }
 
+  handleRevise = e => {
+    e.preventDefault();
+    e.stopPropagation();
+    /* test */
+    if(this.state.reviseType)
+      this.setState({reviseType: 0});
+    else
+      this.setState({reviseType: 1})
+    console.log(this.state.reviseType)
+  };
+
+
   generateRankHtml(order,rx,rxtime,rxlast,rxlasttime){
     rx=rx?rx:0;
     rxlast = rxlast?rxlast:0;
@@ -545,6 +559,15 @@ export const reactClass = connect(
             <Panel header={
             <span>
               <FontAwesome name="list-ol"/> 战果信息
+                <OverlayTrigger placement="bottom" overlay={
+                  <Tooltip>
+                    <p className="text-left">
+                      每次游戏更新后，战果榜单可能不准确发现榜单不准确时，点击此按钮然后进入游戏刷新战果榜的任意一页（推荐501）则会自动校准战果如果战果榜单依然不准，在点击此按钮，刷新战果榜单的另一页如果多次校准后依然不准，请等待插件更新
+                    </p>
+                  </Tooltip>
+                }>
+                  <FontAwesome name="refresh" className={this.state.reviseType? 'revise': 'revise active'} onClick={this.handleRevise}/>
+                </OverlayTrigger>
             </span>
             } className="info senka-info">
               <Table striped bordered condensed hover>

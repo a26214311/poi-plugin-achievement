@@ -1,5 +1,6 @@
 #achievement {
 	margin: 10px 15px 0;
+	line-height: 1.42857143;
 }
 
 #achievement .row {
@@ -59,6 +60,23 @@
 	opacity: 0.9;
 }
 
+#achievement .senka-info .revise {
+	float: right;
+}
+
+#achievement .senka-info .revise.active {
+	animation: rotateIcon 1s linear infinite ;
+}
+
+@keyframes rotateIcon{
+	0%{
+		transform:rotate(0deg);
+	}
+	100%{
+		transform:rotate(360deg);
+	}
+}
+
 /* 战果计算 */
 #achievement .senka-calc .flex {
 	display: flex;
@@ -66,7 +84,7 @@
 	height: 26px;
 }
 
-#achievement .senka-calc table{
+#achievement .senka-calc table {
 	margin-bottom: 15px;
 }
 
@@ -88,10 +106,10 @@
 	width: 100%;
 }
 
-#achievement .senka-calc .justified-group > .btn{
+#achievement .senka-calc .justified-group > .btn {
 	flex: 1;
 }
 
-#achievement .senka-calc .justified-group > .btn .fa{
+#achievement .senka-calc .justified-group > .btn .fa {
 	margin-right: 2px;
 }
