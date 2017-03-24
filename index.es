@@ -576,15 +576,23 @@ export const reactClass = connect(
                 <OverlayTrigger placement="bottom" overlay={
                   <Tooltip>
                     <p className="text-left">
-                      当前战果系数为{this.state.mymagic>9?this.state.mymagic:MAGIC_L_NUMS[this.props.basic.api_member_id % 10]}<br />
-                      游戏更新后，战果榜单可能不准确<br />
-                      榜单不准确时，点击此按钮<br />
-                      进入游戏刷新战果榜的任意一页<br />
-                      则会自动校准战果系数<br />
-                      如果战果榜单依然不准，请再次点击此按钮<br />
-                      进入战果榜单的另外一页<br />
-                      如果多次校准后战果依然不准确<br />
+                      {this.state.reviseType ?
+                      <span>
+                      当前战果系数为${this.state.mymagic>9?this.state.mymagic:MAGIC_L_NUMS[this.props.basic.api_member_id % 10]}<br/>
+                      游戏更新后，战果榜单可能不准确<br/>
+                      榜单不准确时，点击此按钮<br/>
+                      进入游戏刷新战果榜的任意一页<br/>
+                      则会自动校准战果系数<br/>
+                      如果战果榜单依然不准，请再次点击此按钮<br/>
+                      进入战果榜单的另外一页<br/>
+                      如果多次校准后战果依然不准确<br/>
                       请等待插件更新
+                      </span>
+                      :
+                      <span>
+                      更新中<br/>
+                      请刷新战果
+                      </span>}
                     </p>
                   </Tooltip>
                 }>
