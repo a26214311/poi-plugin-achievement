@@ -498,11 +498,19 @@ export const reactClass = connect(
     var expadd=[];
     hiskey.map(function(key){
       if(key!=hiskey[0]) {
-        var addsenka = (exphis[key] - exphis[lastkey])/50000*35;
-        expadd[key]=addsenka;
-        lastkey = key;
+        if(exphis[lastkey]>0){
+          var addsenka = (exphis[key] - exphis[lastkey])/50000*35;
+          expadd[key]=addsenka;
+          lastkey = key;
+        }
       }
     });
+    if(!expadd[this.state.tmpno+1]){
+      if(exphis[lastkey]>0) {
+        var addsenka = (this.state.tmpexp - exphis[lastkey]) / 50000 * 35;
+        expadd[this.state.tmpno + 1] = addsenka;
+      }
+    }
     var upsenka;
 
     var ensuresenka=achieve.fensuresenka;
