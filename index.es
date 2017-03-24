@@ -578,7 +578,7 @@ export const reactClass = connect(
                     <p className="text-left">
                       {this.state.reviseType ?
                       <span>
-                      当前战果系数为${this.state.mymagic>9?this.state.mymagic:MAGIC_L_NUMS[this.props.basic.api_member_id % 10]}<br/>
+                      当前战果系数为{this.state.mymagic>9?this.state.mymagic:MAGIC_L_NUMS[this.props.basic.api_member_id % 10]}<br/>
                       游戏更新后，战果榜单可能不准确<br/>
                       榜单不准确时，点击此按钮<br/>
                       进入游戏刷新战果榜的任意一页<br/>
