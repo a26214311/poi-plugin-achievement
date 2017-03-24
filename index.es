@@ -498,11 +498,11 @@ export const reactClass = connect(
     var expadd=[];
     hiskey.map(function(key){
       if(key!=hiskey[0]) {
-        if(exphis[lastkey]>0){
           var addsenka = (exphis[key] - exphis[lastkey])/50000*35;
+        if(exphis[lastkey]>0){
           expadd[key]=addsenka;
-          lastkey = key;
         }
+          lastkey = key;
       }
     });
     if(!expadd[this.state.tmpno+1]){
