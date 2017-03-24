@@ -17,8 +17,11 @@ const exvalue={"1-5":75,"1-6":75,"2-5":100,"3-5":150,"4-5":180,"5-5":200,"6-5":2
 
 const MAGIC_R_NUMS = [ 8931, 1201, 1156, 5061, 4569, 4732, 3779, 4568, 5695, 4619, 4912, 5669, 6586 ]
 //const MAGIC_L_NUMS = [ 25, 92, 79, 52, 58, 36, 93, 92, 58, 82 ]  // 2017.2.28-2017.3.17
-const MAGIC_L_NUMS = [ 63, 30, 70, 83, 95, 52, 45, 88, 92, 83 ]     // 2017.3.17-2017.?
+const MAGIC_L_NUMS = [ 63, 30, 70, 83, 95, 52, 88, 88, 92, 83 ]     // 2017.3.17-2017.?
 //    const MAGIC_L_NUMS = [ 63, 30, 79, 52, 58, 36, 45, 88, 92, 82 ]  // 0 1 6 7 8 is correct
+
+const ea = (max, min) => (max % min ? ea(min, max % min) : min);
+const EAforArr = arr => arr.sort().reduce((pre, cur) => ea(cur, pre));
 
 
 export const reactClass = connect(
@@ -58,10 +61,10 @@ export const reactClass = connect(
       r20last:0,
       r20lasttime:0,
 
-      mymagic:-1,
+      mymagic:MAGIC_L_NUMS[this.props.basic?this.props.basic.api_member_id:0],
       tmpexp:0,
       tmpno:0,
-
+      reviseType: 1, /* revise */
 
       mysenka: 0,
       targetsenka: 2400,
@@ -73,9 +76,9 @@ export const reactClass = connect(
       tensureexp:0,
       tensurets:0,
       tensureuex:exlist,
-      fensureuex:exlist,
+      fensureuex:exlist
 
-      reviseType: 1 /* revise */
+
     }
   }
 
@@ -142,7 +145,8 @@ export const reactClass = connect(
   }
 
   getRate(rankNo, obfsRate, memberId) {
-    const rate = obfsRate / MAGIC_R_NUMS[rankNo % 13] / MAGIC_L_NUMS[memberId % 10] - 73 - 18
+    var mymagic = this.state.mymagic>9?this.state.mymagic:MAGIC_L_NUMS[memberId % 10];
+    const rate = obfsRate / MAGIC_R_NUMS[rankNo % 13] / mymagic - 73 - 18
     return rate > 0 ? rate : 0
   }
 
@@ -174,11 +178,19 @@ export const reactClass = connect(
         lsub.push(sub);
       }
     }
-    const ea = (max, min) => (max % min ? ea(min, max % min) : min);
-    const EAforArr = arr => arr.sort().reduce((pre, cur) => ea(cur, pre));
-    console.log(lsub);
-    console.log(EAforArr(lsub))
+    return EAforArr(lsub)
   }
+
+  handleRevise = e => {
+    e.preventDefault();
+    e.stopPropagation();
+    /* test */
+    if(this.state.reviseType)
+      this.setState({reviseType: 0});
+    else
+      this.setState({reviseType: 1})
+    console.log(this.state.reviseType)
+  };
 
 
   handleResponse = e => {
@@ -191,8 +203,11 @@ export const reactClass = connect(
       var list = body.api_list;
       var now = new Date();
       var tensurets = achieve.tensurets;
-      if(page>=51){
-        this.auto_magic(page,list);
+      if(achieve.reviseType==0){
+        var newmagic = this.auto_magic(page,list);
+        achieve.mymagic=newmagic;
+        achieve.reviseType=1;
+        console.log("newmagic:"+newmagic);
       }
       for(var i=0;i<list.length;i++){
         if(list[i].api_mtjmdcwtvhdr==myname){
@@ -425,16 +440,7 @@ export const reactClass = connect(
     this.setState({ignoreex:ignoreex});
   }
 
-  handleRevise = e => {
-    e.preventDefault();
-    e.stopPropagation();
-    /* test */
-    if(this.state.reviseType)
-      this.setState({reviseType: 0});
-    else
-      this.setState({reviseType: 1})
-    console.log(this.state.reviseType)
-  };
+
 
 
   generateRankHtml(order,rx,rxtime,rxlast,rxlasttime){
@@ -562,7 +568,15 @@ export const reactClass = connect(
                 <OverlayTrigger placement="bottom" overlay={
                   <Tooltip>
                     <p className="text-left">
-                      每次游戏更新后，战果榜单可能不准确发现榜单不准确时，点击此按钮然后进入游戏刷新战果榜的任意一页（推荐501）则会自动校准战果如果战果榜单依然不准，在点击此按钮，刷新战果榜单的另一页如果多次校准后依然不准，请等待插件更新
+                      当前战果系数为{this.state.mymagic>9?this.state.mymagic:MAGIC_L_NUMS[memberId % 10]}<br />
+                      游戏更新后，战果榜单可能不准确<br />
+                      榜单不准确时，点击此按钮<br />
+                      进入游戏刷新战果榜的任意一页<br />
+                      则会自动校准战果系数<br />
+                      如果战果榜单依然不准，请再次点击此按钮<br />
+                      进入战果榜单的另外一页<br />
+                      如果多次校准后战果依然不准确<br />
+                      请等待插件更新
                     </p>
                   </Tooltip>
                 }>
