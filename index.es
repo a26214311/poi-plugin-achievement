@@ -161,12 +161,6 @@ export const reactClass = connect(
       if(key%MAGIC_R_NUMS[Rno]==0){//R magic is correct
         var lrate = key /  MAGIC_R_NUMS[Rno];
         larray.push(lrate);
-        var memno = this.props.basic.api_member_id%10;
-        if(key%memno==0){//L magic is correct ??
-
-        }else{
-
-        }
       }else{
         fixR=true;
       }
@@ -189,7 +183,6 @@ export const reactClass = connect(
       this.setState({reviseType: 0});
     else
       this.setState({reviseType: 1})
-    console.log(this.state.reviseType)
   };
 
 
