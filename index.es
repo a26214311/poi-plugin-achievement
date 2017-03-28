@@ -184,12 +184,10 @@ export const reactClass = connect(
   handleRevise = e => {
     e.preventDefault();
     e.stopPropagation();
-    /* test */
     if(this.state.reviseType)
       this.setState({reviseType: 0});
     else
-      this.setState({reviseType: 1})
-    console.log(this.state.reviseType)
+      this.setState({reviseType: 1});
   };
 
 
