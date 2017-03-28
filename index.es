@@ -106,6 +106,7 @@ export const reactClass = connect(
       achieve.r5=0;
       achieve.r20=0;
       achieve.mysenka=0;
+      achieve.rankuex=exlist;
       needupdate=true;
     }
     if(!exphistory[no]){
@@ -178,11 +179,10 @@ export const reactClass = connect(
   handleRevise = e => {
     e.preventDefault();
     e.stopPropagation();
-    /* test */
     if(this.state.reviseType)
       this.setState({reviseType: 0});
     else
-      this.setState({reviseType: 1})
+      this.setState({reviseType: 1});
   };
 
 
@@ -515,10 +515,6 @@ export const reactClass = connect(
       upsenka = (exp - exphis[no])/50000*35 + this.addExSenka(unclearedex,this.state.rankuex);
     }
 
-
-
-
-
     var ignoreex = this.state.ignoreex;
     let maps = this.props.maps;
     var now = new Date();
@@ -651,9 +647,15 @@ export const reactClass = connect(
                 <div>
                   剩余战果
                 </div>
+                <OverlayTrigger placement="top" overlay={
+                  <Tooltip>
+                    {(senkaleft/daysleft).toFixed(1)}/天
+                  </Tooltip>
+                }>
                 <div className="flex-auto">
                   {senkaleft.toFixed(1)}
                 </div>
+                </OverlayTrigger>
               </div>
               <Table striped bordered condensed hover>
                 <thead>
