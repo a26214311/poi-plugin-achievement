@@ -521,7 +521,7 @@ export const reactClass = connect(
     var day = now.getDate();
     var month = now.getMonth();
     var dayofMonth = [31,28,31,30,31,30,31,31,30,31,30,31];
-    var daysleft = dayofMonth[month]-day;
+    var daysleft = dayofMonth[month] - day + 1;
     var senkaleft = this.state.targetsenka-mysenka-upsenka;
     for(var i=0;i<unclearedex.length;i++){
       if(!ignoreex[unclearedex[i]]){
