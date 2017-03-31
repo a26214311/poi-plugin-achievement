@@ -15,6 +15,8 @@ const zh = "阿八嚓哒妸发旮哈或讥咔垃麻拏噢妑七呥撒它拖脱�
 const exlist=["1-5","1-6","2-5","3-5","4-5","5-5","6-5"];
 const exvalue={"1-5":75,"1-6":75,"2-5":100,"3-5":150,"4-5":180,"5-5":200,"6-5":250};
 
+const dayofMonth = [31,28,31,30,31,30,31,31,30,31,30,31];
+
 const MAGIC_R_NUMS = [ 8931, 1201, 1156, 5061, 4569, 4732, 3779, 4568, 5695, 4619, 4912, 5669, 6586 ]
 //const MAGIC_L_NUMS = [ 25, 92, 79, 52, 58, 36, 93, 92, 58, 82 ]  // 2017.2.28-2017.3.17
 const MAGIC_L_NUMS = [ 63, 30, 70, 83, 95, 52, 45, 88, 92, 83 ]     // 2017.3.17-2017.?
@@ -85,7 +87,7 @@ export const reactClass = connect(
   componentWillReceiveProps(nextProps){
     var basic = nextProps.basic;
     var exp = basic.api_experience;
-    var now = new Date();
+    var now = new Date(new Date().getTime()+(new Date().getTimezoneOffset()+480)*60000);
     var month = now.getMonth();
     var no = this.getDateNo(now);
     var achieve = {};
@@ -118,9 +120,18 @@ export const reactClass = connect(
       needupdate=true;
     }
     if(exp>data.tmpexp){
-      achieve.tmpexp=exp;
-      achieve.tmpno=no;
-      needupdate=true;
+      if(now.getDate()==dayofMonth[month]){
+        var Hour = now.getHours();
+        if(Hour<21){
+          achieve.tmpexp=exp;
+          achieve.tmpno=no;
+          needupdate=true;
+        }
+      }else{
+        achieve.tmpexp=exp;
+        achieve.tmpno=no;
+        needupdate=true;
+      }
     }
     if(needupdate){
       this.setState(achieve,()=>this.savelist());
@@ -478,7 +489,7 @@ export const reactClass = connect(
     var ranktime =new Date(achieve.ranktime?achieve.ranktime:0);
     var mysenka = achieve.mysenka?achieve.mysenka:0;
     var myno=achieve.myno?achieve.myno:0;
-    var exp = this.props.basic.api_experience;
+    var exp = this.state.tmpexp;
     var no = this.getRankDateNo(ranktime);
     var mynostr = ["更新时间: " + (Math.floor((parseInt(no))/2)+1) + "日", parseInt(no)%2!=0?<FontAwesome name="sun-o"/> : <FontAwesome name="moon-o"/>];
     var exphis = this.state.exphis;
@@ -520,7 +531,7 @@ export const reactClass = connect(
     var now = new Date();
     var day = now.getDate();
     var month = now.getMonth();
-    var dayofMonth = [31,28,31,30,31,30,31,31,30,31,30,31];
+
     var daysleft = dayofMonth[month] - day + 1;
     var senkaleft = this.state.targetsenka-mysenka-upsenka;
     for(var i=0;i<unclearedex.length;i++){
