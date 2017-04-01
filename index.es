@@ -493,7 +493,8 @@ export const reactClass = connect(
     var no = this.getRankDateNo(ranktime);
     var mynostr = ["更新时间: " + (Math.floor((parseInt(no))/2)+1) + "日", parseInt(no)%2!=0?<FontAwesome name="sun-o"/> : <FontAwesome name="moon-o"/>];
     var exphis = this.state.exphis;
-
+    var now = new Date();
+    var nowno = this.getDateNo(now);
     var hiskey = Object.keys(exphis);
     hiskey.sort(function (a,b) {return(parseInt(a)-parseInt(b))});
     var lastkey = hiskey[0];
@@ -501,7 +502,7 @@ export const reactClass = connect(
 
     var expadd=[];
     hiskey.map(function(key){
-      if(key!=hiskey[0]) {
+      if(key!=hiskey[0]&&key<=nowno) {
           var addsenka = (exphis[key] - exphis[lastkey])/50000*35;
         if(exphis[lastkey]>0){
           expadd[key]=addsenka;
@@ -528,9 +529,10 @@ export const reactClass = connect(
 
     var ignoreex = this.state.ignoreex;
     let maps = this.props.maps;
-    var now = new Date();
+
     var day = now.getDate();
     var month = now.getMonth();
+
 
     var daysleft = dayofMonth[month] - day + 1;
     var senkaleft = this.state.targetsenka-mysenka-upsenka;
