@@ -234,7 +234,6 @@ export const reactClass = connect(
             achieve.fensureexp=achieve.tensureexp;
             achieve.exphistory[dateno] = achieve.tensureexp;
           }else{
-
             var ensuresenka=achieve.fensuresenka;
             var ensureexp = achieve.fensureexp;
             var ensureuex = achieve.fensureuex;
@@ -248,10 +247,7 @@ export const reactClass = connect(
                 achieve.exphistory[dateno] = senkaexp;
               }
             }
-
           }
-
-
         }
       }
       if(page==10){
