@@ -226,12 +226,32 @@ export const reactClass = connect(
           }
           achieve.ranktime = now;
           var sub = now.getTime()-new Date(tensurets).getTime();
+          var dateno = this.getRankDateNo(now);
           if(sub>3600000+30000&&sub<3600000*13-30000){
             achieve.fensuresenka=senka;
             achieve.fensurets=achieve.tensurets;
             achieve.fensureuex=achieve.tensureuex;
             achieve.fensureexp=achieve.tensureexp;
+            achieve.exphistory[dateno] = achieve.tensureexp;
+          }else{
+
+            var ensuresenka=achieve.fensuresenka;
+            var ensureexp = achieve.fensureexp;
+            var ensureuex = achieve.fensureuex;
+            if(ensuresenka>0&&ensureexp>0){
+              var thenexp = ensureexp;
+              var thensenka = ensuresenka;
+              var senkauex = this.getUnclearedEx();
+              var addexsenka = this.addExSenka(senkauex,ensureuex);
+              if(addexsenka==0){
+                var senkaexp = thenexp + (senka-thensenka-addexsenka)*50000/35;
+                achieve.exphistory[dateno] = senkaexp;
+              }
+            }
+
           }
+
+
         }
       }
       if(page==10){
