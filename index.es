@@ -63,6 +63,9 @@ export const reactClass = connect(
       r20last:0,
       r20lasttime:0,
 
+      mylastno:0,
+      mylastranktime:0,
+
       mymagic:MAGIC_L_NUMS[this.props.basic?this.props.basic.api_member_id:0],
       tmpexp:0,
       tmpno:0,
@@ -219,6 +222,8 @@ export const reactClass = connect(
           var key = list[i].api_wuhnhojjxmke;
           var senka = this.getRate(no,key,myid);
           achieve.mysenka=senka;
+          achieve.mylastno=achieve.myno;
+          achieve.mylastranktime=this.getRankDateNo(achieve.ranktime);
           achieve.myno=no;
           var then = achieve.ranktime;
           if(this.getRankDateNo(now)>this.getRankDateNo(new Date(then))){
@@ -632,7 +637,23 @@ export const reactClass = connect(
                 {this.generateRankHtml(501,r501,r501time,achieve.r501last,achieve.r501lasttime)}
                 <tr>
                   <td className="pob">
-                    <div>{myno}位</div>
+                    <OverlayTrigger placement="bottom" overlay={
+                      <Tooltip>
+                        <div>
+                          本次变化：{
+                          (this.state.mylastno>this.state.myno?
+                          <FontAwesome name="arrow-up"/>:<FontAwesome name="arrow-down"/>)}
+                          {Math.abs(this.state.mylastno-this.state.myno)}
+                        </div>
+                        <div>上次排名： {this.state.mylastno}</div>
+                        <div>
+                          {"上次更新: " + (Math.floor((parseInt(this.state.mylastranktime))/2)+1) + "日"}
+                          {(parseInt(this.state.mylastranktime)%2!=0?<FontAwesome name="sun-o"/> : <FontAwesome name="moon-o"/>)}
+                        </div>
+                      </Tooltip>
+                    }>
+                      <div>{myno}位</div>
+                    </OverlayTrigger>
                     <div className="pos bg-primary">{mynostr}</div>
                   </td>
                   <td>
