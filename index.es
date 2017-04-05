@@ -232,7 +232,7 @@ export const reactClass = connect(
             achieve.fensurets=achieve.tensurets;
             achieve.fensureuex=achieve.tensureuex;
             achieve.fensureexp=achieve.tensureexp;
-            achieve.exphistory[dateno] = achieve.tensureexp;
+            achieve.exphis[dateno] = achieve.tensureexp;
           }else{
             var ensuresenka=achieve.fensuresenka;
             var ensureexp = achieve.fensureexp;
@@ -244,7 +244,7 @@ export const reactClass = connect(
               var addexsenka = this.addExSenka(senkauex,ensureuex);
               if(addexsenka==0){
                 var senkaexp = thenexp + (senka-thensenka-addexsenka)*50000/35;
-                achieve.exphistory[dateno] = senkaexp;
+                achieve.exphis[dateno] = senkaexp;
               }
             }
           }
