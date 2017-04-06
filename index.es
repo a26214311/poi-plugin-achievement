@@ -21,7 +21,8 @@ const dayofMonth = [31,28,31,30,31,30,31,31,30,31,30,31];
 
 const MAGIC_R_NUMS = [ 8931, 1201, 1156, 5061, 4569, 4732, 3779, 4568, 5695, 4619, 4912, 5669, 6586 ]
 //const MAGIC_L_NUMS = [ 25, 92, 79, 52, 58, 36, 93, 92, 58, 82 ]  // 2017.2.28-2017.3.17
-const MAGIC_L_NUMS = [ 63, 30, 70, 83, 95, 52, 45, 88, 92, 83 ]     // 2017.3.17-2017.?
+//const MAGIC_L_NUMS = [ 63, 30, 70, 83, 95, 52, 45, 88, 92, 83 ]     // 2017.3.17-2017.4.6
+const MAGIC_L_NUMS = [ 63, 30, 70, 83, 95, 52, 40, 88, 92, 83 ]     // 2017.4.6-2017.?
 //    const MAGIC_L_NUMS = [ 63, 30, 79, 52, 58, 36, 45, 88, 92, 82 ]  // 0 1 6 7 8 is correct
 
 const ea = (max, min) => (max % min ? ea(min, max % min) : min);
@@ -598,6 +599,10 @@ export const reactClass = connect(
       if(!ignoreex[unclearedex[i]]){
         senkaleft=senkaleft-exvalue[unclearedex[i]];
       }
+    }
+    var extraSenka=this.state.extraSenka;
+    if(extraSenka==0){
+      senkaleft=senkaleft-350;
     }
     var firstday = new Date();
     firstday.setDate(1);
