@@ -83,7 +83,8 @@ export const reactClass = connect(
       tensureexp:0,
       tensurets:0,
       tensureuex:exlist,
-      fensureuex:exlist
+      fensureuex:exlist,
+      extraSenka: 0
 
 
     }
@@ -468,6 +469,13 @@ export const reactClass = connect(
     this.setState({ignoreex:ignoreex});
   }
 
+  handleExtraSenkaChange = e => {
+    e.preventDefault();
+    e.stopPropagation();
+    let es = (this.state.extraSenka + 1) % 3;
+    this.setState({extraSenka: es});
+  }
+
   generateRankHtml(order,rx,rxtime,rxlast,rxlasttime){
     rx=rx?rx:0;
     rxlast = rxlast?rxlast:0;
@@ -746,7 +754,7 @@ export const reactClass = connect(
                 <tr><td>1-5</td><td>{Math.ceil(senkaleft/0.8925)}</td><td>{(senkaleft/daysleft/0.8925).toFixed(1)}</td></tr>
                 </tbody>
               </Table>
-              <p>预想攻略的EX图</p>
+              <p className="short-line">预想攻略的EX图</p>
               <OverlayTrigger placement="top" overlay={
                 <Tooltip>
                   <p className="text-left"><Button bsStyle='success' bsSize="xsmall"><FontAwesome name="check"/></Button>：计划攻略</p>
@@ -801,6 +809,26 @@ export const reactClass = connect(
                           }
                         }
                       })
+                    }
+                  </ButtonGroup>
+                  <ButtonGroup bsSize="xsmall" className="justified-group">
+                    {
+                      <Button bsStyle={
+                        this.state.extraSenka == 0 ?
+                         'success':
+                         this.state.extraSenka == 1 ? 'danger' : 'star'
+                      } onClick={this.handleExtraSenkaChange}>
+                        {
+                          this.state.extraSenka == 0 ?
+                            <FontAwesome name="check"/>:
+                            this.state.extraSenka == 1 ? <FontAwesome name="close"/> : <FontAwesome name="info"/>
+                        }
+                        {
+                          this.state.extraSenka == 0 ?
+                            '计划攻略季常':
+                            this.state.extraSenka == 1 ? '计划不攻略季常' : '已攻略季常'
+                        }
+                      </Button>
                     }
                   </ButtonGroup>
                 </div>

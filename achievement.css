@@ -113,3 +113,7 @@
 #achievement .senka-calc .justified-group > .btn .fa {
 	margin-right: 2px;
 }
+
+#achievement p.short-line {
+	margin-bottom: 2px;
+}
