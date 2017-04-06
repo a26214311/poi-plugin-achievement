@@ -816,12 +816,12 @@ export const reactClass = connect(
                       <Button bsStyle={
                         this.state.extraSenka == 0 ?
                          'success':
-                         this.state.extraSenka == 1 ? 'danger' : 'star'
+                         this.state.extraSenka == 1 ? 'danger' : 'info'
                       } onClick={this.handleExtraSenkaChange}>
                         {
                           this.state.extraSenka == 0 ?
                             <FontAwesome name="check"/>:
-                            this.state.extraSenka == 1 ? <FontAwesome name="close"/> : <FontAwesome name="info"/>
+                            this.state.extraSenka == 1 ? <FontAwesome name="close"/> : <FontAwesome name="star"/>
                         }
                         {
                           this.state.extraSenka == 0 ?
