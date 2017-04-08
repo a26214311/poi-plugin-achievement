@@ -4,12 +4,9 @@ import {createSelector} from 'reselect'
 
 import {store} from 'views/create-store'
 
-window.echarts = require('./echarts.simple.min.js')
-
 import {join} from 'path'
 import {Row, Col, Checkbox, Panel, FormGroup, FormControl, ButtonGroup, Button, Table, OverlayTrigger, Tooltip} from 'react-bootstrap'
 import FontAwesome from 'react-fontawesome'
-
 
 import {extensionSelectorFactory} from 'views/utils/selectors'
 const fs = require('fs')
