@@ -927,7 +927,7 @@ export const reactClass = connect(
           <Col xs={12}>
             <Panel header={
               <span>
-                <FontAwesome name="calendar"/> Chart
+                <FontAwesome name="area-chart"/> 战果趋势
               </span>
             }>
               <canvas id="myChart" width="400" height="400"></canvas>
