@@ -349,12 +349,17 @@ export const reactClass = connect(
 
   componentDidMount = () => {
     window.addEventListener('game.response', this.handleResponse);
-    this.drawChart()
     this.loadlist();
+    this.drawChart();
   };
 
   componentWillUnmount = () => {
     window.removeEventListener('game.response', this.handleResponse)
+  };
+
+  componentDidUpdate = () => {
+    console.log('============DIDUPDATE============')
+    this.drawChart();
   };
 
   savelist(){
@@ -508,29 +513,47 @@ export const reactClass = connect(
 
   drawChart = () =>{
     let ctx = document.getElementById("myChart");
+    const backgroundColors = [
+      'rgba(255, 99, 132, 0.2)',
+      'rgba(54, 162, 235, 0.2)',
+      'rgba(255, 206, 86, 0.2)',
+      'rgba(75, 192, 192, 0.2)',
+      'rgba(153, 102, 255, 0.2)',
+      'rgba(255, 159, 64, 0.2)'
+    ];
+    const borderColors = [
+      'rgba(255, 99, 132, 1)',
+      'rgba(54, 162, 235, 1)',
+      'rgba(255, 206, 86, 1)',
+      'rgba(75, 192, 192, 1)',
+      'rgba(153, 102, 255, 1)',
+      'rgba(255, 159, 64, 1)'
+    ];
+
+    let expadd = this.senkaOfDay(this.state.exphis);
+    let day = new Date().getDate();
+    let labels = [], mySenkaData = [];
+    for(let i = 1; i <= day; i++){
+      labels.push(i);
+    }
+    labels.map(day => {
+      mySenkaData.push((expadd[day * 2 - 1] + (expadd[day * 2] ? expadd[day * 2] : 0)).toFixed(1))
+    });
+    console.log(labels)
+    console.log(expadd)
+    console.log(mySenkaData)
+
+    Chart.defaults.global.animation.duration = 0
+
     let myChart = new Chart(ctx, {
-      type: 'bar',
+      type: 'line',
       data: {
-        labels: ["Red", "Blue", "Yellow", "Green", "Purple", "Orange"],
+        labels: labels,
         datasets: [{
-          label: '# of Votes',
-          data: [12, 19, 3, 5, 2, 3],
-          backgroundColor: [
-            'rgba(255, 99, 132, 0.2)',
-            'rgba(54, 162, 235, 0.2)',
-            'rgba(255, 206, 86, 0.2)',
-            'rgba(75, 192, 192, 0.2)',
-            'rgba(153, 102, 255, 0.2)',
-            'rgba(255, 159, 64, 0.2)'
-          ],
-          borderColor: [
-            'rgba(255,99,132,1)',
-            'rgba(54, 162, 235, 1)',
-            'rgba(255, 206, 86, 1)',
-            'rgba(75, 192, 192, 1)',
-            'rgba(153, 102, 255, 1)',
-            'rgba(255, 159, 64, 1)'
-          ],
+          label: '我的战果',
+          data: mySenkaData,
+          backgroundColor: backgroundColors[0],
+          borderColor: borderColors[0],
           borderWidth: 1
         }]
       },
@@ -544,7 +567,32 @@ export const reactClass = connect(
         }
       }
     });
-  }
+  };
+
+  senkaOfDay = exphis => {
+    let hiskey = Object.keys(exphis).sort((a, b) => parseInt(a) - parseInt(b));
+    let lastkey = hiskey[0];
+    let expadd=[];
+    hiskey.map(key => {
+      if(key != hiskey[0] && key <= this.getDateNo(new Date())) {
+        let addsenka = (exphis[key] - exphis[lastkey]) / 50000 * 35;
+        if(exphis[lastkey] > 0){
+          expadd[key] = addsenka;
+        }
+        lastkey = key;
+      }
+    });
+
+    if(!expadd[this.state.tmpno+1]){
+      if(exphis[lastkey]>0) {
+        var addsenka = (this.state.tmpexp - exphis[lastkey]) / 50000 * 35;
+        expadd[this.state.tmpno + 1] = addsenka;
+      }
+    }
+
+    return expadd;
+  };
+
 
   render_D() {
     var achieve = this.state;
@@ -561,13 +609,20 @@ export const reactClass = connect(
     var exp = this.state.tmpexp;
     var no = this.getRankDateNo(ranktime);
     var mynostr = ["更新时间: " + (Math.floor((parseInt(no))/2)+1) + "日", parseInt(no)%2!=0?<FontAwesome name="sun-o"/> : <FontAwesome name="moon-o"/>];
-    var exphis = this.state.exphis;
+
     var now = new Date();
+    var unclearedex = this.getUnclearedEx();
+
+
+    var exphis = this.state.exphis;
+    let expadd = this.senkaOfDay(exphis);
+
+    /* 拆出
+    var exphis = this.state.exphis;
     var nowno = this.getDateNo(now);
     var hiskey = Object.keys(exphis);
     hiskey.sort(function (a,b) {return(parseInt(a)-parseInt(b))});
     var lastkey = hiskey[0];
-    var unclearedex = this.getUnclearedEx();
 
     var expadd=[];
     hiskey.map(function(key){
@@ -585,6 +640,8 @@ export const reactClass = connect(
         expadd[this.state.tmpno + 1] = addsenka;
       }
     }
+    */
+
     var upsenka;
 
     var ensuresenka=achieve.fensuresenka;
