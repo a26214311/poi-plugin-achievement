@@ -539,9 +539,6 @@ export const reactClass = connect(
     labels.map(day => {
       mySenkaData.push((expadd[day * 2 - 1] + (expadd[day * 2] ? expadd[day * 2] : 0)).toFixed(1))
     });
-    console.log(labels)
-    console.log(expadd)
-    console.log(mySenkaData)
 
     Chart.defaults.global.animation.duration = 0
 
