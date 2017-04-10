@@ -358,8 +358,11 @@ export const reactClass = connect(
   };
 
   componentDidUpdate = () => {
+    //TODO: delete chart
+    /*
     console.log('============DIDUPDATE============')
     this.drawChart();
+    */
   };
 
   savelist(){
