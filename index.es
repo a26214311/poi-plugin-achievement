@@ -540,7 +540,7 @@ export const reactClass = connect(
       labels.push(i);
     }
     labels.map(day => {
-      mySenkaData.push((expadd[day * 2 - 1] + (expadd[day * 2] ? expadd[day * 2] : 0)).toFixed(1))
+      mySenkaData.push(((expadd[day * 2 - 1] ? expadd[day * 2 - 1] : 0) + (expadd[day * 2] ? expadd[day * 2] : 0)).toFixed(1))
     });
 
     Chart.defaults.global.animation.duration = 0
