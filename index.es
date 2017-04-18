@@ -350,7 +350,7 @@ export const reactClass = connect(
   componentDidMount = () => {
     window.addEventListener('game.response', this.handleResponse);
     this.loadlist();
-    this.drawChart();
+    //this.drawChart();
   };
 
   componentWillUnmount = () => {
@@ -364,6 +364,71 @@ export const reactClass = connect(
     this.drawChart();
     */
   };
+
+  drawChart = () =>{
+    let ctx = document.getElementById("myChart");
+    const backgroundColors = [
+      'rgba(255, 99, 132, 0.2)',
+      'rgba(54, 162, 235, 0.2)',
+      'rgba(255, 206, 86, 0.2)',
+      'rgba(75, 192, 192, 0.2)',
+      'rgba(153, 102, 255, 0.2)',
+      'rgba(255, 159, 64, 0.2)'
+    ];
+    const borderColors = [
+      'rgba(255, 99, 132, 1)',
+      'rgba(54, 162, 235, 1)',
+      'rgba(255, 206, 86, 1)',
+      'rgba(75, 192, 192, 1)',
+      'rgba(153, 102, 255, 1)',
+      'rgba(255, 159, 64, 1)'
+    ];
+
+    let expadd = this.senkaOfDay(this.state.exphis);
+    let day = new Date().getDate();
+    let labels = [], mySenkaData = [];
+    for(let i = 1; i <= day; i++){
+      labels.push(i);
+    }
+    labels.map(day => {
+      mySenkaData.push(((expadd[day * 2 - 1] ? expadd[day * 2 - 1] : 0) + (expadd[day * 2] ? expadd[day * 2] : 0)).toFixed(1))
+    });
+
+    Chart.defaults.global.animation.duration = 0
+
+    let myChart = new Chart(ctx, {
+      type: 'line',
+      data: {
+        labels: labels,
+        datasets: [{
+          label: '我的战果',
+          data: mySenkaData,
+          backgroundColor: backgroundColors[0],
+          borderColor: borderColors[0],
+          borderWidth: 1
+        }]
+      },
+      options: {
+        scales: {
+          yAxes: [{
+            ticks: {
+              beginAtZero:true
+            }
+          }]
+        }
+      }
+    });
+  };
+
+
+
+
+
+
+
+
+
+
 
   savelist(){
     try {
@@ -514,60 +579,7 @@ export const reactClass = connect(
     )
   }
 
-  drawChart = () =>{
-    let ctx = document.getElementById("myChart");
-    const backgroundColors = [
-      'rgba(255, 99, 132, 0.2)',
-      'rgba(54, 162, 235, 0.2)',
-      'rgba(255, 206, 86, 0.2)',
-      'rgba(75, 192, 192, 0.2)',
-      'rgba(153, 102, 255, 0.2)',
-      'rgba(255, 159, 64, 0.2)'
-    ];
-    const borderColors = [
-      'rgba(255, 99, 132, 1)',
-      'rgba(54, 162, 235, 1)',
-      'rgba(255, 206, 86, 1)',
-      'rgba(75, 192, 192, 1)',
-      'rgba(153, 102, 255, 1)',
-      'rgba(255, 159, 64, 1)'
-    ];
 
-    let expadd = this.senkaOfDay(this.state.exphis);
-    let day = new Date().getDate();
-    let labels = [], mySenkaData = [];
-    for(let i = 1; i <= day; i++){
-      labels.push(i);
-    }
-    labels.map(day => {
-      mySenkaData.push(((expadd[day * 2 - 1] ? expadd[day * 2 - 1] : 0) + (expadd[day * 2] ? expadd[day * 2] : 0)).toFixed(1))
-    });
-
-    Chart.defaults.global.animation.duration = 0
-
-    let myChart = new Chart(ctx, {
-      type: 'line',
-      data: {
-        labels: labels,
-        datasets: [{
-          label: '我的战果',
-          data: mySenkaData,
-          backgroundColor: backgroundColors[0],
-          borderColor: borderColors[0],
-          borderWidth: 1
-        }]
-      },
-      options: {
-        scales: {
-          yAxes: [{
-            ticks: {
-              beginAtZero:true
-            }
-          }]
-        }
-      }
-    });
-  };
 
   senkaOfDay = exphis => {
     let hiskey = Object.keys(exphis).sort((a, b) => parseInt(a) - parseInt(b));
@@ -922,15 +934,6 @@ export const reactClass = connect(
                 {callendar}
                 </tbody>
               </Table>
-            </Panel>
-          </Col>
-          <Col xs={12}>
-            <Panel header={
-              <span>
-                <FontAwesome name="area-chart"/> 战果趋势
-              </span>
-            }>
-              <canvas id="myChart" width="400" height="400"></canvas>
             </Panel>
           </Col>
         </Row>
