@@ -10,6 +10,8 @@ import FontAwesome from 'react-fontawesome'
 
 import {extensionSelectorFactory} from 'views/utils/selectors'
 
+import SenkaCaculator from './caculator'
+
 const Chart = require("./Chart");
 
 const fs = require('fs')
@@ -27,6 +29,7 @@ const MAGIC_L_NUMS = [ 63, 30, 70, 83, 95, 52, 40, 88, 92, 83 ]     // 2017.4.6-
 
 const ea = (max, min) => (max % min ? ea(min, max % min) : min);
 const EAforArr = arr => arr.sort().reduce((pre, cur) => ea(cur, pre));
+
 
 
 export const reactClass = connect(
@@ -983,6 +986,7 @@ export const reactClass = connect(
             </Panel>
           </Col>
         </Row>
+        <SenkaCaculator />
       </div>
     )
   }
