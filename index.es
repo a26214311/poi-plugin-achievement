@@ -33,6 +33,7 @@ export const reactClass = connect(
   state => ({
     horizontal: state.config.poi.layout || 'horizontal',
     basic:state.info.basic,
+    $maps:state.const.$maps,
     maps:state.info.maps
   }),
   null, null, {pure: false}
@@ -85,7 +86,8 @@ export const reactClass = connect(
       tensurets:0,
       tensureuex:exlist,
       fensureuex:exlist,
-      extraSenka: 0
+      extraSenka: 1,
+      zclearts:0,
 
 
     }
@@ -116,6 +118,8 @@ export const reactClass = connect(
       achieve.r20=0;
       achieve.mysenka=0;
       achieve.rankuex=exlist;
+      achieve.extraSenka=1;
+      achieve.zclearts=0;
       needupdate=true;
     }
     if(!exphistory[no]){
@@ -205,7 +209,25 @@ export const reactClass = connect(
 
 
   handleResponse = e => {
-    const {path, body} = e.detail;
+    const {path, body,postBody} = e.detail;
+
+    /*for test only!
+
+    if(path=="/kcsapi/api_req_quest/start"){
+      this.setState({extraSenka:2,zclearts:new Date()});
+    }
+    if(path=="/kcsapi/api_req_quest/stop"){
+      this.setState({extraSenka:1,zclearts:0});
+    }
+
+    */
+
+
+    if(path=="/kcsapi/api_req_quest/clearitemget"){
+      if(postBody.api_quest_id==854){
+        this.setState({extraSenka:2,zclearts:new Date()});
+      }
+    }
     if(path=="/kcsapi/api_req_ranking/mxltvkpyuklh"){
       var myname = this.props.basic.api_nickname;
       var myid = this.props.basic.api_member_id;
@@ -468,7 +490,24 @@ export const reactClass = connect(
     }
   }
 
-
+  getExmapRemainHp(){
+    var hp = {};
+    var maps = this.props.maps;
+    var $maps = this.props.$maps;
+    exlist.map(function(mapidstr){
+      var mapid = mapidstr.split("-").join('');
+      if(maps[mapid]){
+        if(maps[mapid].api_cleared==1){
+          hp[mapidstr]=0;
+        }else{
+          hp[mapidstr]=$maps[mapid].api_required_defeat_count - maps[mapid].api_defeat_count;
+        }
+      }else{
+        hp[mapidstr]=$maps[mapid].api_required_defeat_count;
+      }
+    });
+    return hp;
+  }
 
 
   getUnclearedEx(){
@@ -546,8 +585,10 @@ export const reactClass = connect(
   handleExtraSenkaChange = e => {
     e.preventDefault();
     e.stopPropagation();
-    let es = (this.state.extraSenka + 1) % 3;
-    this.setState({extraSenka: es});
+    if(!this.state.zclearts){
+      let es = (this.state.extraSenka + 1) % 3;
+      this.setState({extraSenka: es});
+    }
   }
 
   generateRankHtml(order,rx,rxtime,rxlast,rxlasttime){
@@ -661,10 +702,15 @@ export const reactClass = connect(
     var ensureuex = achieve.fensureuex;
     if(ensuresenka>0&&ensureexp>0){
       upsenka = (exp-ensureexp)/50000*35+ensuresenka-mysenka+this.addExSenka(unclearedex,ensureuex);
+      if(new Date(this.state.zclearts).getTime()>new Date(this.state.fensurets).getTime()){
+        upsenka = upsenka + 350;
+      }
     }else{
       upsenka = (exp - exphis[no])/50000*35 + this.addExSenka(unclearedex,this.state.rankuex);
+      if(new Date(this.state.zclearts).getTime()>ranktime.getTime()){
+        upsenka = upsenka + 350;
+      }
     }
-
     var ignoreex = this.state.ignoreex;
     let maps = this.props.maps;
 
@@ -909,8 +955,8 @@ export const reactClass = connect(
                         }
                         {
                           this.state.extraSenka == 0 ?
-                            '计划攻略季常':
-                            this.state.extraSenka == 1 ? '计划不攻略季常' : '已攻略季常'
+                            '计划攻略Z作战':
+                            this.state.extraSenka == 1 ? '计划不攻略Z作战' : '已攻略Z作战'
                         }
                       </Button>
                     }
