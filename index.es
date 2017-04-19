@@ -12,6 +12,9 @@ import {extensionSelectorFactory} from 'views/utils/selectors'
 
 import SenkaCaculator from './caculator'
 
+const EXTENSION_KEY = 'poi-plugin-click-button'
+
+
 const Chart = require("./Chart");
 
 const fs = require('fs')
@@ -91,8 +94,6 @@ export const reactClass = connect(
       fensureuex:exlist,
       extraSenka: 1,
       zclearts:0,
-
-
     }
   }
 
@@ -565,35 +566,6 @@ export const reactClass = connect(
     }
   }
 
-  handleChangeTarget = e =>{
-    var value = e.target.value;
-    if(parseInt(value)>66666){
-      value=66666;
-    }
-    if(parseInt(value)<0){
-      value=0;
-    }
-    this.setState({targetsenka:value})
-  }
-  handleExChange = e =>{
-    var value = e.currentTarget.value;
-    var ignoreex = this.state.ignoreex;
-    if(ignoreex[value] == 'undefined')
-      ignoreex[value] = true;
-    else
-      ignoreex[value] = !ignoreex[value];
-    this.setState({ignoreex:ignoreex});
-  }
-
-  handleExtraSenkaChange = e => {
-    e.preventDefault();
-    e.stopPropagation();
-    if(!this.state.zclearts){
-      let es = (this.state.extraSenka + 1) % 3;
-      this.setState({extraSenka: es});
-    }
-  }
-
   generateRankHtml(order,rx,rxtime,rxlast,rxlasttime){
     rx=rx?rx:0;
     rxlast = rxlast?rxlast:0;
@@ -699,7 +671,6 @@ export const reactClass = connect(
     */
 
     var upsenka;
-
     var ensuresenka=achieve.fensuresenka;
     var ensureexp = achieve.fensureexp;
     var ensureuex = achieve.fensureuex;
@@ -717,10 +688,9 @@ export const reactClass = connect(
     var ignoreex = this.state.ignoreex;
     let maps = this.props.maps;
 
+
     var day = now.getDate();
     var month = now.getMonth();
-
-
     var daysleft = dayofMonth[month] - day + 1;
     var senkaleft = this.state.targetsenka-mysenka-upsenka;
     for(var i=0;i<unclearedex.length;i++){
@@ -732,6 +702,7 @@ export const reactClass = connect(
     if(extraSenka==0){
       senkaleft=senkaleft-350;
     }
+
     var firstday = new Date();
     firstday.setDate(1);
     var firstdayofWeek = firstday.getDay();
@@ -758,6 +729,7 @@ export const reactClass = connect(
       }
       callendar.push(<tr>{weeks}</tr>)
     }
+    
     return (
       <div id="achievement" className="achievement">
         <link rel="stylesheet" href={join(__dirname, 'achievement.css')}/>
@@ -844,130 +816,20 @@ export const reactClass = connect(
               </Table>
             </Panel>
           </Col>
-          <Col xs={6}>
-            <Panel header={
-              <span>
-                <FontAwesome name="calculator"/> 战果计算器
-              </span>
-            } className="info senka-calc">
-              <div className="senka-ipt flex">
-                <div>
-                  目标战果
-                </div>
-                <div className="flex-auto">
-                  <FormControl
-                    value={this.state.targetsenka}
-                    type="text"
-                    placeholder="目标战果"
-                    onChange={this.handleChangeTarget}
-                  />
-                </div>
-              </div>
-              <div className="senka-eq flex">
-                <div>
-                  剩余战果
-                </div>
-                <OverlayTrigger placement="top" overlay={
-                  <Tooltip>
-                    {(senkaleft/daysleft).toFixed(1)}/天
-                  </Tooltip>
-                }>
-                <div className="flex-auto">
-                  {senkaleft.toFixed(1)}
-                </div>
-                </OverlayTrigger>
-              </div>
-              <Table striped bordered condensed hover>
-                <thead>
-                <tr><td>MAP</td><td>次数</td><td>每天</td></tr>
-                </thead>
-                <tbody>
-                <tr><td>5-4</td><td>{Math.ceil(senkaleft/2.282)}</td><td>{(senkaleft/daysleft/2.282).toFixed(1)}</td></tr>
-                <tr><td>5-2</td><td>{Math.ceil(senkaleft/1.995)}</td><td>{(senkaleft/daysleft/1.995).toFixed(1)}</td></tr>
-                <tr><td>1-5</td><td>{Math.ceil(senkaleft/0.8925)}</td><td>{(senkaleft/daysleft/0.8925).toFixed(1)}</td></tr>
-                </tbody>
-              </Table>
-              <p className="short-line">预想攻略的EX图</p>
-              <OverlayTrigger placement="top" overlay={
-                <Tooltip>
-                  <p className="text-left"><Button bsStyle='success' bsSize="xsmall"><FontAwesome name="check"/></Button>：计划攻略</p>
-                  <p className="text-left"><Button bsStyle='danger' bsSize="xsmall"><FontAwesome name="close"/></Button>：计划不攻略</p>
-                  <p className="text-left"><Button bsStyle='info' bsSize="xsmall"><FontAwesome name="star"/></Button>：已完成</p>
-                </Tooltip>
-              }>
-                <div>
-                  <ButtonGroup bsSize="xsmall" className="justified-group">
-                    {
-                      exlist.map((exid, idx) =>{
-                        if(idx < 4){
-                          let mapId = exid.split('-').join('');
-                          if(maps[mapId] && maps[mapId].api_cleared == 1){
-                            return (
-                              <Button bsStyle='info'>
-                                <FontAwesome name="star"/>
-                                {exid}
-                              </Button>
-                            )
-                          } else {
-                            return (
-                              <Button bsStyle={ignoreex[exid] ? 'danger' : 'success'} value={exid} onClick={this.handleExChange}>
-                                {ignoreex[exid] ? <FontAwesome name="close"/> : <FontAwesome name="check"/>}
-                                {exid}
-                              </Button>
-                            )
-                          }
-                        }
-                      })
-                    }
-                  </ButtonGroup>
-                  <ButtonGroup bsSize="xsmall" className="justified-group">
-                    {
-                      exlist.map((exid, idx) =>{
-                        if(idx >= 4){
-                          let mapId = exid.split('-').join('');
-                          if(maps[mapId] && maps[mapId].api_cleared == 1){
-                            return (
-                              <Button bsStyle='info'>
-                                <FontAwesome name="star"/>
-                                {exid}
-                              </Button>
-                            )
-                          } else {
-                            return (
-                              <Button bsStyle={ignoreex[exid] ? 'danger' : 'success'} value={exid} onClick={this.handleExChange}>
-                                {ignoreex[exid] ? <FontAwesome name="close"/> : <FontAwesome name="check"/>}
-                                {exid}
-                              </Button>
-                            )
-                          }
-                        }
-                      })
-                    }
-                  </ButtonGroup>
-                  <ButtonGroup bsSize="xsmall" className="justified-group">
-                    {
-                      <Button bsStyle={
-                        this.state.extraSenka == 0 ?
-                         'success':
-                         this.state.extraSenka == 1 ? 'danger' : 'info'
-                      } onClick={this.handleExtraSenkaChange}>
-                        {
-                          this.state.extraSenka == 0 ?
-                            <FontAwesome name="check"/>:
-                            this.state.extraSenka == 1 ? <FontAwesome name="close"/> : <FontAwesome name="star"/>
-                        }
-                        {
-                          this.state.extraSenka == 0 ?
-                            '计划攻略Z作战':
-                            this.state.extraSenka == 1 ? '计划不攻略Z作战' : '已攻略Z作战'
-                        }
-                      </Button>
-                    }
-                  </ButtonGroup>
-                </div>
-              </OverlayTrigger>
-            </Panel>
-          </Col>
+          <SenkaCaculator
+            senkaleft={senkaleft}
+            targetsenka={this.state.targetsenka}
+            ignoreex={ignoreex}
+            extraSenka={extraSenka}
+            maps={maps}
+            zclearts={this.state.zclearts}
+            backstate={
+              (newstate) => {
+                this.setState(newstate);
+              }
+            }
+          >
+          </SenkaCaculator>
           <Col xs={12}>
             <Panel header={
               <span>
@@ -986,7 +848,7 @@ export const reactClass = connect(
             </Panel>
           </Col>
         </Row>
-        <SenkaCaculator />
+
       </div>
     )
   }
