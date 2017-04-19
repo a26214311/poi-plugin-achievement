@@ -12,6 +12,10 @@ import {extensionSelectorFactory} from 'views/utils/selectors'
 
 import SenkaCaculator from './caculator'
 import SenkaCallendar from './callendar'
+import SenkaInfo from './info'
+
+import {getDateNo,getRankDateNo} from './util'
+
 
 const EXTENSION_KEY = 'poi-plugin-click-button'
 
@@ -103,7 +107,7 @@ export const reactClass = connect(
     var exp = basic.api_experience;
     var now = new Date(new Date().getTime()+(new Date().getTimezoneOffset()+480)*60000);
     var month = now.getMonth();
-    var no = this.getDateNo(now);
+    var no = getDateNo(now);
     var achieve = {};
     var data = this.loadlist();
     var exphistory = data.exphis;
@@ -203,14 +207,7 @@ export const reactClass = connect(
     return EAforArr(lsub)
   }
 
-  handleRevise = e => {
-    e.preventDefault();
-    e.stopPropagation();
-    if(this.state.reviseType)
-      this.setState({reviseType: 0});
-    else
-      this.setState({reviseType: 1});
-  };
+
 
 
   handleResponse = e => {
@@ -254,15 +251,15 @@ export const reactClass = connect(
           var senka = this.getRate(no,key,myid);
           achieve.mysenka=senka;
           achieve.mylastno=achieve.myno;
-          achieve.mylastranktime=this.getRankDateNo(achieve.ranktime);
+          achieve.mylastranktime=getRankDateNo(achieve.ranktime);
           achieve.myno=no;
           var then = achieve.ranktime;
-          if(this.getRankDateNo(now)>this.getRankDateNo(new Date(then))){
+          if(getRankDateNo(now)>getRankDateNo(new Date(then))){
             achieve.rankuex = this.getUnclearedEx();
           }
           achieve.ranktime = now;
           var sub = now.getTime()-new Date(tensurets).getTime();
-          var dateno = this.getRankDateNo(now);
+          var dateno = getRankDateNo(now);
           if(sub>3600000+30000&&sub<3600000*13-30000){
             achieve.fensuresenka=senka;
             achieve.fensurets=achieve.tensurets;
@@ -292,10 +289,10 @@ export const reactClass = connect(
         var senka = this.getRate(no,key,myid);
         var r1last = achieve.r1;
         var r1time = achieve.r1time;
-        var r1timeno = this.getRankDateNo(new Date(r1time));
+        var r1timeno = getRankDateNo(new Date(r1time));
         achieve.r1=senka;
         achieve.r1time=now;
-        var timeno = this.getRankDateNo(now);
+        var timeno = getRankDateNo(now);
         if(r1timeno!=timeno){
           achieve.r1last=r1last;
           achieve.r1lasttime=r1timeno;
@@ -304,10 +301,10 @@ export const reactClass = connect(
         var no=list[0].api_mxltvkpyuklh;
         var key = list[0].api_wuhnhojjxmke;
         var senka = this.getRate(no,key,myid);
-        var timeno = this.getRankDateNo(now);
+        var timeno = getRankDateNo(now);
         var r501last = achieve.r501;
         var r501time = achieve.r501time;
-        var r501timeno = this.getRankDateNo(new Date(r501time));
+        var r501timeno = getRankDateNo(new Date(r501time));
         achieve.r501=senka;
         achieve.r501time=now;
         if(r501timeno!=timeno){
@@ -318,10 +315,10 @@ export const reactClass = connect(
         var no=list[4].api_mxltvkpyuklh;
         var key = list[4].api_wuhnhojjxmke;
         var senka = this.getRate(no,key,myid);
-        var timeno = this.getRankDateNo(now);
+        var timeno = getRankDateNo(now);
         var r5last = achieve.r5;
         var r5time = achieve.r5time;
-        var r5timeno = this.getRankDateNo(new Date(r5time));
+        var r5timeno = getRankDateNo(new Date(r5time));
         achieve.r5=senka;
         achieve.r5time=now;
         if(r5timeno!=timeno){
@@ -332,10 +329,10 @@ export const reactClass = connect(
         var no=list[9].api_mxltvkpyuklh;
         var key = list[9].api_wuhnhojjxmke;
         var senka = this.getRate(no,key,myid);
-        var timeno = this.getRankDateNo(now);
+        var timeno = getRankDateNo(now);
         var r20last = achieve.r20;
         var r20time = achieve.r20time;
-        var r20timeno = this.getRankDateNo(new Date(r20time));
+        var r20timeno = getRankDateNo(new Date(r20time));
         achieve.r20=senka;
         achieve.r20time=now;
         if(r20timeno!=timeno){
@@ -348,31 +345,6 @@ export const reactClass = connect(
       this.setState(achieve,()=>this.savelist());
     }
   }
-
-  getDateNo(now){
-    now = new Date(new Date(now).getTime()+(new Date().getTimezoneOffset()+480)*60000);
-    var date = now.getDate();
-    var hour = now.getHours();
-    if(hour<1){
-      date = date -1;
-      hour = hour + 24;
-    }
-    var no = (date-1)*2+((hour>=13)?1:0);
-    return no;
-  }
-
-  getRankDateNo(now){
-    now = new Date(new Date(now).getTime()+(new Date().getTimezoneOffset()+480)*60000);
-    var date = now.getDate();
-    var hour = now.getHours();
-    if(hour<1){
-      date = date -1;
-      hour = hour + 24;
-    }
-    var no = (date-1)*2+((hour>=14)?1:0);
-    return no;
-  }
-
 
   componentDidMount = () => {
     window.addEventListener('game.response', this.handleResponse);
@@ -447,16 +419,6 @@ export const reactClass = connect(
     });
   };
 
-
-
-
-
-
-
-
-
-
-
   savelist(){
     try {
       let data = this.loadlist();
@@ -494,26 +456,6 @@ export const reactClass = connect(
       return this.state;
     }
   }
-
-  getExmapRemainHp(){
-    var hp = {};
-    var maps = this.props.maps;
-    var $maps = this.props.$maps;
-    exlist.map(function(mapidstr){
-      var mapid = mapidstr.split("-").join('');
-      if(maps[mapid]){
-        if(maps[mapid].api_cleared==1){
-          hp[mapidstr]=0;
-        }else{
-          hp[mapidstr]=$maps[mapid].api_required_defeat_count - maps[mapid].api_defeat_count;
-        }
-      }else{
-        hp[mapidstr]=$maps[mapid].api_required_defeat_count;
-      }
-    });
-    return hp;
-  }
-
 
   getUnclearedEx(){
     var maps = this.props.maps;
@@ -567,56 +509,18 @@ export const reactClass = connect(
     }
   }
 
-  generateRankHtml(order,rx,rxtime,rxlast,rxlasttime){
-    rx=rx?rx:0;
-    rxlast = rxlast?rxlast:0;
-    rxtime = new Date(rxtime);
-    var rxno = this.getRankDateNo(rxtime);
-    var rxtsstr = ["更新时间: " + (Math.floor((parseInt(rxno))/2)+1) + "日", parseInt(rxno)%2!=0?<FontAwesome name="sun-o"/> : <FontAwesome name="moon-o"/>];
-    return(
-      <tr>
-        <td className="pob">
-          <div>{order}位</div>
-          <div className="pos bg-primary">{rxtsstr}</div>
-        </td>
-        <td className="pob">
-          <OverlayTrigger placement="bottom" overlay={
-            <Tooltip>
-              <div>战果增加： <FontAwesome name="arrow-up"/>{(rx-rxlast).toFixed(0)}</div>
-              <div>
-                {"上次更新: " + (Math.floor((parseInt(rxlasttime))/2)+1) + "日"}
-                {(parseInt(rxlasttime)%2!=0?<FontAwesome name="sun-o"/> : <FontAwesome name="moon-o"/>)}
-              </div>
-            </Tooltip>
-          }>
-            <div>{rx.toFixed(0)}<span className="senka-up">(<FontAwesome name="arrow-up"/>{(rx-rxlast).toFixed(0)})</span></div>
-          </OverlayTrigger>
-        </td>
-      </tr>
-    )
-  }
 
   render_D() {
     var achieve = this.state;
-    var r1 = achieve.r1?achieve.r1:0;
-    var r501 = achieve.r501?achieve.r501:0;
-
-    var r1time = new Date(achieve.r1time?achieve.r1time:0);
-    var r501time = new Date(achieve.r501time?achieve.r501time:0);
-
 
     var ranktime =new Date(achieve.ranktime?achieve.ranktime:0);
     var mysenka = achieve.mysenka?achieve.mysenka:0;
-    var myno=achieve.myno?achieve.myno:0;
     var exp = this.state.tmpexp;
-    var no = this.getRankDateNo(ranktime);
-    var mynostr = ["更新时间: " + (Math.floor((parseInt(no))/2)+1) + "日", parseInt(no)%2!=0?<FontAwesome name="sun-o"/> : <FontAwesome name="moon-o"/>];
+    var no = getRankDateNo(ranktime);
 
-    var now = new Date();
     var unclearedex = this.getUnclearedEx();
 
     var exphis = this.state.exphis;
-
     var upsenka;
     var ensuresenka=achieve.fensuresenka;
     var ensureexp = achieve.fensureexp;
@@ -634,7 +538,6 @@ export const reactClass = connect(
     }
     var ignoreex = this.state.ignoreex;
     let maps = this.props.maps;
-
     var senkaleft = this.state.targetsenka-mysenka-upsenka;
     for(var i=0;i<unclearedex.length;i++){
       if(!ignoreex[unclearedex[i]]){
@@ -650,88 +553,17 @@ export const reactClass = connect(
       <div id="achievement" className="achievement">
         <link rel="stylesheet" href={join(__dirname, 'achievement.css')}/>
         <Row>
-          <Col xs={6}>
-            <Panel header={
-            <span>
-              <FontAwesome name="list-ol"/> 战果信息
-                <OverlayTrigger placement="bottom" overlay={
-                  <Tooltip>
-                    <p className="text-left">
-                      {this.state.reviseType ?
-                      <span>
-                      当前战果系数为{this.state.mymagic>9?this.state.mymagic:MAGIC_L_NUMS[this.props.basic.api_member_id % 10]}<br/>
-                      游戏更新后，战果榜单可能不准确<br/>
-                      榜单不准确时，点击此按钮<br/>
-                      进入游戏刷新战果榜的任意一页<br/>
-                      则会自动校准战果系数<br/>
-                      如果战果榜单依然不准，请再次点击此按钮<br/>
-                      进入战果榜单的另外一页<br/>
-                      如果多次校准后战果依然不准确<br/>
-                      请等待插件更新
-                      </span>
-                      :
-                      <span>
-                      更新中<br/>
-                      请刷新战果
-                      </span>}
-                    </p>
-                  </Tooltip>
-                }>
-                  <FontAwesome name="refresh" className={this.state.reviseType? 'revise': 'revise active'} onClick={this.handleRevise}/>
-                </OverlayTrigger>
-            </span>
-            } className="info senka-info">
-              <Table striped bordered condensed hover>
-                <thead>
-                <tr>
-                  <th className="senka-title">顺位</th>
-                  <th>战果</th>
-                </tr>
-                </thead>
-                <tbody>
-                {this.generateRankHtml(5,achieve.r5,achieve.r5time,achieve.r5last,achieve.r5lasttime)}
-                {this.generateRankHtml(20,achieve.r20,achieve.r20time,achieve.r20last,achieve.r20lasttime)}
-                {this.generateRankHtml(100,r1,r1time,achieve.r1last,achieve.r1lasttime)}
-                {this.generateRankHtml(501,r501,r501time,achieve.r501last,achieve.r501lasttime)}
-                <tr>
-                  <td className="pob">
-                    <OverlayTrigger placement="bottom" overlay={
-                      <Tooltip>
-                        <div>
-                          本次变化：{
-                          (this.state.mylastno>this.state.myno?
-                          <FontAwesome name="arrow-up"/>:<FontAwesome name="arrow-down"/>)}
-                          {Math.abs(this.state.mylastno-this.state.myno)}
-                        </div>
-                        <div>上次排名： {this.state.mylastno}</div>
-                        <div>
-                          {"上次更新: " + (Math.floor((parseInt(this.state.mylastranktime))/2)+1) + "日"}
-                          {(parseInt(this.state.mylastranktime)%2!=0?<FontAwesome name="sun-o"/> : <FontAwesome name="moon-o"/>)}
-                        </div>
-                      </Tooltip>
-                    }>
-                      <div>{myno}位</div>
-                    </OverlayTrigger>
-                    <div className="pos bg-primary">{mynostr}</div>
-                  </td>
-                  <td>
-                    <OverlayTrigger placement="bottom" overlay={
-                      <Tooltip>
-                        <div>预想战果增加： <FontAwesome name="arrow-up"/>{upsenka.toFixed(1)}</div>
-                        <div>战果预测值： {(mysenka+upsenka).toFixed(1)}</div>
-                      </Tooltip>
-                    }>
-                      <div>
-                        {mysenka.toFixed(0)}
-                        <span className="senka-up">(<FontAwesome name="arrow-up"/>{upsenka.toFixed(1)})</span>
-                      </div>
-                    </OverlayTrigger>
-                  </td>
-                </tr>
-                </tbody>
-              </Table>
-            </Panel>
-          </Col>
+          <SenkaInfo
+            achieve={achieve}
+            upsenka={upsenka}
+            member_id={this.props.basic.api_member_id}
+            backstate={
+              (newstate) => {
+                this.setState(newstate);
+              }
+            }
+          >
+          </SenkaInfo>
           <SenkaCaculator
             senkaleft={senkaleft}
             targetsenka={this.state.targetsenka}
@@ -746,30 +578,14 @@ export const reactClass = connect(
             }
           >
           </SenkaCaculator>
-
           <SenkaCallendar
             exphis={exphis}
             tmpexp={this.state.tmpexp}
             tmpno={this.state.tmpno}
           >
           </SenkaCallendar>
-
         </Row>
-
       </div>
     )
   }
 });
-
-
-
-
-
-
-
-
-
-
-
-
-

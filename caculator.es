@@ -51,8 +51,8 @@ export default class SenkaCaculator extends Component {
       <Col xs={6}>
         <Panel header={
           <span>
-                <FontAwesome name="calculator"/> 战果计算器
-              </span>
+            <FontAwesome name="calculator"/> 战果计算器
+          </span>
         } className="info senka-calc">
           <div className="senka-ipt flex">
             <div>
