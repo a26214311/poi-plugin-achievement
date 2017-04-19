@@ -51,8 +51,22 @@ export default class SenkaInfo extends Component {
     this.props.backstate({reviseType:revise});
   };
 
+  render() {
+    try {
+      return this.render_D();
+    } catch (e) {
+      console.log(e);
+      return (
+        <div>
+          <div>
+            {e.message}
+          </div>
+        </div>
+      )
+    }
+  }
 
-  render(){
+  render_D(){
     var achieve = this.props.achieve;
     var member_id = this.props.member_id;
     var upsenka = this.props.upsenka;

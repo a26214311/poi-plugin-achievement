@@ -61,8 +61,23 @@ export default class SenkaCallendar extends Component {
     return expadd;
   };
 
+  render() {
+    try {
+      return this.render_D();
+    } catch (e) {
+      console.log(e);
+      return (
+        <div>
+          <div>
+            {e.message}
+          </div>
+        </div>
+      )
+    }
+  }
 
-  render(){
+
+  render_D(){
     var exphis = this.props.exphis;
     var expadd = this.senkaOfDay(exphis);
     var callendar = this.generateCallendarFromExpadd(expadd);

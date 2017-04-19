@@ -22,5 +22,5 @@ export const getRankDateNo = (now) =>{
   return no;
 }
 
-ea = (max, min) => (max % min ? ea(min, max % min) : min);
+const ea = (max, min) => (max % min ? ea(min, max % min) : min);
 export const EAforArr = arr => arr.sort().reduce((pre, cur) => ea(cur, pre));

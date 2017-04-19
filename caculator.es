@@ -37,7 +37,22 @@ export default class SenkaCaculator extends Component {
     }
   }
 
-  render(){
+  render() {
+    try {
+      return this.render_D();
+    } catch (e) {
+      console.log(e);
+      return (
+        <div>
+          <div>
+            {e.message}
+          </div>
+        </div>
+      )
+    }
+  }
+
+  render_D(){
     var now = new Date();
     var day = now.getDate();
     var month = now.getMonth();
