@@ -14,12 +14,7 @@ import SenkaCaculator from './caculator'
 import SenkaCallendar from './callendar'
 import SenkaInfo from './info'
 
-import {getDateNo,getRankDateNo} from './util'
-
-
-
-
-const Chart = require("./Chart");
+import {EAforArr,getDateNo,getRankDateNo} from './util'
 
 const fs = require('fs')
 const exlist=["1-5","1-6","2-5","3-5","4-5","5-5","6-5"];
@@ -31,9 +26,6 @@ const MAGIC_R_NUMS = [ 8931, 1201, 1156, 5061, 4569, 4732, 3779, 4568, 5695, 461
 //const MAGIC_L_NUMS = [ 25, 92, 79, 52, 58, 36, 93, 92, 58, 82 ]  // 2017.2.28-2017.3.17
 //const MAGIC_L_NUMS = [ 63, 30, 70, 83, 95, 52, 45, 88, 92, 83 ]     // 2017.3.17-2017.4.6
 const MAGIC_L_NUMS = [ 63, 30, 70, 83, 95, 52, 40, 88, 92, 83 ]     // 2017.4.6-2017.?
-
-const ea = (max, min) => (max % min ? ea(min, max % min) : min);
-const EAforArr = arr => arr.sort().reduce((pre, cur) => ea(cur, pre));
 
 export const reactClass = connect(
   state => ({

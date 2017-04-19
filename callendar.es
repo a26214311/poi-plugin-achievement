@@ -2,8 +2,7 @@ import React, {Component} from 'react'
 import {Row, Col, Panel, FormControl, ButtonGroup, Button, Table, OverlayTrigger, Tooltip} from 'react-bootstrap'
 import FontAwesome from 'react-fontawesome'
 const dayofMonth = [31,28,31,30,31,30,31,31,30,31,30,31];
-import getDateNo from './util'
-
+import {getDateNo} from './util'
 
 export default class SenkaCallendar extends Component {
 
@@ -71,8 +70,8 @@ export default class SenkaCallendar extends Component {
       <Col xs={12}>
         <Panel header={
           <span>
-                <FontAwesome name="calendar"/> 战果日历
-              </span>
+            <FontAwesome name="calendar"/> 战果日历
+          </span>
         }>
           <Table striped bordered condensed>
             <thead>
