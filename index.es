@@ -179,7 +179,6 @@ export const reactClass = connect(
 
   auto_magic(page,list){
     var larray = [];
-    var oldmagic = this.state.mymagic;
     var fixR=false;
     for(var i=0;i<list.length;i++){
       var no=list[i].api_mxltvkpyuklh;
