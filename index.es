@@ -11,6 +11,7 @@ import FontAwesome from 'react-fontawesome'
 import {extensionSelectorFactory} from 'views/utils/selectors'
 
 import SenkaCaculator from './caculator'
+import SenkaCallendar from './callendar'
 
 const EXTENSION_KEY = 'poi-plugin-click-button'
 
@@ -595,33 +596,6 @@ export const reactClass = connect(
     )
   }
 
-
-
-  senkaOfDay = exphis => {
-    let hiskey = Object.keys(exphis).sort((a, b) => parseInt(a) - parseInt(b));
-    let lastkey = hiskey[0];
-    let expadd=[];
-    hiskey.map(key => {
-      if(key != hiskey[0] && key <= this.getDateNo(new Date())) {
-        let addsenka = (exphis[key] - exphis[lastkey]) / 50000 * 35;
-        if(exphis[lastkey] > 0){
-          expadd[key] = addsenka;
-        }
-        lastkey = key;
-      }
-    });
-
-    if(!expadd[this.state.tmpno+1]){
-      if(exphis[lastkey]>0) {
-        var addsenka = (this.state.tmpexp - exphis[lastkey]) / 50000 * 35;
-        expadd[this.state.tmpno + 1] = addsenka;
-      }
-    }
-
-    return expadd;
-  };
-
-
   render_D() {
     var achieve = this.state;
     var r1 = achieve.r1?achieve.r1:0;
@@ -641,34 +615,7 @@ export const reactClass = connect(
     var now = new Date();
     var unclearedex = this.getUnclearedEx();
 
-
     var exphis = this.state.exphis;
-    let expadd = this.senkaOfDay(exphis);
-
-    /* 拆出
-    var exphis = this.state.exphis;
-    var nowno = this.getDateNo(now);
-    var hiskey = Object.keys(exphis);
-    hiskey.sort(function (a,b) {return(parseInt(a)-parseInt(b))});
-    var lastkey = hiskey[0];
-
-    var expadd=[];
-    hiskey.map(function(key){
-      if(key!=hiskey[0]&&key<=nowno) {
-          var addsenka = (exphis[key] - exphis[lastkey])/50000*35;
-        if(exphis[lastkey]>0){
-          expadd[key]=addsenka;
-        }
-          lastkey = key;
-      }
-    });
-    if(!expadd[this.state.tmpno+1]){
-      if(exphis[lastkey]>0) {
-        var addsenka = (this.state.tmpexp - exphis[lastkey]) / 50000 * 35;
-        expadd[this.state.tmpno + 1] = addsenka;
-      }
-    }
-    */
 
     var upsenka;
     var ensuresenka=achieve.fensuresenka;
@@ -688,10 +635,6 @@ export const reactClass = connect(
     var ignoreex = this.state.ignoreex;
     let maps = this.props.maps;
 
-
-    var day = now.getDate();
-    var month = now.getMonth();
-    var daysleft = dayofMonth[month] - day + 1;
     var senkaleft = this.state.targetsenka-mysenka-upsenka;
     for(var i=0;i<unclearedex.length;i++){
       if(!ignoreex[unclearedex[i]]){
@@ -703,33 +646,6 @@ export const reactClass = connect(
       senkaleft=senkaleft-350;
     }
 
-    var firstday = new Date();
-    firstday.setDate(1);
-    var firstdayofWeek = firstday.getDay();
-    var callendar = [];
-    var frontblanknum=(6+firstdayofWeek)%7;
-    var days = dayofMonth[month];
-    var lines = Math.ceil((days+frontblanknum)/7);
-    for(var i=0;i<lines;i++){
-      var weeks = [];
-      for(var j=1;j<=7;j++){
-        var day = i*7+j-frontblanknum;
-        if(day<1){
-          weeks.push(<td><div></div><div></div></td>)
-        }else if(day>days){
-          weeks.push(<td><div></div><div></div></td>)
-        }else{
-          var expmorning = expadd[day*2-1]?expadd[day*2-1]:0;
-          var expafternoon = expadd[day*2]?expadd[day*2]:0;
-          var totalexp = expmorning+expafternoon;
-          weeks.push(<td><div><font size={"4"}>{day}</font></div><div>{
-            totalexp>0.1?totalexp.toFixed(1):'--'
-          }</div></td>)
-        }
-      }
-      callendar.push(<tr>{weeks}</tr>)
-    }
-    
     return (
       <div id="achievement" className="achievement">
         <link rel="stylesheet" href={join(__dirname, 'achievement.css')}/>
@@ -830,23 +746,14 @@ export const reactClass = connect(
             }
           >
           </SenkaCaculator>
-          <Col xs={12}>
-            <Panel header={
-              <span>
-                <FontAwesome name="calendar"/> 战果日历
-              </span>
-            }>
-              <Table striped bordered condensed>
-                <thead>
-                <tr><td>一</td><td>二</td><td>三</td><td>四</td><td>五</td>
-                  <td><font color={"red"}>六</font></td><td><font color={"red"}>日</font></td></tr>
-                </thead>
-                <tbody>
-                {callendar}
-                </tbody>
-              </Table>
-            </Panel>
-          </Col>
+
+          <SenkaCallendar
+            exphis={exphis}
+            tmpexp={this.state.tmpexp}
+            tmpno={this.state.tmpno}
+          >
+          </SenkaCallendar>
+
         </Row>
 
       </div>

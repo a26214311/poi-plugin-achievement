@@ -1,20 +1,11 @@
 import React, {Component} from 'react'
-import {connect} from 'react-redux'
-
-import {join} from 'path'
-import { createSelector } from 'reselect'
-import {Row, Col, Checkbox, Panel, FormGroup, FormControl, ButtonGroup, Button, Table, OverlayTrigger, Tooltip} from 'react-bootstrap'
+import {Row, Col, Panel, FormControl, ButtonGroup, Button, Table, OverlayTrigger, Tooltip} from 'react-bootstrap'
 import FontAwesome from 'react-fontawesome'
 
-
-
-const fs = require('fs')
 const exlist=["1-5","1-6","2-5","3-5","4-5","5-5","6-5"];
-const exvalue={"1-5":75,"1-6":75,"2-5":100,"3-5":150,"4-5":180,"5-5":200,"6-5":250};
 const dayofMonth = [31,28,31,30,31,30,31,31,30,31,30,31];
 
 export default class SenkaCaculator extends Component {
-
   handleChangeTarget = e =>{
     var value = e.target.value;
     if(parseInt(value)>66666){
@@ -25,6 +16,7 @@ export default class SenkaCaculator extends Component {
     }
     this.props.backstate({targetsenka:value});
   }
+
   handleExChange = e =>{
     var value = e.currentTarget.value;
     var ignoreex = this.props.ignoreex;
@@ -35,6 +27,7 @@ export default class SenkaCaculator extends Component {
     this.props.backstate({ignoreex:ignoreex});
   }
 
+
   handleExtraSenkaChange = e => {
     e.preventDefault();
     e.stopPropagation();
@@ -43,8 +36,6 @@ export default class SenkaCaculator extends Component {
       this.props.backstate({extraSenka:es});
     }
   }
-
-
 
   render(){
     var now = new Date();
@@ -55,6 +46,7 @@ export default class SenkaCaculator extends Component {
     var ignoreex = this.props.ignoreex;
     var senkaleft = this.props.senkaleft;
     var extraSenka = this.props.extraSenka;
+
     return(
       <Col xs={6}>
         <Panel header={
