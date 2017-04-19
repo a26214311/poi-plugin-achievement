@@ -17,13 +17,11 @@ import SenkaInfo from './info'
 import {getDateNo,getRankDateNo} from './util'
 
 
-const EXTENSION_KEY = 'poi-plugin-click-button'
 
 
 const Chart = require("./Chart");
 
 const fs = require('fs')
-const zh = "阿八嚓哒妸发旮哈或讥咔垃麻拏噢妑七呥撒它拖脱穵夕丫帀坐".split('');
 const exlist=["1-5","1-6","2-5","3-5","4-5","5-5","6-5"];
 const exvalue={"1-5":75,"1-6":75,"2-5":100,"3-5":150,"4-5":180,"5-5":200,"6-5":250};
 
@@ -33,12 +31,9 @@ const MAGIC_R_NUMS = [ 8931, 1201, 1156, 5061, 4569, 4732, 3779, 4568, 5695, 461
 //const MAGIC_L_NUMS = [ 25, 92, 79, 52, 58, 36, 93, 92, 58, 82 ]  // 2017.2.28-2017.3.17
 //const MAGIC_L_NUMS = [ 63, 30, 70, 83, 95, 52, 45, 88, 92, 83 ]     // 2017.3.17-2017.4.6
 const MAGIC_L_NUMS = [ 63, 30, 70, 83, 95, 52, 40, 88, 92, 83 ]     // 2017.4.6-2017.?
-//    const MAGIC_L_NUMS = [ 63, 30, 79, 52, 58, 36, 45, 88, 92, 82 ]  // 0 1 6 7 8 is correct
 
 const ea = (max, min) => (max % min ? ea(min, max % min) : min);
 const EAforArr = arr => arr.sort().reduce((pre, cur) => ea(cur, pre));
-
-
 
 export const reactClass = connect(
   state => ({
@@ -519,7 +514,6 @@ export const reactClass = connect(
     var no = getRankDateNo(ranktime);
 
     var unclearedex = this.getUnclearedEx();
-
     var exphis = this.state.exphis;
     var upsenka;
     var ensuresenka=achieve.fensuresenka;
