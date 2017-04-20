@@ -52,7 +52,7 @@ export default class SenkaCallendar extends Component {
     });
 
     if(!expadd[this.props.tmpno+1]){
-      if(exphis[lastkey]>0) {
+      if(exphis[lastkey]>0&&this.props.tmpno<=getDateNo(new Date())) {
         var addsenka = (this.props.tmpexp - exphis[lastkey]) / 50000 * 35;
         expadd[this.props.tmpno + 1] = addsenka;
       }

@@ -126,7 +126,7 @@ export const reactClass = connect(
       achieve.exphis=exphistory;
       needupdate=true;
     }
-    if(exp>data.tmpexp||exp<data.tmpexp-1000000){
+    if(exp>data.tmpexp||exp<data.tmpexp-10000){
       if(now.getDate()==dayofMonth[month]){
         var Hour = now.getHours();
         if(Hour<21){
