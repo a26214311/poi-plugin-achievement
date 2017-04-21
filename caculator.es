@@ -1,9 +1,8 @@
 import React, {Component} from 'react'
 import {Row, Col, Panel, FormControl, ButtonGroup, Button, Table, OverlayTrigger, Tooltip} from 'react-bootstrap'
 import FontAwesome from 'react-fontawesome'
+import {exlist,dayofMonth} from './util'
 
-const exlist=["1-5","1-6","2-5","3-5","4-5","5-5","6-5"];
-const dayofMonth = [31,28,31,30,31,30,31,31,30,31,30,31];
 
 export default class SenkaCaculator extends Component {
   handleChangeTarget = e =>{

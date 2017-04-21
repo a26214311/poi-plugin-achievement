@@ -1,13 +1,7 @@
 import React, {Component} from 'react'
 import {Row, Col, Panel, FormControl, ButtonGroup, Button, Table, OverlayTrigger, Tooltip} from 'react-bootstrap'
 import FontAwesome from 'react-fontawesome'
-import {getRankDateNo} from './util'
-
-const MAGIC_R_NUMS = [ 8931, 1201, 1156, 5061, 4569, 4732, 3779, 4568, 5695, 4619, 4912, 5669, 6586 ]
-//const MAGIC_L_NUMS = [ 25, 92, 79, 52, 58, 36, 93, 92, 58, 82 ]  // 2017.2.28-2017.3.17
-//const MAGIC_L_NUMS = [ 63, 30, 70, 83, 95, 52, 45, 88, 92, 83 ]     // 2017.3.17-2017.4.6
-const MAGIC_L_NUMS = [ 63, 30, 70, 83, 95, 52, 40, 88, 92, 83 ]     // 2017.4.6-2017.?
-
+import {getRankDateNo,MAGIC_L_NUMS} from './util'
 
 export default class SenkaInfo extends Component {
 
@@ -85,15 +79,14 @@ export default class SenkaInfo extends Component {
                     <p className="text-left">
                       {achieve.reviseType ?
                         <span>
-                      当前战果系数为{achieve.mymagic>9?achieve.mymagic:MAGIC_L_NUMS[member_id % 10]}<br/>
+                      榜单不准确时点击此按钮自动校准<br/>
+                      当前战果系数为{achieve.mymagic>9?achieve.mymagic:MAGIC_L_NUMS[member_id % 10]}<br/><br/>
                       游戏更新后，战果榜单可能不准确<br/>
                       榜单不准确时，点击此按钮<br/>
                       进入游戏刷新战果榜的任意一页<br/>
                       则会自动校准战果系数<br/>
                       如果战果榜单依然不准，请再次点击此按钮<br/>
-                      进入战果榜单的另外一页<br/>
-                      如果多次校准后战果依然不准确<br/>
-                      请等待插件更新
+                      进入战果榜单的另外一页以校准战果榜单<br/>
                       </span>
                         :
                         <span>
