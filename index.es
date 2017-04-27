@@ -57,6 +57,12 @@ export const reactClass = connect(
       r20last:0,
       r20lasttime:0,
 
+      r5his:{},
+      r20his:{},
+      r100his:{},
+      r501his:{},
+
+
       mylastno:0,
       mylastranktime:0,
 
@@ -271,6 +277,7 @@ export const reactClass = connect(
         achieve.r1=senka;
         achieve.r1time=now;
         var timeno = getRankDateNo(now);
+        achieve.r100his[timeno]=senka;
         if(r1timeno!=timeno){
           achieve.r1last=r1last;
           achieve.r1lasttime=r1timeno;
@@ -285,6 +292,7 @@ export const reactClass = connect(
         var r501timeno = getRankDateNo(new Date(r501time));
         achieve.r501=senka;
         achieve.r501time=now;
+        achieve.r501his[timeno]=senka;
         if(r501timeno!=timeno){
           achieve.r501last=r501last;
           achieve.r501lasttime=r501timeno;
@@ -299,6 +307,7 @@ export const reactClass = connect(
         var r5timeno = getRankDateNo(new Date(r5time));
         achieve.r5=senka;
         achieve.r5time=now;
+        achieve.r5his[timeno]=senka;
         if(r5timeno!=timeno){
           achieve.r5last=r5last;
           achieve.r5lasttime=r5timeno;
@@ -313,6 +322,7 @@ export const reactClass = connect(
         var r20timeno = getRankDateNo(new Date(r20time));
         achieve.r20=senka;
         achieve.r20time=now;
+        achieve.r20his[timeno]=senka;
         if(r20timeno!=timeno){
           achieve.r20last=r20last;
           achieve.r20lasttime=r20timeno;
