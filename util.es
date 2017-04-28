@@ -25,6 +25,31 @@ export const getRankDateNo = (now) =>{
 const ea = (max, min) => (max % min ? ea(min, max % min) : min);
 export const EAforArr = arr => arr.sort().reduce((pre, cur) => ea(cur, pre));
 
+export const senkaOfDay = (exphis,tmpexp,tmpno) => {
+  let hiskey = Object.keys(exphis).sort((a, b) => parseInt(a) - parseInt(b));
+  let lastkey = hiskey[0];
+  let expadd=[];
+  hiskey.map(key => {
+    if(key != hiskey[0] && key <= getDateNo(new Date())) {
+      let addsenka = (exphis[key] - exphis[lastkey]) / 50000 * 35;
+      if(exphis[lastkey] > 0){
+        expadd[key] = addsenka;
+      }
+      lastkey = key;
+    }
+  });
+
+  if(!expadd[tmpno+1]){
+    if(exphis[lastkey]>0&&tmpno<=getDateNo(new Date())) {
+      var addsenka = (tmpexp - exphis[lastkey]) / 50000 * 35;
+      expadd[tmpno + 1] = addsenka;
+    }
+  }
+  return expadd;
+};
+
+
+
 
 
 export const fs = require('fs')

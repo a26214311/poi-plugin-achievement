@@ -1,7 +1,7 @@
 import React, {Component} from 'react'
 import {Row, Col, Panel, FormControl, ButtonGroup, Button, Table, OverlayTrigger, Tooltip} from 'react-bootstrap'
 import FontAwesome from 'react-fontawesome'
-import {getDateNo,dayofMonth} from './util'
+import {getDateNo,dayofMonth,senkaOfDay} from './util'
 
 export default class SenkaCallendar extends Component {
 
@@ -36,29 +36,7 @@ export default class SenkaCallendar extends Component {
     return callendar;
   }
 
-  senkaOfDay = exphis => {
-    let hiskey = Object.keys(exphis).sort((a, b) => parseInt(a) - parseInt(b));
-    let lastkey = hiskey[0];
-    let expadd=[];
-    hiskey.map(key => {
-      if(key != hiskey[0] && key <= getDateNo(new Date())) {
-        let addsenka = (exphis[key] - exphis[lastkey]) / 50000 * 35;
-        if(exphis[lastkey] > 0){
-          expadd[key] = addsenka;
-        }
-        lastkey = key;
-      }
-    });
 
-    if(!expadd[this.props.tmpno+1]){
-      if(exphis[lastkey]>0&&this.props.tmpno<=getDateNo(new Date())) {
-        var addsenka = (this.props.tmpexp - exphis[lastkey]) / 50000 * 35;
-        expadd[this.props.tmpno + 1] = addsenka;
-      }
-    }
-
-    return expadd;
-  };
 
   render() {
     try {
@@ -78,7 +56,7 @@ export default class SenkaCallendar extends Component {
 
   render_D(){
     var exphis = this.props.exphis;
-    var expadd = this.senkaOfDay(exphis);
+    var expadd = senkaOfDay(exphis,this.props.tmpexp,this.props.tmpno);
     var callendar = this.generateCallendarFromExpadd(expadd);
     return(
       <Col xs={12}>
