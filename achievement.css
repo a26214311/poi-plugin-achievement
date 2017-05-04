@@ -117,3 +117,16 @@
 #achievement p.short-line {
 	margin-bottom: 2px;
 }
+
+#achievement .btn-panel-title .panel-heading {
+	padding: 0;
+}
+
+#achievement .btn-panel-title .panel-heading .panel-title{
+	display: flex;
+}
+
+#achievement .btn-panel-title .panel-heading .panel-title > button{
+	flex: 1;
+	margin-top: 0;
+}

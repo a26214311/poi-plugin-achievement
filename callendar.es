@@ -4,6 +4,21 @@ import FontAwesome from 'react-fontawesome'
 import {getDateNo,dayofMonth,senkaOfDay} from './util'
 
 export default class SenkaCallendar extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      senkaType: 'calendar'
+    }
+  }
+
+  handleTypeChange = e => {
+    e.preventDefault();
+    e.stopPropagation();
+    //TODO: change senka type
+    this.setState({
+      senkaType: e.currentTarget.value
+    })
+  };
 
   generateCallendarFromExpadd(expadd){
     var firstday = new Date();
@@ -58,13 +73,19 @@ export default class SenkaCallendar extends Component {
     var exphis = this.props.exphis;
     var expadd = senkaOfDay(exphis,this.props.tmpexp,this.props.tmpno);
     var callendar = this.generateCallendarFromExpadd(expadd);
+    console.log(this.state.senkaType);
     return(
       <Col xs={12}>
         <Panel header={
-          <span>
-            <FontAwesome name="calendar"/> 战果日历
-          </span>
-        }>
+          <ButtonGroup>
+            <Button onClick={this.handleTypeChange} value="calendar" bsStyle={this.state.senkaType === 'calendar' ? 'info' : 'default'}>
+              <FontAwesome name="calendar"/> 战果日历
+            </Button>
+            <Button onClick={this.handleTypeChange} value="chart" bsStyle={this.state.senkaType === 'chart' ? 'info' : 'default'}>
+              <FontAwesome name="area-chart"/> 战果趋势
+            </Button>
+          </ButtonGroup>
+        } className={'btn-panel-title ' + this.state.senkaType}>
           <Table striped bordered condensed>
             <thead>
             <tr><td>一</td><td>二</td><td>三</td><td>四</td><td>五</td>
