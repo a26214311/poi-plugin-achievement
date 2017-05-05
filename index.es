@@ -509,6 +509,7 @@ export const reactClass = connect(
             exphis={exphis}
             tmpexp={this.state.tmpexp}
             tmpno={this.state.tmpno}
+            chartType={this.state.chartType}
             backstate={
               (newstate) => {
                 this.setState(newstate);
