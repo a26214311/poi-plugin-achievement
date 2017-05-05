@@ -35,8 +35,6 @@ export const drawChart = (exphis, tmpexp, tmpno, chartType) =>{
     mySenkaData.reduce((cur, pre, idx, arr) => arr[idx] = (parseFloat(cur) + parseFloat(pre)).toFixed(2))
   }
 
-  console.log(JSON.stringify(mySenkaData));
-
   Chart.defaults.global.animation.duration = 0
 
   let myChart = new Chart(ctx, {
