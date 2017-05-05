@@ -568,20 +568,6 @@ export const reactClass = connect(
             tmpno={this.state.tmpno}
           >
           </SenkaCallendar>
-
-          <Col xs={12}>
-            <Panel header={
-              <span>
-                <FontAwesome name="area-chart"/> 战果趋势
-              </span>
-            }>
-              <canvas id="myChart" width="400" height="400"></canvas>
-            </Panel>
-          </Col>
-
-
-
-
         </Row>
       </div>
     )

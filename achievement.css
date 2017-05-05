@@ -130,3 +130,11 @@
 	flex: 1;
 	margin-top: 0;
 }
+
+#achievement .btn-panel-title.calendar .panel-body > canvas{
+	display: none !important;
+}
+
+#achievement .btn-panel-title.chart .panel-body > table{
+	display: none !important;
+}

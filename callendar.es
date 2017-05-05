@@ -95,6 +95,7 @@ export default class SenkaCallendar extends Component {
             {callendar}
             </tbody>
           </Table>
+          <canvas id="myChart" width="400" height="400"></canvas>
         </Panel>
       </Col>
     )
