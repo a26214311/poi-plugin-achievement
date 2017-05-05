@@ -63,16 +63,31 @@ export default class SenkaCalendar extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      senkaType: 'calendar'
+      senkaType: 'calendar',
+      chartType: 'mon'
     }
   }
 
   handleTypeChange = e => {
     e.preventDefault();
     e.stopPropagation();
-    //TODO: change senka type
     this.setState({
       senkaType: e.currentTarget.value
+    })
+  };
+
+  handleChartType = e => {
+    e.preventDefault();
+    e.stopPropagation();
+    let type = this.state.chartType === 'mon' ? 'day' : 'mon';
+    switch(this.state.chartType){
+      case 'mon':
+        break;
+      case 'day':
+        break;
+    }
+    this.setState({
+      chartType: type
     })
   };
 
@@ -130,6 +145,7 @@ export default class SenkaCalendar extends Component {
     var expadd = senkaOfDay(exphis,this.props.tmpexp,this.props.tmpno);
     var calendar = this.generateCalendarFromExpadd(expadd);
     console.log(this.state.senkaType);
+    console.log(this.state.chartType);
     return(
       <Col xs={12}>
         <Panel header={
@@ -152,6 +168,11 @@ export default class SenkaCalendar extends Component {
             </tbody>
           </Table>
           <div className="chart-main">
+            <ButtonGroup>
+              <Button onClick={this.handleChartType} bsStyle="primary" bsSize="xsmall">
+                {this.state.chartType === 'mon'? '按月显示' : '按日显示'}
+              </Button>
+            </ButtonGroup>
             <canvas id="myChart" width="400" height="400"></canvas>
           </div>
         </Panel>
