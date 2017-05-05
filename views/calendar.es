@@ -32,7 +32,7 @@ export const drawChart = (exphis, tmpexp, tmpno, chartType) =>{
     mySenkaData.push(((expadd[day * 2 - 1] ? expadd[day * 2 - 1] : 0) + (expadd[day * 2] ? expadd[day * 2] : 0)).toFixed(1))
   });
   if(chartType === 'mon'){
-    mySenkaData.reduce((cur, pre, idx, arr) => arr[idx] = parseFloat(cur) + parseFloat(pre))
+    mySenkaData.reduce((cur, pre, idx, arr) => arr[idx] = (parseFloat(cur) + parseFloat(pre)).toFixed(2))
   }
 
   console.log(JSON.stringify(mySenkaData));
@@ -174,11 +174,9 @@ export default class SenkaCalendar extends Component {
             </tbody>
           </Table>
           <div className="chart-main">
-            <ButtonGroup>
-              <Button onClick={this.handleChartType} bsStyle="primary" bsSize="xsmall">
-                {this.props.chartType === 'mon'? '按月显示' : '按日显示'}
-              </Button>
-            </ButtonGroup>
+            <Button onClick={this.handleChartType} bsStyle="primary" bsSize="xsmall" className="btn-block">
+              {this.props.chartType === 'mon'? '按月显示' : '按日显示'}
+            </Button>
             <canvas id="myChart" width="400" height="400"></canvas>
           </div>
         </Panel>
