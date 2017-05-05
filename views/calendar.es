@@ -67,7 +67,6 @@ export default class SenkaCalendar extends Component {
     super(props);
     this.state = {
       senkaType: 'calendar',
-      chartType: 'mon'
     }
   }
 
@@ -82,21 +81,19 @@ export default class SenkaCalendar extends Component {
   handleChartType = e => {
     e.preventDefault();
     e.stopPropagation();
-    let type = this.state.chartType === 'mon' ? 'day' : 'mon';
-    switch(this.state.chartType){
+    let type = this.props.chartType === 'mon' ? 'day' : 'mon';
+    switch(this.props.chartType){
       case 'mon':
+        drawChart(this.props.exphis, this.props.tmpexp, this.props.tmpno, 'day')
         break;
       case 'day':
+        drawChart(this.props.exphis, this.props.tmpexp, this.props.tmpno, 'mon')
         break;
     }
-    this.setState({
+    this.props.backstate({
       chartType: type
     })
   };
-
-  drawChart2() {
-    drawChart(this.props.exphis,this.props.tmpexp.this.props.tmpno,this.state.chartType);
-  }
 
   generateCalendarFromExpadd(expadd){
     var firstday = new Date();
@@ -152,7 +149,7 @@ export default class SenkaCalendar extends Component {
     var expadd = senkaOfDay(exphis,this.props.tmpexp,this.props.tmpno);
     var calendar = this.generateCalendarFromExpadd(expadd);
     console.log(this.state.senkaType);
-    console.log(this.state.chartType);
+    console.log(this.props.chartType);
     return(
       <Col xs={12}>
         <Panel header={
