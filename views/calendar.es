@@ -3,7 +3,7 @@ import {Row, Col, Panel, FormControl, ButtonGroup, Button, Table, OverlayTrigger
 import FontAwesome from 'react-fontawesome'
 import {getDateNo,dayofMonth,senkaOfDay} from '../lib/util'
 
-export const drawChart = (exphis,tmpexp,tmpno) =>{
+export const drawChart = (exphis, tmpexp, tmpno, chartType = this.state.chartType) =>{
   let ctx = document.getElementById("myChart");
   const backgroundColors = [
     'rgba(255, 99, 132, 0.2)',
@@ -22,7 +22,7 @@ export const drawChart = (exphis,tmpexp,tmpno) =>{
     'rgba(255, 159, 64, 1)'
   ];
 
-  let expadd = senkaOfDay(exphis,tmpexp,tmpno);
+  let expadd = senkaOfDay(exphis, tmpexp, tmpno);
   let day = new Date().getDate();
   let labels = [], mySenkaData = [];
   for(let i = 1; i <= day; i++){
@@ -31,6 +31,9 @@ export const drawChart = (exphis,tmpexp,tmpno) =>{
   labels.map(day => {
     mySenkaData.push(((expadd[day * 2 - 1] ? expadd[day * 2 - 1] : 0) + (expadd[day * 2] ? expadd[day * 2] : 0)).toFixed(1))
   });
+  if(chartType === 'mon'){
+    mySenkaData.reduce((cur, pre, idx, arr) => arr[idx] = cur + pre)
+  }
 
   Chart.defaults.global.animation.duration = 0
 
