@@ -15,7 +15,7 @@ import SenkaCallendar from './callendar'
 import SenkaInfo from './info'
 import {drawChart} from './callendar.es'
 
-import {EAforArr,getDateNo,getRankDateNo,senkaOfDay,
+import {EAforArr,getDateNo,getRankDateNo,
         fs,exlist,exvalue,dayofMonth,MAGIC_L_NUMS,MAGIC_R_NUMS} from './util'
 
 
