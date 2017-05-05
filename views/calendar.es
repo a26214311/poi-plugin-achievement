@@ -3,7 +3,7 @@ import {Row, Col, Panel, FormControl, ButtonGroup, Button, Table, OverlayTrigger
 import FontAwesome from 'react-fontawesome'
 import {getDateNo,dayofMonth,senkaOfDay} from '../lib/util'
 
-export const drawChart = (exphis, tmpexp, tmpno, chartType = this.state.chartType) =>{
+export const drawChart = (exphis, tmpexp, tmpno, chartType) =>{
   let ctx = document.getElementById("myChart");
   const backgroundColors = [
     'rgba(255, 99, 132, 0.2)',
@@ -93,6 +93,10 @@ export default class SenkaCalendar extends Component {
       chartType: type
     })
   };
+
+  drawChart2() {
+    drawChart(this.props.exphis,this.props.tmpexp.this.props.tmpno,this.state.chartType);
+  }
 
   generateCalendarFromExpadd(expadd){
     var firstday = new Date();
