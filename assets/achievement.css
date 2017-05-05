@@ -118,6 +118,8 @@
 	margin-bottom: 2px;
 }
 
+/* 战果日历 / 战果趋势 切换 */
+
 #achievement .btn-panel-title .panel-heading {
 	padding: 0;
 }
@@ -131,7 +133,7 @@
 	margin-top: 0;
 }
 
-#achievement .btn-panel-title.calendar .panel-body > canvas{
+#achievement .btn-panel-title.calendar .panel-body > .chart-main{
 	display: none !important;
 }
 

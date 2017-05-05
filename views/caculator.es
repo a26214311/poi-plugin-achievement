@@ -1,7 +1,7 @@
 import React, {Component} from 'react'
 import {Row, Col, Panel, FormControl, ButtonGroup, Button, Table, OverlayTrigger, Tooltip} from 'react-bootstrap'
 import FontAwesome from 'react-fontawesome'
-import {exlist,dayofMonth} from './util'
+import {exlist,dayofMonth} from '../lib/util'
 
 
 export default class SenkaCaculator extends Component {

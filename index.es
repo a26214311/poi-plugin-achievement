@@ -10,16 +10,16 @@ import FontAwesome from 'react-fontawesome'
 
 import {extensionSelectorFactory} from 'views/utils/selectors'
 
-import SenkaCaculator from './caculator'
-import SenkaCallendar from './callendar'
-import SenkaInfo from './info'
-import {drawChart} from './callendar.es'
+import SenkaCaculator from './views/caculator'
+import SenkaCalendar from './views/calendar'
+import SenkaInfo from './views/info'
+import {drawChart} from './views/calendar.es'
 
 import {EAforArr,getDateNo,getRankDateNo,
-        fs,exlist,exvalue,dayofMonth,MAGIC_L_NUMS,MAGIC_R_NUMS} from './util'
+        fs,exlist,exvalue,dayofMonth,MAGIC_L_NUMS,MAGIC_R_NUMS} from './lib/util'
 
 
-const Chart = require("./Chart");
+const Chart = require("./assets/Chart");
 
 export const reactClass = connect(
   state => ({
@@ -479,7 +479,7 @@ export const reactClass = connect(
 
     return (
       <div id="achievement" className="achievement">
-        <link rel="stylesheet" href={join(__dirname, 'achievement.css')}/>
+        <link rel="stylesheet" href={join(__dirname, 'assets/achievement.css')}/>
         <Row>
           <SenkaInfo
             achieve={achieve}
@@ -506,12 +506,12 @@ export const reactClass = connect(
             }
           >
           </SenkaCaculator>
-          <SenkaCallendar
+          <SenkaCalendar
             exphis={exphis}
             tmpexp={this.state.tmpexp}
             tmpno={this.state.tmpno}
           >
-          </SenkaCallendar>
+          </SenkaCalendar>
         </Row>
       </div>
     )

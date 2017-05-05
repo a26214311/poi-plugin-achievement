@@ -1,7 +1,7 @@
 import React, {Component} from 'react'
 import {Row, Col, Panel, FormControl, ButtonGroup, Button, Table, OverlayTrigger, Tooltip} from 'react-bootstrap'
 import FontAwesome from 'react-fontawesome'
-import {getDateNo,dayofMonth,senkaOfDay} from './util'
+import {getDateNo,dayofMonth,senkaOfDay} from '../lib/util'
 
 export const drawChart = (exphis,tmpexp,tmpno) =>{
   let ctx = document.getElementById("myChart");
@@ -59,7 +59,7 @@ export const drawChart = (exphis,tmpexp,tmpno) =>{
 };
 
 
-export default class SenkaCallendar extends Component {
+export default class SenkaCalendar extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -76,12 +76,12 @@ export default class SenkaCallendar extends Component {
     })
   };
 
-  generateCallendarFromExpadd(expadd){
+  generateCalendarFromExpadd(expadd){
     var firstday = new Date();
     var month = firstday.getMonth();
     firstday.setDate(1);
     var firstdayofWeek = firstday.getDay();
-    var callendar = [];
+    var calendar = [];
     var frontblanknum=(6+firstdayofWeek)%7;
     var days = dayofMonth[month];
     var lines = Math.ceil((days+frontblanknum)/7);
@@ -102,9 +102,9 @@ export default class SenkaCallendar extends Component {
           }</div></td>)
         }
       }
-      callendar.push(<tr>{weeks}</tr>)
+      calendar.push(<tr>{weeks}</tr>)
     }
-    return callendar;
+    return calendar;
   }
 
 
@@ -128,7 +128,7 @@ export default class SenkaCallendar extends Component {
   render_D(){
     var exphis = this.props.exphis;
     var expadd = senkaOfDay(exphis,this.props.tmpexp,this.props.tmpno);
-    var callendar = this.generateCallendarFromExpadd(expadd);
+    var calendar = this.generateCalendarFromExpadd(expadd);
     console.log(this.state.senkaType);
     return(
       <Col xs={12}>
@@ -148,10 +148,12 @@ export default class SenkaCallendar extends Component {
               <td><font color={"red"}>六</font></td><td><font color={"red"}>日</font></td></tr>
             </thead>
             <tbody>
-            {callendar}
+            {calendar}
             </tbody>
           </Table>
-          <canvas id="myChart" width="400" height="400"></canvas>
+          <div className="chart-main">
+            <canvas id="myChart" width="400" height="400"></canvas>
+          </div>
         </Panel>
       </Col>
     )
