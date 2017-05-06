@@ -86,6 +86,9 @@ export const reactClass = connect(
       fensureuex:exlist,
       extraSenka: 1,
       zclearts:0,
+
+
+      senkaType:'calendar',
       chartType: 'mon'
     }
   }
@@ -140,7 +143,7 @@ export const reactClass = connect(
         achieve.tmpno=no;
         needupdate=true;
       }
-      drawChart(exphistory,exp,no, data.chartType);
+      drawChart(exphistory,exp,no, data.chartType,data.senkaType);
     }
     if(needupdate){
       this.setState(achieve,()=>this.savelist());
@@ -373,7 +376,7 @@ export const reactClass = connect(
         data.need_load=false;
         this.setState(data,() => {
           this.starttimer();
-          drawChart(data.exphis, data.tmpexp, data.tmpno, data.chartType);
+          drawChart(data.exphis, data.tmpexp, data.tmpno, data.chartType,data.senkaType);
         });
         return data;
       } catch (e) {
@@ -510,6 +513,7 @@ export const reactClass = connect(
             tmpexp={this.state.tmpexp}
             tmpno={this.state.tmpno}
             chartType={this.state.chartType}
+            senkaType={this.state.senkaType}
             backstate={
               (newstate) => {
                 this.setState(newstate);

@@ -3,7 +3,10 @@ import {Row, Col, Panel, FormControl, ButtonGroup, Button, Table, OverlayTrigger
 import FontAwesome from 'react-fontawesome'
 import {getDateNo,dayofMonth,senkaOfDay} from '../lib/util'
 
-export const drawChart = (exphis, tmpexp, tmpno, chartType) =>{
+export const drawChart = (exphis, tmpexp, tmpno, chartType,senkaType) =>{
+  if(senkaType=='calendar'){
+    return;
+  }
   let ctx = document.getElementById("myChart");
   const backgroundColors = [
     'rgba(255, 99, 132, 0.2)',
@@ -36,7 +39,8 @@ export const drawChart = (exphis, tmpexp, tmpno, chartType) =>{
   }
 
   Chart.defaults.global.animation.duration = 0
-
+  console.log('will draw chart');
+  console.log(mySenkaData);
   let myChart = new Chart(ctx, {
     type: 'line',
     data: {
@@ -63,17 +67,10 @@ export const drawChart = (exphis, tmpexp, tmpno, chartType) =>{
 
 
 export default class SenkaCalendar extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      senkaType: 'calendar',
-    }
-  }
-
   handleTypeChange = e => {
     e.preventDefault();
     e.stopPropagation();
-    this.setState({
+    this.props.backstate({
       senkaType: e.currentTarget.value
     })
   };
@@ -84,10 +81,10 @@ export default class SenkaCalendar extends Component {
     let type = this.props.chartType === 'mon' ? 'day' : 'mon';
     switch(this.props.chartType){
       case 'mon':
-        drawChart(this.props.exphis, this.props.tmpexp, this.props.tmpno, 'day')
+        drawChart(this.props.exphis, this.props.tmpexp, this.props.tmpno, 'day',this.props.senkaType);
         break;
       case 'day':
-        drawChart(this.props.exphis, this.props.tmpexp, this.props.tmpno, 'mon')
+        drawChart(this.props.exphis, this.props.tmpexp, this.props.tmpno, 'mon',this.props.senkaType);
         break;
     }
     this.props.backstate({
@@ -148,20 +145,20 @@ export default class SenkaCalendar extends Component {
     var exphis = this.props.exphis;
     var expadd = senkaOfDay(exphis,this.props.tmpexp,this.props.tmpno);
     var calendar = this.generateCalendarFromExpadd(expadd);
-    console.log(this.state.senkaType);
+    console.log(this.props.senkaType);
     console.log(this.props.chartType);
     return(
       <Col xs={12}>
         <Panel header={
           <ButtonGroup>
-            <Button onClick={this.handleTypeChange} value="calendar" bsStyle={this.state.senkaType === 'calendar' ? 'info' : 'default'}>
+            <Button onClick={this.handleTypeChange} value="calendar" bsStyle={this.props.senkaType === 'calendar' ? 'info' : 'default'}>
               <FontAwesome name="calendar"/> 战果日历
             </Button>
-            <Button onClick={this.handleTypeChange} value="chart" bsStyle={this.state.senkaType === 'chart' ? 'info' : 'default'}>
+            <Button onClick={this.handleTypeChange} value="chart" bsStyle={this.props.senkaType === 'chart' ? 'info' : 'default'}>
               <FontAwesome name="area-chart"/> 战果趋势
             </Button>
           </ButtonGroup>
-        } className={'btn-panel-title ' + this.state.senkaType}>
+        } className={'btn-panel-title ' + this.props.senkaType}>
           <Table striped bordered condensed>
             <thead>
             <tr><td>一</td><td>二</td><td>三</td><td>四</td><td>五</td>
