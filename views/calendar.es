@@ -3,27 +3,10 @@ import {Row, Col, Panel, FormControl, ButtonGroup, Button, Table, OverlayTrigger
 import FontAwesome from 'react-fontawesome'
 import {getDateNo,dayofMonth,senkaOfDay} from '../lib/util'
 
-export const drawChart = (exphis, tmpexp, tmpno, chartType,senkaType) =>{
+export const drawChart = (exphis, tmpexp, tmpno, chartType, senkaType, chartBody) =>{
   if(senkaType=='calendar'){
     return;
   }
-  let ctx = document.getElementById("myChart");
-  const backgroundColors = [
-    'rgba(255, 99, 132, 0.2)',
-    'rgba(54, 162, 235, 0.2)',
-    'rgba(255, 206, 86, 0.2)',
-    'rgba(75, 192, 192, 0.2)',
-    'rgba(153, 102, 255, 0.2)',
-    'rgba(255, 159, 64, 0.2)'
-  ];
-  const borderColors = [
-    'rgba(255, 99, 132, 1)',
-    'rgba(54, 162, 235, 1)',
-    'rgba(255, 206, 86, 1)',
-    'rgba(75, 192, 192, 1)',
-    'rgba(153, 102, 255, 1)',
-    'rgba(255, 159, 64, 1)'
-  ];
 
   let expadd = senkaOfDay(exphis, tmpexp, tmpno);
   let day = new Date().getDate();
@@ -38,31 +21,9 @@ export const drawChart = (exphis, tmpexp, tmpno, chartType,senkaType) =>{
     mySenkaData.reduce((cur, pre, idx, arr) => arr[idx] = (parseFloat(cur) + parseFloat(pre)).toFixed(2))
   }
 
-  Chart.defaults.global.animation.duration = 0
-  console.log('will draw chart');
-  console.log(mySenkaData);
-  let myChart = new Chart(ctx, {
-    type: 'line',
-    data: {
-      labels: labels,
-      datasets: [{
-        label: '我的战果',
-        data: mySenkaData,
-        backgroundColor: backgroundColors[0],
-        borderColor: borderColors[0],
-        borderWidth: 1
-      }]
-    },
-    options: {
-      scales: {
-        yAxes: [{
-          ticks: {
-            beginAtZero:true
-          }
-        }]
-      }
-    }
-  });
+  chartBody.data.datasets[0].data = mySenkaData;
+  chartBody.data.labels = labels;
+  chartBody.update();
 };
 
 
@@ -70,6 +31,7 @@ export default class SenkaCalendar extends Component {
   handleTypeChange = e => {
     e.preventDefault();
     e.stopPropagation();
+    drawChart(this.props.exphis, this.props.tmpexp, this.props.tmpno, this.props.chartType ,this.props.senkaType, this.props.lineChart);
     this.props.backstate({
       senkaType: e.currentTarget.value
     })
@@ -81,10 +43,10 @@ export default class SenkaCalendar extends Component {
     let type = this.props.chartType === 'mon' ? 'day' : 'mon';
     switch(this.props.chartType){
       case 'mon':
-        drawChart(this.props.exphis, this.props.tmpexp, this.props.tmpno, 'day',this.props.senkaType);
+        drawChart(this.props.exphis, this.props.tmpexp, this.props.tmpno, 'day',this.props.senkaType, this.props.lineChart);
         break;
       case 'day':
-        drawChart(this.props.exphis, this.props.tmpexp, this.props.tmpno, 'mon',this.props.senkaType);
+        drawChart(this.props.exphis, this.props.tmpexp, this.props.tmpno, 'mon',this.props.senkaType, this.props.lineChart);
         break;
     }
     this.props.backstate({
@@ -145,8 +107,6 @@ export default class SenkaCalendar extends Component {
     var exphis = this.props.exphis;
     var expadd = senkaOfDay(exphis,this.props.tmpexp,this.props.tmpno);
     var calendar = this.generateCalendarFromExpadd(expadd);
-    console.log(this.props.senkaType);
-    console.log(this.props.chartType);
     return(
       <Col xs={12}>
         <Panel header={

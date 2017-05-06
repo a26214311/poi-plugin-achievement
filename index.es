@@ -21,6 +21,8 @@ import {EAforArr,getDateNo,getRankDateNo,
 
 const Chart = require("./assets/Chart");
 
+let lineChart;
+
 export const reactClass = connect(
   state => ({
     horizontal: state.config.poi.layout || 'horizontal',
@@ -143,7 +145,7 @@ export const reactClass = connect(
         achieve.tmpno=no;
         needupdate=true;
       }
-      drawChart(exphistory,exp,no, data.chartType,data.senkaType);
+      drawChart(exphistory,exp,no, data.chartType, data.senkaType, lineChart);
     }
     if(needupdate){
       this.setState(achieve,()=>this.savelist());
@@ -373,10 +375,52 @@ export const reactClass = connect(
         let savedpath = join(window.APPDATA_PATH, 'achieve', 'achieve.json');
         let datastr = fs.readFileSync(savedpath, 'utf-8');
         let data = eval("(" + datastr + ")");
-        data.need_load=false;
+        data.need_load = false;
         this.setState(data,() => {
           this.starttimer();
-          drawChart(data.exphis, data.tmpexp, data.tmpno, data.chartType,data.senkaType);
+          /* create chart */
+
+          let ctx = document.getElementById("myChart");
+          const backgroundColors = [
+            'rgba(255, 99, 132, 0.2)',
+            'rgba(54, 162, 235, 0.2)',
+            'rgba(255, 206, 86, 0.2)',
+            'rgba(75, 192, 192, 0.2)',
+            'rgba(153, 102, 255, 0.2)',
+            'rgba(255, 159, 64, 0.2)'
+          ];
+          const borderColors = [
+            'rgba(255, 99, 132, 1)',
+            'rgba(54, 162, 235, 1)',
+            'rgba(255, 206, 86, 1)',
+            'rgba(75, 192, 192, 1)',
+            'rgba(153, 102, 255, 1)',
+            'rgba(255, 159, 64, 1)'
+          ];
+          Chart.defaults.global.animation.duration = 0;
+          lineChart = new Chart(ctx, {
+            type: 'line',
+            data: {
+              labels: [],
+              datasets: [{
+                label: '我的战果',
+                data: [],
+                backgroundColor: backgroundColors[0],
+                borderColor: borderColors[0],
+                borderWidth: 1
+              }]
+            },
+            options: {
+              scales: {
+                yAxes: [{
+                  ticks: {
+                    beginAtZero:true
+                  }
+                }]
+              }
+            }
+          });
+          drawChart(data.exphis, data.tmpexp, data.tmpno, data.chartType, data.senkaType, lineChart);
         });
         return data;
       } catch (e) {
@@ -514,6 +558,7 @@ export const reactClass = connect(
             tmpno={this.state.tmpno}
             chartType={this.state.chartType}
             senkaType={this.state.senkaType}
+            lineChart={lineChart}
             backstate={
               (newstate) => {
                 this.setState(newstate);
