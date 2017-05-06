@@ -376,7 +376,7 @@ export const reactClass = connect(
         data.need_load=false;
         this.setState(data,() => {
           this.starttimer();
-          drawChart(data.exphis, data.tmpexp, data.tmpno, data.chartType,data.senkaType);
+          drawChart(data.exphis, data.tmpexp, data.tmpno, data.chartType,'chart');
         });
         return data;
       } catch (e) {
