@@ -31,9 +31,10 @@ export default class SenkaCalendar extends Component {
   handleTypeChange = e => {
     e.preventDefault();
     e.stopPropagation();
-    drawChart(this.props.exphis, this.props.tmpexp, this.props.tmpno, this.props.chartType ,this.props.senkaType, this.props.lineChart);
     this.props.backstate({
       senkaType: e.currentTarget.value
+    }, ()=>{
+      drawChart(this.props.exphis, this.props.tmpexp, this.props.tmpno, this.props.chartType ,this.props.senkaType, this.props.lineChart);
     })
   };
 

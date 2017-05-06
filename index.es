@@ -560,8 +560,8 @@ export const reactClass = connect(
             senkaType={this.state.senkaType}
             lineChart={lineChart}
             backstate={
-              (newstate) => {
-                this.setState(newstate);
+              (newstate, callback) => {
+                this.setState(newstate, callback);
               }
             }
           >
