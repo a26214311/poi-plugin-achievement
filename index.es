@@ -140,7 +140,7 @@ export const reactClass = connect(
         achieve.tmpno=no;
         needupdate=true;
       }
-      drawChart(exphistory,exp,no, this.state.chartType);
+      drawChart(exphistory,exp,no, data.chartType);
     }
     if(needupdate){
       this.setState(achieve,()=>this.savelist());
@@ -373,7 +373,7 @@ export const reactClass = connect(
         data.need_load=false;
         this.setState(data,() => {
           this.starttimer();
-          drawChart(data.exphis, data.tmpexp, data.tmpno, this.state.chartType);
+          drawChart(data.exphis, data.tmpexp, data.tmpno, data.chartType);
         });
         return data;
       } catch (e) {
