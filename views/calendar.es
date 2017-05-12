@@ -1,7 +1,7 @@
 import React, {Component} from 'react'
-import {Row, Col, Panel, FormControl, ButtonGroup, Button, Table, OverlayTrigger, Tooltip} from 'react-bootstrap'
+import { Col, Panel, ButtonGroup, Button, Table } from 'react-bootstrap'
 import FontAwesome from 'react-fontawesome'
-import {getDateNo,dayofMonth,senkaOfDay} from '../lib/util'
+import { getDateNo, dayofMonth, senkaOfDay } from '../lib/util'
 
 export const drawChart = (exphis, tmpexp, tmpno, chartType, senkaType, chartBody) =>{
   if(senkaType=='calendar'){

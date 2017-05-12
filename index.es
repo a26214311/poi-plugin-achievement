@@ -5,8 +5,7 @@ import {createSelector} from 'reselect'
 import {store} from 'views/create-store'
 
 import {join} from 'path'
-import {Row, Col, Checkbox, Panel, FormGroup, FormControl, ButtonGroup, Button, Table, OverlayTrigger, Tooltip} from 'react-bootstrap'
-import FontAwesome from 'react-fontawesome'
+import {Row, Col} from 'react-bootstrap'
 
 import {extensionSelectorFactory} from 'views/utils/selectors'
 
