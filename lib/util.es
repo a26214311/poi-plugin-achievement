@@ -14,7 +14,7 @@ export const getRankDateNo = (now) =>{
   now = new Date(new Date(now).getTime()+(new Date().getTimezoneOffset()+480)*60000);
   var date = now.getDate();
   var hour = now.getHours();
-  if(hour<1){
+  if(hour<2){
     date = date -1;
     hour = hour + 24;
   }
