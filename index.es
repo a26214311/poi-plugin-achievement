@@ -217,7 +217,12 @@ export const reactClass = connect(
 
     if(path=="/kcsapi/api_req_quest/clearitemget"){
       if(postBody.api_quest_id==854){
-        this.setState({extraSenka:2,zclearts:new Date()});
+        var now = new Date();
+        if(now.getDate()==1&&now.getHours()<4){
+          this.setState({extraSenka:2});
+        }else{
+          this.setState({extraSenka:2,zclearts:new Date()});
+        }
       }
     }
     if(path=="/kcsapi/api_req_ranking/mxltvkpyuklh"){
