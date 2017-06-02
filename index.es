@@ -5,6 +5,7 @@ import {createSelector} from 'reselect'
 import {store} from 'views/create-store'
 
 import {join} from 'path'
+import { readJsonSync } from 'fs-extra'
 import {Row, Col} from 'react-bootstrap'
 
 import {extensionSelectorFactory} from 'views/utils/selectors'
@@ -377,8 +378,7 @@ export const reactClass = connect(
     if (needload) {
       try {
         let savedpath = join(window.APPDATA_PATH, 'achieve', 'achieve.json');
-        let datastr = fs.readFileSync(savedpath, 'utf-8');
-        let data = eval("(" + datastr + ")");
+        let data = readJsonSync(savedpath)
         data.need_load = false;
         this.setState(data,() => {
           this.starttimer();
