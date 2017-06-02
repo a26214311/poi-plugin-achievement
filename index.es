@@ -424,7 +424,9 @@ export const reactClass = connect(
               }
             }
           });
-          drawChart(data.exphis, data.tmpexp, data.tmpno, data.chartType, data.senkaType, lineChart);
+          if (typeof data.exphis !== 'undefined' &&
+              typeof data.tmpexp !== 'undefined')
+            drawChart(data.exphis, data.tmpexp, data.tmpno, data.chartType, data.senkaType, lineChart);
         });
         return data;
       } catch (e) {
