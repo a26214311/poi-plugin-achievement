@@ -6,11 +6,11 @@ import {getRankDateNo, MAGIC_L_NUMS} from '../lib/util'
 export default class SenkaInfo extends Component {
 
   generateRankHtml(order,rx,rxtime,rxlast,rxlasttime){
-    rx=rx?rx:0;
-    rxlast = rxlast?rxlast:0;
-    rxtime = new Date(rxtime);
-    var rxno = getRankDateNo(rxtime);
-    var rxtsstr = ["更新时间: " + (Math.floor((parseInt(rxno))/2)+1) + "日", parseInt(rxno)%2!=0?<FontAwesome name="sun-o"/> : <FontAwesome name="moon-o"/>];
+    rx=rx?rx:0
+    rxlast = rxlast?rxlast:0
+    rxtime = new Date(rxtime)
+    const rxno = getRankDateNo(rxtime)
+    const rxtsstr = ["更新时间: " + (Math.floor((parseInt(rxno))/2)+1) + "日", parseInt(rxno)%2!=0?<FontAwesome name="sun-o"/> : <FontAwesome name="moon-o"/>]
     return(
       <tr>
         <td className="pob">
@@ -35,21 +35,21 @@ export default class SenkaInfo extends Component {
   }
 
   handleRevise = e => {
-    e.preventDefault();
-    e.stopPropagation();
-    var revise;
+    e.preventDefault()
+    e.stopPropagation()
+    let revise
     if(this.props.achieve.reviseType)
-      revise=0;
+      revise=0
     else
-      revise=1;
-    this.props.backstate({reviseType:revise});
+      revise=1
+    this.props.backstate({reviseType:revise})
   };
 
   render() {
     try {
-      return this.render_D();
+      return this.render_D()
     } catch (e) {
-      console.log(e);
+      console.log(e)
       return (
         <div>
           <div>
@@ -61,13 +61,13 @@ export default class SenkaInfo extends Component {
   }
 
   render_D(){
-    var achieve = this.props.achieve;
-    var member_id = this.props.member_id;
-    var upsenka = this.props.upsenka;
+    const achieve = this.props.achieve
+    const member_id = this.props.member_id
+    const upsenka = this.props.upsenka
 
-    var ranktime =new Date(achieve.ranktime?achieve.ranktime:0);
-    var mysenka = achieve.mysenka?achieve.mysenka:0;
-    var no = getRankDateNo(ranktime);
+    const ranktime =new Date(achieve.ranktime?achieve.ranktime:0)
+    const mysenka = achieve.mysenka?achieve.mysenka:0
+    const no = getRankDateNo(ranktime)
 
     return(
       <Col xs={6}>

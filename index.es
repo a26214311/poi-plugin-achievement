@@ -19,16 +19,16 @@ import {EAforArr,getDateNo,getRankDateNo,
         fs,exlist,exvalue,dayofMonth,MAGIC_L_NUMS,MAGIC_R_NUMS} from './lib/util'
 
 
-const Chart = require("./assets/Chart");
+const Chart = require("./assets/Chart")
 
-let lineChart;
+let lineChart
 
 export const reactClass = connect(
   state => ({
     horizontal: state.config.poi.layout || 'horizontal',
     basic:state.info.basic,
     $maps:state.const.$maps,
-    maps:state.info.maps
+    maps:state.info.maps,
   }),
   null, null, {pure: false}
 )(class PluginAchievement extends Component {
@@ -37,7 +37,7 @@ export const reactClass = connect(
     super(props)
     this.state = {
       achieve: {
-        exphis: {}
+        exphis: {},
       },
       exphis: {},
       lastmonth: -1,
@@ -91,110 +91,110 @@ export const reactClass = connect(
 
 
       senkaType:'calendar',
-      chartType: 'mon'
+      chartType: 'mon',
     }
   }
 
   componentWillReceiveProps(nextProps){
-    var basic = nextProps.basic;
-    var exp = basic.api_experience;
-    var now = new Date(new Date().getTime()+(new Date().getTimezoneOffset()+480)*60000);
-    var month = now.getMonth();
-    var no = getDateNo(now);
-    var achieve = {};
-    var data = this.loadlist();
-    var exphistory = data.exphis;
-    var lastmonth = data.lastmonth;
-    var needupdate=false;
+    const basic = nextProps.basic
+    const exp = basic.api_experience
+    const now = new Date(new Date().getTime()+(new Date().getTimezoneOffset()+480)*60000)
+    const month = now.getMonth()
+    const no = getDateNo(now)
+    const achieve = {}
+    const data = this.loadlist()
+    let exphistory = data.exphis
+    const lastmonth = data.lastmonth
+    let needupdate=false
     if(month!=lastmonth){
-      exphistory={};
-      achieve.exphis=exphistory;
-      achieve.lastmonth=month;
-      achieve.fensureexp=0;
-      achieve.fensurets=0;
-      achieve.fensuresenka=0;
-      achieve.fensureuex=exlist;
-      achieve.r1=0;
-      achieve.r501=0;
-      achieve.r5=0;
-      achieve.r20=0;
-      achieve.mysenka=0;
-      achieve.rankuex=exlist;
-      achieve.extraSenka=1;
-      achieve.zclearts=0;
-      needupdate=true;
+      exphistory={}
+      achieve.exphis=exphistory
+      achieve.lastmonth=month
+      achieve.fensureexp=0
+      achieve.fensurets=0
+      achieve.fensuresenka=0
+      achieve.fensureuex=exlist
+      achieve.r1=0
+      achieve.r501=0
+      achieve.r5=0
+      achieve.r20=0
+      achieve.mysenka=0
+      achieve.rankuex=exlist
+      achieve.extraSenka=1
+      achieve.zclearts=0
+      needupdate=true
     }
     if(!exphistory[no]){
       if(!exphistory[data.tmpno+1]){
-        exphistory[data.tmpno+1]=data.tmpexp;
+        exphistory[data.tmpno+1]=data.tmpexp
       }
-      exphistory[no]=exp;
-      achieve.exphis=exphistory;
-      needupdate=true;
+      exphistory[no]=exp
+      achieve.exphis=exphistory
+      needupdate=true
     }
     if(exp>data.tmpexp||exp<data.tmpexp-10000){
       if(now.getDate()==dayofMonth[month]){
-        var Hour = now.getHours();
+        const Hour = now.getHours()
         if(Hour<21){
-          achieve.tmpexp=exp;
-          achieve.tmpno=no;
-          needupdate=true;
+          achieve.tmpexp=exp
+          achieve.tmpno=no
+          needupdate=true
         }
       }else{
-        achieve.tmpexp=exp;
-        achieve.tmpno=no;
-        needupdate=true;
+        achieve.tmpexp=exp
+        achieve.tmpno=no
+        needupdate=true
       }
-      drawChart(exphistory,exp,no, data.chartType, data.senkaType, lineChart);
+      drawChart(exphistory,exp,no, data.chartType, data.senkaType, lineChart)
     }
     if(needupdate){
-      this.setState(achieve,()=>this.savelist());
+      this.setState(achieve,()=>this.savelist())
     }
   }
 
   starttimer(){
-    var now = new Date();
-    now = new Date(new Date(now).getTime()+(new Date().getTimezoneOffset()+480)*60000);
-    var left = (43200000-(now.getTime()-18001000)%43200000);
+    let now = new Date()
+    now = new Date(new Date(now).getTime()+(new Date().getTimezoneOffset()+480)*60000)
+    const left = (43200000-(now.getTime()-18001000)%43200000)
     setTimeout(() =>{
-      var exp = this.props.basic.api_experience;
-      var nowtime = new Date();
-      var unclearedex = this.getUnclearedEx();
-      var achieve = {tensureexp:exp,tensurets:nowtime,tensureuex:unclearedex};
+      const exp = this.props.basic.api_experience
+      const nowtime = new Date()
+      const unclearedex = this.getUnclearedEx()
+      const achieve = {tensureexp:exp,tensurets:nowtime,tensureuex:unclearedex}
       this.setState(achieve,()=>{
-        this.savelist();
+        this.savelist()
         setTimeout(()=>{
-          this.starttimer();
-        },600000);
-      });
-    },left);
+          this.starttimer()
+        },600000)
+      })
+    },left)
   }
 
   getRate(rankNo, obfsRate, memberId) {
-    var mymagic = this.state.mymagic>9?this.state.mymagic:MAGIC_L_NUMS[memberId % 10];
+    const mymagic = this.state.mymagic>9?this.state.mymagic:MAGIC_L_NUMS[memberId % 10]
     const rate = obfsRate / MAGIC_R_NUMS[rankNo % 13] / mymagic - 73 - 18
     return rate > 0 ? rate : 0
   }
 
   auto_magic(page,list){
-    var larray = [];
-    var fixR=false;
+    const larray = []
+    let fixR=false
     for(var i=0;i<list.length;i++){
-      var no=list[i].api_mxltvkpyuklh;
-      var key = list[i].api_wuhnhojjxmke;
-      var Rno = no % 13;
+      const no=list[i].api_mxltvkpyuklh
+      const key = list[i].api_wuhnhojjxmke
+      const Rno = no % 13
       if(key%MAGIC_R_NUMS[Rno]==0){//R magic is correct
-        var lrate = key /  MAGIC_R_NUMS[Rno];
-        larray.push(lrate);
+        const lrate = key /  MAGIC_R_NUMS[Rno]
+        larray.push(lrate)
       }else{
-        fixR=true;
+        fixR=true
       }
     }
-    var lsub=[];
+    const lsub=[]
     for(var i=1;i<larray.length;i++){
-      var sub = larray[i-1] - larray[i];
+      const sub = larray[i-1] - larray[i]
       if(sub>0){
-        lsub.push(sub);
+        lsub.push(sub)
       }
     }
     return EAforArr(lsub)
@@ -202,7 +202,7 @@ export const reactClass = connect(
 
 
   handleResponse = e => {
-    const {path, body,postBody} = e.detail;
+    const {path, body,postBody} = e.detail
 
     /*for test only!
 
@@ -218,137 +218,137 @@ export const reactClass = connect(
 
     if(path=="/kcsapi/api_req_quest/clearitemget"){
       if(postBody.api_quest_id==854){
-        var now = new Date();
+        var now = new Date()
         if(now.getDate()==1&&now.getHours()<4){
-          this.setState({extraSenka:2});
+          this.setState({extraSenka:2})
         }else{
-          this.setState({extraSenka:2,zclearts:new Date()});
+          this.setState({extraSenka:2,zclearts:new Date()})
         }
       }
     }
     if(path=="/kcsapi/api_req_ranking/mxltvkpyuklh"){
-      var myname = this.props.basic.api_nickname;
-      var myid = this.props.basic.api_member_id;
-      var achieve = this.state;
-      var page = body.api_disp_page;
-      var list = body.api_list;
-      var now = new Date();
-      var tensurets = achieve.tensurets;
+      const myname = this.props.basic.api_nickname
+      const myid = this.props.basic.api_member_id
+      const achieve = this.state
+      const page = body.api_disp_page
+      const list = body.api_list
+      var now = new Date()
+      const tensurets = achieve.tensurets
       if(achieve.reviseType==0){
-        var newmagic = this.auto_magic(page,list);
-        achieve.mymagic=newmagic;
-        achieve.reviseType=1;
-        console.log("newmagic:"+newmagic);
+        const newmagic = this.auto_magic(page,list)
+        achieve.mymagic=newmagic
+        achieve.reviseType=1
+        console.log("newmagic:"+newmagic)
       }
-      for(var i=0;i<list.length;i++){
+      for(let i=0;i<list.length;i++){
         if(list[i].api_mtjmdcwtvhdr==myname){
-          var no=list[i].api_mxltvkpyuklh;
-          var key = list[i].api_wuhnhojjxmke;
-          var senka = this.getRate(no,key,myid);
-          achieve.mysenka=senka;
-          achieve.mylastno=achieve.myno;
-          achieve.mylastranktime=getRankDateNo(achieve.ranktime);
-          achieve.myno=no;
-          var then = achieve.ranktime;
+          var no=list[i].api_mxltvkpyuklh
+          var key = list[i].api_wuhnhojjxmke
+          var senka = this.getRate(no,key,myid)
+          achieve.mysenka=senka
+          achieve.mylastno=achieve.myno
+          achieve.mylastranktime=getRankDateNo(achieve.ranktime)
+          achieve.myno=no
+          const then = achieve.ranktime
           if(getRankDateNo(now)>getRankDateNo(new Date(then))){
-            achieve.rankuex = this.getUnclearedEx();
+            achieve.rankuex = this.getUnclearedEx()
           }
-          achieve.ranktime = now;
-          var sub = now.getTime()-new Date(tensurets).getTime();
-          var dateno = getRankDateNo(now);
+          achieve.ranktime = now
+          const sub = now.getTime()-new Date(tensurets).getTime()
+          const dateno = getRankDateNo(now)
           if(sub>3600000+30000&&sub<3600000*13-30000){
-            achieve.fensuresenka=senka;
-            achieve.fensurets=achieve.tensurets;
-            achieve.fensureuex=achieve.tensureuex;
-            achieve.fensureexp=achieve.tensureexp;
-            achieve.exphis[dateno] = achieve.tensureexp;
+            achieve.fensuresenka=senka
+            achieve.fensurets=achieve.tensurets
+            achieve.fensureuex=achieve.tensureuex
+            achieve.fensureexp=achieve.tensureexp
+            achieve.exphis[dateno] = achieve.tensureexp
           }else{
-            var ensuresenka=achieve.fensuresenka;
-            var ensureexp = achieve.fensureexp;
-            var ensureuex = achieve.fensureuex;
+            const ensuresenka=achieve.fensuresenka
+            const ensureexp = achieve.fensureexp
+            const ensureuex = achieve.fensureuex
             if(ensuresenka>0&&ensureexp>0){
-              var thenexp = ensureexp;
-              var thensenka = ensuresenka;
-              var senkauex = this.getUnclearedEx();
-              var addexsenka = this.addExSenka(senkauex,ensureuex);
+              const thenexp = ensureexp
+              const thensenka = ensuresenka
+              const senkauex = this.getUnclearedEx()
+              const addexsenka = this.addExSenka(senkauex,ensureuex)
               if(addexsenka==0){
-                var senkaexp = thenexp + (senka-thensenka-addexsenka)*50000/35;
-                achieve.exphis[dateno] = senkaexp;
+                const senkaexp = thenexp + (senka-thensenka-addexsenka)*50000/35
+                achieve.exphis[dateno] = senkaexp
               }
             }
           }
         }
       }
       if(page==10){
-        var no=list[9].api_mxltvkpyuklh;
-        var key = list[9].api_wuhnhojjxmke;
-        var senka = this.getRate(no,key,myid);
-        var r1last = achieve.r1;
-        var r1time = achieve.r1time;
-        var r1timeno = getRankDateNo(new Date(r1time));
-        achieve.r1=senka;
-        achieve.r1time=now;
-        var timeno = getRankDateNo(now);
-        achieve.r100his[timeno]=senka;
+        var no=list[9].api_mxltvkpyuklh
+        var key = list[9].api_wuhnhojjxmke
+        var senka = this.getRate(no,key,myid)
+        const r1last = achieve.r1
+        const r1time = achieve.r1time
+        const r1timeno = getRankDateNo(new Date(r1time))
+        achieve.r1=senka
+        achieve.r1time=now
+        var timeno = getRankDateNo(now)
+        achieve.r100his[timeno]=senka
         if(r1timeno!=timeno){
-          achieve.r1last=r1last;
-          achieve.r1lasttime=r1timeno;
+          achieve.r1last=r1last
+          achieve.r1lasttime=r1timeno
         }
       }else if(page==51){
-        var no=list[0].api_mxltvkpyuklh;
-        var key = list[0].api_wuhnhojjxmke;
-        var senka = this.getRate(no,key,myid);
-        var timeno = getRankDateNo(now);
-        var r501last = achieve.r501;
-        var r501time = achieve.r501time;
-        var r501timeno = getRankDateNo(new Date(r501time));
-        achieve.r501=senka;
-        achieve.r501time=now;
-        achieve.r501his[timeno]=senka;
+        var no=list[0].api_mxltvkpyuklh
+        var key = list[0].api_wuhnhojjxmke
+        var senka = this.getRate(no,key,myid)
+        var timeno = getRankDateNo(now)
+        const r501last = achieve.r501
+        const r501time = achieve.r501time
+        const r501timeno = getRankDateNo(new Date(r501time))
+        achieve.r501=senka
+        achieve.r501time=now
+        achieve.r501his[timeno]=senka
         if(r501timeno!=timeno){
-          achieve.r501last=r501last;
-          achieve.r501lasttime=r501timeno;
+          achieve.r501last=r501last
+          achieve.r501lasttime=r501timeno
         }
       }else if(page==1){
-        var no=list[4].api_mxltvkpyuklh;
-        var key = list[4].api_wuhnhojjxmke;
-        var senka = this.getRate(no,key,myid);
-        var timeno = getRankDateNo(now);
-        var r5last = achieve.r5;
-        var r5time = achieve.r5time;
-        var r5timeno = getRankDateNo(new Date(r5time));
-        achieve.r5=senka;
-        achieve.r5time=now;
-        achieve.r5his[timeno]=senka;
+        var no=list[4].api_mxltvkpyuklh
+        var key = list[4].api_wuhnhojjxmke
+        var senka = this.getRate(no,key,myid)
+        var timeno = getRankDateNo(now)
+        const r5last = achieve.r5
+        const r5time = achieve.r5time
+        const r5timeno = getRankDateNo(new Date(r5time))
+        achieve.r5=senka
+        achieve.r5time=now
+        achieve.r5his[timeno]=senka
         if(r5timeno!=timeno){
-          achieve.r5last=r5last;
-          achieve.r5lasttime=r5timeno;
+          achieve.r5last=r5last
+          achieve.r5lasttime=r5timeno
         }
       }else if(page==2){
-        var no=list[9].api_mxltvkpyuklh;
-        var key = list[9].api_wuhnhojjxmke;
-        var senka = this.getRate(no,key,myid);
-        var timeno = getRankDateNo(now);
-        var r20last = achieve.r20;
-        var r20time = achieve.r20time;
-        var r20timeno = getRankDateNo(new Date(r20time));
-        achieve.r20=senka;
-        achieve.r20time=now;
-        achieve.r20his[timeno]=senka;
+        var no=list[9].api_mxltvkpyuklh
+        var key = list[9].api_wuhnhojjxmke
+        var senka = this.getRate(no,key,myid)
+        var timeno = getRankDateNo(now)
+        const r20last = achieve.r20
+        const r20time = achieve.r20time
+        const r20timeno = getRankDateNo(new Date(r20time))
+        achieve.r20=senka
+        achieve.r20time=now
+        achieve.r20his[timeno]=senka
         if(r20timeno!=timeno){
-          achieve.r20last=r20last;
-          achieve.r20lasttime=r20timeno;
+          achieve.r20last=r20last
+          achieve.r20lasttime=r20timeno
         }
       }else{
 
       }
-      this.setState(achieve,()=>this.savelist());
+      this.setState(achieve,()=>this.savelist())
     }
   }
 
   componentDidMount = () => {
-    window.addEventListener('game.response', this.handleResponse);
-    this.loadlist();
+    window.addEventListener('game.response', this.handleResponse)
+    this.loadlist()
 
   };
 
@@ -358,50 +358,50 @@ export const reactClass = connect(
 
   savelist(){
     try {
-      let data = this.loadlist();
-      let savepath = join(window.APPDATA_PATH, 'achieve', 'achieve.json');
-      fs.writeFileSync(savepath, JSON.stringify(data));
+      const data = this.loadlist()
+      const savepath = join(window.APPDATA_PATH, 'achieve', 'achieve.json')
+      fs.writeFileSync(savepath, JSON.stringify(data))
     } catch (e) {
-      fs.mkdir(join(window.APPDATA_PATH, 'achieve'));
+      fs.mkdir(join(window.APPDATA_PATH, 'achieve'))
       try {
-        let data = this.loadlist();
-        let savepath = join(window.APPDATA_PATH, 'achieve', 'achieve.json');
-        fs.writeFileSync(savepath, JSON.stringify(data));
+        const data = this.loadlist()
+        const savepath = join(window.APPDATA_PATH, 'achieve', 'achieve.json')
+        fs.writeFileSync(savepath, JSON.stringify(data))
       } catch (e2) {
-        console.log(e2);
+        console.log(e2)
       }
     }
   }
 
   loadlist() {
-    let needload = this.state.need_load;
+    const needload = this.state.need_load
     if (needload) {
       try {
-        let savedpath = join(window.APPDATA_PATH, 'achieve', 'achieve.json');
-        let data = readJsonSync(savedpath)
-        data.need_load = false;
+        const savedpath = join(window.APPDATA_PATH, 'achieve', 'achieve.json')
+        const data = readJsonSync(savedpath)
+        data.need_load = false
         this.setState(data,() => {
-          this.starttimer();
+          this.starttimer()
           /* create chart */
 
-          let ctx = document.getElementById("myChart");
+          const ctx = document.getElementById("myChart")
           const backgroundColors = [
             'rgba(255, 99, 132, 0.2)',
             'rgba(54, 162, 235, 0.2)',
             'rgba(255, 206, 86, 0.2)',
             'rgba(75, 192, 192, 0.2)',
             'rgba(153, 102, 255, 0.2)',
-            'rgba(255, 159, 64, 0.2)'
-          ];
+            'rgba(255, 159, 64, 0.2)',
+          ]
           const borderColors = [
             'rgba(255, 99, 132, 1)',
             'rgba(54, 162, 235, 1)',
             'rgba(255, 206, 86, 1)',
             'rgba(75, 192, 192, 1)',
             'rgba(153, 102, 255, 1)',
-            'rgba(255, 159, 64, 1)'
-          ];
-          Chart.defaults.global.animation.duration = 0;
+            'rgba(255, 159, 64, 1)',
+          ]
+          Chart.defaults.global.animation.duration = 0
           lineChart = new Chart(ctx, {
             type: 'line',
             data: {
@@ -411,72 +411,72 @@ export const reactClass = connect(
                 data: [],
                 backgroundColor: backgroundColors[0],
                 borderColor: borderColors[0],
-                borderWidth: 1
-              }]
+                borderWidth: 1,
+              }],
             },
             options: {
               scales: {
                 yAxes: [{
                   ticks: {
-                    beginAtZero:true
-                  }
-                }]
-              }
-            }
-          });
+                    beginAtZero:true,
+                  },
+                }],
+              },
+            },
+          })
           if (typeof data.exphis !== 'undefined' &&
               typeof data.tmpexp !== 'undefined')
-            drawChart(data.exphis, data.tmpexp, data.tmpno, data.chartType, data.senkaType, lineChart);
-        });
-        return data;
+            drawChart(data.exphis, data.tmpexp, data.tmpno, data.chartType, data.senkaType, lineChart)
+        })
+        return data
       } catch (e) {
-        console.log(e);
-        return {};
+        console.log(e)
+        return {}
       }
     } else {
-      return this.state;
+      return this.state
     }
   }
 
   getUnclearedEx(){
-    var maps = this.props.maps;
-    var unclearedex = [];
+    const maps = this.props.maps
+    const unclearedex = []
     exlist.map(function(mapidstr,index){
-      var mapid = mapidstr.split("-").join('');
+      const mapid = mapidstr.split("-").join('')
       if(maps[mapid]){
         if(maps[mapid].api_cleared==1){
 
         }else{
-          unclearedex.push(mapidstr);
+          unclearedex.push(mapidstr)
         }
       }else{
-        unclearedex.push(mapidstr);
+        unclearedex.push(mapidstr)
       }
-    });
-    return unclearedex;
+    })
+    return unclearedex
   }
 
   addExSenka(uexnow,uexthen){
-    var hash={};
+    const hash={}
     for(var i=0;i<uexnow.length;i++){
-      hash[uexnow[i]]=1;
+      hash[uexnow[i]]=1
     }
-    var r=0;
+    let r=0
     for(var i=0;i<uexthen.length;i++){
-      var map=uexthen[i];
+      const map=uexthen[i]
       if(!hash[map]){
-        r=r+exvalue[map];
+        r=r+exvalue[map]
       }
     }
-    return r;
+    return r
   }
 
 
   render() {
     try {
-      return this.render_D();
+      return this.render_D()
     } catch (e) {
-      console.log(e);
+      console.log(e)
       return (
         <div>
           <div>
@@ -492,41 +492,41 @@ export const reactClass = connect(
 
 
   render_D() {
-    var achieve = this.state;
+    const achieve = this.state
 
-    var ranktime =new Date(achieve.ranktime?achieve.ranktime:0);
-    var mysenka = achieve.mysenka?achieve.mysenka:0;
-    var exp = this.state.tmpexp;
-    var no = getRankDateNo(ranktime);
+    const ranktime =new Date(achieve.ranktime?achieve.ranktime:0)
+    const mysenka = achieve.mysenka?achieve.mysenka:0
+    const exp = this.state.tmpexp
+    const no = getRankDateNo(ranktime)
 
-    var unclearedex = this.getUnclearedEx();
-    var exphis = this.state.exphis;
-    var upsenka;
-    var ensuresenka=achieve.fensuresenka;
-    var ensureexp = achieve.fensureexp;
-    var ensureuex = achieve.fensureuex;
+    const unclearedex = this.getUnclearedEx()
+    const exphis = this.state.exphis
+    let upsenka
+    const ensuresenka=achieve.fensuresenka
+    const ensureexp = achieve.fensureexp
+    const ensureuex = achieve.fensureuex
     if(ensuresenka>0&&ensureexp>0){
-      upsenka = (exp-ensureexp)/50000*35+ensuresenka-mysenka+this.addExSenka(unclearedex,ensureuex);
+      upsenka = (exp-ensureexp)/50000*35+ensuresenka-mysenka+this.addExSenka(unclearedex,ensureuex)
       if(new Date(this.state.zclearts).getTime()>new Date(this.state.fensurets).getTime()){
-        upsenka = upsenka + 350;
+        upsenka = upsenka + 350
       }
     }else{
-      upsenka = (exp - exphis[no])/50000*35 + this.addExSenka(unclearedex,this.state.rankuex);
+      upsenka = (exp - exphis[no])/50000*35 + this.addExSenka(unclearedex,this.state.rankuex)
       if(new Date(this.state.zclearts).getTime()>ranktime.getTime()){
-        upsenka = upsenka + 350;
+        upsenka = upsenka + 350
       }
     }
-    var ignoreex = this.state.ignoreex;
-    let maps = this.props.maps;
-    var senkaleft = this.state.targetsenka-mysenka-upsenka;
-    for(var i=0;i<unclearedex.length;i++){
+    const ignoreex = this.state.ignoreex
+    const maps = this.props.maps
+    let senkaleft = this.state.targetsenka-mysenka-upsenka
+    for(let i=0;i<unclearedex.length;i++){
       if(!ignoreex[unclearedex[i]]){
-        senkaleft=senkaleft-exvalue[unclearedex[i]];
+        senkaleft=senkaleft-exvalue[unclearedex[i]]
       }
     }
-    var extraSenka=this.state.extraSenka;
+    const extraSenka=this.state.extraSenka
     if(extraSenka==0){
-      senkaleft=senkaleft-350;
+      senkaleft=senkaleft-350
     }
 
     return (
@@ -539,7 +539,7 @@ export const reactClass = connect(
             member_id={this.props.basic.api_member_id}
             backstate={
               (newstate) => {
-                this.setState(newstate);
+                this.setState(newstate)
               }
             }
           >
@@ -553,7 +553,7 @@ export const reactClass = connect(
             zclearts={this.state.zclearts}
             backstate={
               (newstate) => {
-                this.setState(newstate);
+                this.setState(newstate)
               }
             }
           >
@@ -567,7 +567,7 @@ export const reactClass = connect(
             lineChart={lineChart}
             backstate={
               (newstate, callback) => {
-                this.setState(newstate, callback);
+                this.setState(newstate, callback)
               }
             }
           >
@@ -576,4 +576,4 @@ export const reactClass = connect(
       </div>
     )
   }
-});
+})

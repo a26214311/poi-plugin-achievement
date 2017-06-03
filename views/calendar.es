@@ -5,77 +5,77 @@ import { getDateNo, dayofMonth, senkaOfDay } from '../lib/util'
 
 export const drawChart = (exphis, tmpexp, tmpno, chartType, senkaType, chartBody) =>{
   if(senkaType=='calendar'){
-    return;
+    return
   }
 
-  let expadd = senkaOfDay(exphis, tmpexp, tmpno);
-  let day = new Date().getDate();
-  let labels = [], mySenkaData = [];
+  const expadd = senkaOfDay(exphis, tmpexp, tmpno)
+  const day = new Date().getDate()
+  let labels = [], mySenkaData = []
   for(let i = 1; i <= day; i++){
-    labels.push(i);
+    labels.push(i)
   }
   labels.map(day => {
     mySenkaData.push(((expadd[day * 2 - 1] ? expadd[day * 2 - 1] : 0) + (expadd[day * 2] ? expadd[day * 2] : 0)).toFixed(1))
-  });
+  })
   if(chartType === 'mon'){
     mySenkaData.reduce((cur, pre, idx, arr) => arr[idx] = (parseFloat(cur) + parseFloat(pre)).toFixed(2))
   }
 
-  chartBody.data.datasets[0].data = mySenkaData;
-  chartBody.data.labels = labels;
-  chartBody.update();
-};
+  chartBody.data.datasets[0].data = mySenkaData
+  chartBody.data.labels = labels
+  chartBody.update()
+}
 
 
 export default class SenkaCalendar extends Component {
   handleTypeChange = e => {
-    e.preventDefault();
-    e.stopPropagation();
+    e.preventDefault()
+    e.stopPropagation()
     this.props.backstate({
-      senkaType: e.currentTarget.value
+      senkaType: e.currentTarget.value,
     }, ()=>{
-      drawChart(this.props.exphis, this.props.tmpexp, this.props.tmpno, this.props.chartType ,this.props.senkaType, this.props.lineChart);
+      drawChart(this.props.exphis, this.props.tmpexp, this.props.tmpno, this.props.chartType ,this.props.senkaType, this.props.lineChart)
     })
   };
 
   handleChartType = e => {
-    e.preventDefault();
-    e.stopPropagation();
-    let type = this.props.chartType === 'mon' ? 'day' : 'mon';
+    e.preventDefault()
+    e.stopPropagation()
+    const type = this.props.chartType === 'mon' ? 'day' : 'mon'
     switch(this.props.chartType){
-      case 'mon':
-        drawChart(this.props.exphis, this.props.tmpexp, this.props.tmpno, 'day',this.props.senkaType, this.props.lineChart);
-        break;
-      case 'day':
-        drawChart(this.props.exphis, this.props.tmpexp, this.props.tmpno, 'mon',this.props.senkaType, this.props.lineChart);
-        break;
+    case 'mon':
+      drawChart(this.props.exphis, this.props.tmpexp, this.props.tmpno, 'day',this.props.senkaType, this.props.lineChart)
+      break
+    case 'day':
+      drawChart(this.props.exphis, this.props.tmpexp, this.props.tmpno, 'mon',this.props.senkaType, this.props.lineChart)
+      break
     }
     this.props.backstate({
-      chartType: type
+      chartType: type,
     })
   };
 
   generateCalendarFromExpadd(expadd){
-    var firstday = new Date();
-    var month = firstday.getMonth();
-    firstday.setDate(1);
-    var firstdayofWeek = firstday.getDay();
-    var calendar = [];
-    var frontblanknum=(6+firstdayofWeek)%7;
-    var days = dayofMonth[month];
-    var lines = Math.ceil((days+frontblanknum)/7);
-    for(var i=0;i<lines;i++){
-      var weeks = [];
-      for(var j=1;j<=7;j++){
-        var day = i*7+j-frontblanknum;
+    const firstday = new Date()
+    const month = firstday.getMonth()
+    firstday.setDate(1)
+    const firstdayofWeek = firstday.getDay()
+    const calendar = []
+    const frontblanknum=(6+firstdayofWeek)%7
+    const days = dayofMonth[month]
+    const lines = Math.ceil((days+frontblanknum)/7)
+    for(let i=0;i<lines;i++){
+      const weeks = []
+      for(let j=1;j<=7;j++){
+        const day = i*7+j-frontblanknum
         if(day<1){
           weeks.push(<td><div></div><div></div></td>)
         }else if(day>days){
           weeks.push(<td><div></div><div></div></td>)
         }else{
-          var expmorning = expadd[day*2-1]?expadd[day*2-1]:0;
-          var expafternoon = expadd[day*2]?expadd[day*2]:0;
-          var totalexp = expmorning+expafternoon;
+          const expmorning = expadd[day*2-1]?expadd[day*2-1]:0
+          const expafternoon = expadd[day*2]?expadd[day*2]:0
+          const totalexp = expmorning+expafternoon
           weeks.push(<td><div><font size={"4"}>{day}</font></div><div>{
             totalexp>0.1?totalexp.toFixed(1):'--'
           }</div></td>)
@@ -83,16 +83,16 @@ export default class SenkaCalendar extends Component {
       }
       calendar.push(<tr>{weeks}</tr>)
     }
-    return calendar;
+    return calendar
   }
 
 
 
   render() {
     try {
-      return this.render_D();
+      return this.render_D()
     } catch (e) {
-      console.log(e);
+      console.log(e)
       return (
         <div>
           <div>
@@ -105,9 +105,9 @@ export default class SenkaCalendar extends Component {
 
 
   render_D(){
-    var exphis = this.props.exphis;
-    var expadd = senkaOfDay(exphis,this.props.tmpexp,this.props.tmpno);
-    var calendar = this.generateCalendarFromExpadd(expadd);
+    const exphis = this.props.exphis
+    const expadd = senkaOfDay(exphis,this.props.tmpexp,this.props.tmpno)
+    const calendar = this.generateCalendarFromExpadd(expadd)
     return(
       <Col xs={12}>
         <Panel header={

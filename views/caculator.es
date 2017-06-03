@@ -6,41 +6,41 @@ import {exlist,dayofMonth} from '../lib/util'
 
 export default class SenkaCaculator extends Component {
   handleChangeTarget = e =>{
-    var value = e.target.value;
+    let value = e.target.value
     if(parseInt(value)>66666){
-      value=66666;
+      value=66666
     }
     if(parseInt(value)<0){
-      value=0;
+      value=0
     }
-    this.props.backstate({targetsenka:value});
+    this.props.backstate({targetsenka:value})
   }
 
   handleExChange = e =>{
-    var value = e.currentTarget.value;
-    var ignoreex = this.props.ignoreex;
+    const value = e.currentTarget.value
+    const ignoreex = this.props.ignoreex
     if(ignoreex[value] == 'undefined')
-      ignoreex[value] = true;
+      ignoreex[value] = true
     else
-      ignoreex[value] = !ignoreex[value];
-    this.props.backstate({ignoreex:ignoreex});
+      ignoreex[value] = !ignoreex[value]
+    this.props.backstate({ignoreex:ignoreex})
   }
 
 
   handleExtraSenkaChange = e => {
-    e.preventDefault();
-    e.stopPropagation();
+    e.preventDefault()
+    e.stopPropagation()
     if(!this.props.zclearts){
-      let es = (this.props.extraSenka + 1) % 3;
-      this.props.backstate({extraSenka:es});
+      const es = (this.props.extraSenka + 1) % 3
+      this.props.backstate({extraSenka:es})
     }
   }
 
   render() {
     try {
-      return this.render_D();
+      return this.render_D()
     } catch (e) {
-      console.log(e);
+      console.log(e)
       return (
         <div>
           <div>
@@ -52,14 +52,14 @@ export default class SenkaCaculator extends Component {
   }
 
   render_D(){
-    var now = new Date();
-    var day = now.getDate();
-    var month = now.getMonth();
-    var daysleft = dayofMonth[month] - day + 1;
-    var maps = this.props.maps;
-    var ignoreex = this.props.ignoreex;
-    var senkaleft = this.props.senkaleft;
-    var extraSenka = this.props.extraSenka;
+    const now = new Date()
+    const day = now.getDate()
+    const month = now.getMonth()
+    const daysleft = dayofMonth[month] - day + 1
+    const maps = this.props.maps
+    const ignoreex = this.props.ignoreex
+    const senkaleft = this.props.senkaleft
+    const extraSenka = this.props.extraSenka
 
     return(
       <Col xs={6}>
@@ -118,7 +118,7 @@ export default class SenkaCaculator extends Component {
                 {
                   exlist.map((exid, idx) =>{
                     if(idx < 4){
-                      let mapId = exid.split('-').join('');
+                      const mapId = exid.split('-').join('')
                       if(maps[mapId] && maps[mapId].api_cleared == 1){
                         return (
                           <Button bsStyle='info'>
@@ -142,7 +142,7 @@ export default class SenkaCaculator extends Component {
                 {
                   exlist.map((exid, idx) =>{
                     if(idx >= 4){
-                      let mapId = exid.split('-').join('');
+                      const mapId = exid.split('-').join('')
                       if(maps[mapId] && maps[mapId].api_cleared == 1){
                         return (
                           <Button bsStyle='info'>
