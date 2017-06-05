@@ -68,9 +68,8 @@ export default class SenkaInfo extends Component {
     const ranktime =new Date(achieve.ranktime?achieve.ranktime:0)
     const mysenka = achieve.mysenka?achieve.mysenka:0
     const no = getRankDateNo(ranktime)
-
     return(
-      <Col xs={6}>
+      <Col xs={this.props.lt?3:6}>
         <Panel header={
           <span>
               <FontAwesome name="list-ol"/> 战果信息
@@ -81,7 +80,7 @@ export default class SenkaInfo extends Component {
                         <span>
                       榜单不准确时点击此按钮自动校准<br/>
                       当前战果系数为{achieve.mymagic>9?achieve.mymagic:MAGIC_L_NUMS[member_id % 10]}<br/><br/>
-                      游戏更新后，战果榜单可能不准确<br/>
+                      游戏维护更新后，战果榜单可能不准确<br/>
                       榜单不准确时，点击此按钮<br/>
                       进入游戏刷新战果榜的任意一页<br/>
                       则会自动校准战果系数<br/>
@@ -89,7 +88,7 @@ export default class SenkaInfo extends Component {
                       进入战果榜单的另外一页以校准战果榜单<br/>
                       </span>
                         :
-                        <span>
+                      <span>
                       更新中<br/>
                       请刷新战果
                       </span>}

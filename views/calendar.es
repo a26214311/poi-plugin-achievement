@@ -109,7 +109,7 @@ export default class SenkaCalendar extends Component {
     const expadd = senkaOfDay(exphis,this.props.tmpexp,this.props.tmpno)
     const calendar = this.generateCalendarFromExpadd(expadd)
     return(
-      <Col xs={12}>
+      <Col xs={this.props.lt?6:12}>
         <Panel header={
           <ButtonGroup>
             <Button onClick={this.handleTypeChange} value="calendar" bsStyle={this.props.senkaType === 'calendar' ? 'info' : 'default'}>

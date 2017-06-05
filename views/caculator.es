@@ -62,7 +62,7 @@ export default class SenkaCaculator extends Component {
     const extraSenka = this.props.extraSenka
 
     return(
-      <Col xs={6}>
+      <Col xs={this.props.lt?3:6}>
         <Panel header={
           <span>
             <FontAwesome name="calculator"/> 战果计算器

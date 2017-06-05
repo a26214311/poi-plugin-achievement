@@ -26,6 +26,7 @@ let lineChart
 export const reactClass = connect(
   state => ({
     horizontal: state.config.poi.layout || 'horizontal',
+    double:state.config.poi.tabarea.double,
     basic:state.info.basic,
     $maps:state.const.$maps,
     maps:state.info.maps,
@@ -528,6 +529,7 @@ export const reactClass = connect(
     if(extraSenka==0){
       senkaleft=senkaleft-350
     }
+    const layouttype = (this.props.horizontal=='vertical') && (this.props.double==false)
 
     return (
       <div id="achievement" className="achievement">
@@ -537,6 +539,7 @@ export const reactClass = connect(
             achieve={achieve}
             upsenka={upsenka}
             member_id={this.props.basic.api_member_id}
+            lt={layouttype}
             backstate={
               (newstate) => {
                 this.setState(newstate)
@@ -551,6 +554,7 @@ export const reactClass = connect(
             extraSenka={extraSenka}
             maps={maps}
             zclearts={this.state.zclearts}
+            lt={layouttype}
             backstate={
               (newstate) => {
                 this.setState(newstate)
@@ -565,6 +569,7 @@ export const reactClass = connect(
             chartType={this.state.chartType}
             senkaType={this.state.senkaType}
             lineChart={lineChart}
+            lt={layouttype}
             backstate={
               (newstate, callback) => {
                 this.setState(newstate, callback)
