@@ -30,6 +30,7 @@ export const reactClass = connect(
     basic:state.info.basic,
     $maps:state.const.$maps,
     maps:state.info.maps,
+    $ships:state.const.$ships,
   }),
   null, null, {pure: false}
 )(class PluginAchievement extends Component {
@@ -90,6 +91,7 @@ export const reactClass = connect(
       extraSenka: 1,
       zclearts:0,
 
+      checksum:484764,  //2017.6.5
 
       senkaType:'calendar',
       chartType: 'mon',
@@ -151,6 +153,15 @@ export const reactClass = connect(
     if(needupdate){
       this.setState(achieve,()=>this.savelist())
     }
+  }
+
+  getCheckSum(){
+    var $ships = this.props.$ships
+    var sum=0
+    for(var p in $ships){
+      sum = sum + parseInt(p)
+    }
+    return sum
   }
 
   starttimer(){
@@ -216,10 +227,9 @@ export const reactClass = connect(
 
     */
 
-
+    const now = new Date()
     if(path=="/kcsapi/api_req_quest/clearitemget"){
       if(postBody.api_quest_id==854){
-        var now = new Date()
         if(now.getDate()==1&&now.getHours()<4){
           this.setState({extraSenka:2})
         }else{
@@ -233,19 +243,32 @@ export const reactClass = connect(
       const achieve = this.state
       const page = body.api_disp_page
       const list = body.api_list
-      var now = new Date()
       const tensurets = achieve.tensurets
+
+      const sum = this.getCheckSum()
+      const checksum = this.state.checksum
+      if(sum!=checksum){
+        achieve.reviseType=0
+        achieve.checksum=sum
+      }
       if(achieve.reviseType==0){
+        console.log('checksum failed,will refresh magic')
         const newmagic = this.auto_magic(page,list)
-        achieve.mymagic=newmagic
-        achieve.reviseType=1
-        console.log("newmagic:"+newmagic)
+        if(newmagic>0&&newmagic<100){
+          achieve.mymagic=newmagic
+          achieve.reviseType=1
+          console.log("newmagic:"+newmagic)
+        }
       }
       for(let i=0;i<list.length;i++){
         if(list[i].api_mtjmdcwtvhdr==myname){
           var no=list[i].api_mxltvkpyuklh
           var key = list[i].api_wuhnhojjxmke
           var senka = this.getRate(no,key,myid)
+          if(achieve){
+
+          }
+
           achieve.mysenka=senka
           achieve.mylastno=achieve.myno
           achieve.mylastranktime=getRankDateNo(achieve.ranktime)
