@@ -381,6 +381,10 @@ export const reactClass = connect(
         const savedpath = join(window.APPDATA_PATH, 'achieve', 'achieve.json')
         const data = readJsonSync(savedpath)
         data.need_load = false
+        let zclearts = data.zclearts;
+        if(new Date(zclearts).getDate()==1&&new Date(zclearts).getHours()<6){
+          data.zclearts=0
+        }
         this.setState(data,() => {
           this.starttimer()
           /* create chart */

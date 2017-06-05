@@ -86,6 +86,8 @@ export default class SenkaInfo extends Component {
                       则会自动校准战果系数<br/>
                       如果战果榜单依然不准，请再次点击此按钮<br/>
                       进入战果榜单的另外一页以校准战果榜单<br/>
+                      此按钮只校准战果系数<br/>
+                      系数错误的战果需重新刷新榜单才能校准<br/>
                       </span>
                         :
                       <span>
