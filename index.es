@@ -26,7 +26,7 @@ let lineChart
 export const reactClass = connect(
   state => ({
     horizontal: state.config.poi.layout || 'horizontal',
-    double:state.config.poi.tabarea.double,
+    double:state.config.poi.tabarea?state.config.poi.tabarea.double:false,
     basic:state.info.basic,
     $maps:state.const.$maps,
     maps:state.info.maps,
