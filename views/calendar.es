@@ -7,23 +7,35 @@ export const drawChart = (exphis, tmpexp, tmpno, chartType, senkaType, chartBody
   if(senkaType=='calendar'){
     return
   }
-  console.log(chartBody)
   console.log(senkaLine)
 
   const expadd = senkaOfDay(exphis, tmpexp, tmpno)
   const day = new Date().getDate()
-  let labels = [], mySenkaData = []
+  let labels = [], mySenkaData = [], no5SenkaDate = [], no20SenkaDate = [], no100SenkaDate = [], no501SenkaDate = []
   for(let i = 1; i <= day; i++){
     labels.push(i)
   }
+  const no5Senka = senkaLine.r5his, no20Senka = senkaLine.r20his, no100Senka = senkaLine.r100his, no501Senka = senkaLine.r501his;
   labels.map(day => {
-    mySenkaData.push(((expadd[day * 2 - 1] ? expadd[day * 2 - 1] : 0) + (expadd[day * 2] ? expadd[day * 2] : 0)).toFixed(1))
+    mySenkaData.push(((expadd[day * 2 - 1] ? expadd[day * 2 - 1] : 0) + (expadd[day * 2] ? expadd[day * 2] : 0)).toFixed(1));
+    no5SenkaDate.push(((no5Senka[day * 2 - 1] ? no5Senka[day * 2 - 1] : 0) + (no5Senka[day * 2] ? no5Senka[day * 2] : 0)).toFixed(1))
+    no20SenkaDate.push(((no20Senka[day * 2 - 1] ? no20Senka[day * 2 - 1] : 0) + (no20Senka[day * 2] ? no20Senka[day * 2] : 0)).toFixed(1))
+    no100SenkaDate.push(((no100Senka[day * 2 - 1] ? no100Senka[day * 2 - 1] : 0) + (no100Senka[day * 2] ? no100Senka[day * 2] : 0)).toFixed(1))
+    no501SenkaDate.push(((no501Senka[day * 2 - 1] ? no501Senka[day * 2 - 1] : 0) + (no501Senka[day * 2] ? no501Senka[day * 2] : 0)).toFixed(1))
   })
   if(chartType === 'mon'){
     mySenkaData.reduce((cur, pre, idx, arr) => arr[idx] = (parseFloat(cur) + parseFloat(pre)).toFixed(2))
+    no5SenkaDate.reduce((cur, pre, idx, arr) => arr[idx] = (parseFloat(cur) + parseFloat(pre)).toFixed(2))
+    no20SenkaDate.reduce((cur, pre, idx, arr) => arr[idx] = (parseFloat(cur) + parseFloat(pre)).toFixed(2))
+    no100SenkaDate.reduce((cur, pre, idx, arr) => arr[idx] = (parseFloat(cur) + parseFloat(pre)).toFixed(2))
+    no501SenkaDate.reduce((cur, pre, idx, arr) => arr[idx] = (parseFloat(cur) + parseFloat(pre)).toFixed(2))
   }
 
   chartBody.data.datasets[0].data = mySenkaData
+  chartBody.data.datasets[1].data = no5SenkaDate
+  chartBody.data.datasets[2].data = no20SenkaDate
+  chartBody.data.datasets[3].data = no100SenkaDate
+  chartBody.data.datasets[4].data = no501SenkaDate
   chartBody.data.labels = labels
   chartBody.update()
 }
@@ -36,7 +48,7 @@ export default class SenkaCalendar extends Component {
     this.props.backstate({
       senkaType: e.currentTarget.value,
     }, ()=>{
-      drawChart(this.props.exphis, this.props.tmpexp, this.props.tmpno, this.props.chartType ,this.props.senkaType, this.props.lineChart)
+      drawChart(this.props.exphis, this.props.tmpexp, this.props.tmpno, this.props.chartType ,this.props.senkaType, this.props.lineChart, this.props.senkaLine)
     })
   };
 
@@ -46,10 +58,10 @@ export default class SenkaCalendar extends Component {
     const type = this.props.chartType === 'mon' ? 'day' : 'mon'
     switch(this.props.chartType){
     case 'mon':
-      drawChart(this.props.exphis, this.props.tmpexp, this.props.tmpno, 'day',this.props.senkaType, this.props.lineChart)
+      drawChart(this.props.exphis, this.props.tmpexp, this.props.tmpno, 'day',this.props.senkaType, this.props.lineChart, this.props.senkaLine)
       break
     case 'day':
-      drawChart(this.props.exphis, this.props.tmpexp, this.props.tmpno, 'mon',this.props.senkaType, this.props.lineChart)
+      drawChart(this.props.exphis, this.props.tmpexp, this.props.tmpno, 'mon',this.props.senkaType, this.props.lineChart, this.props.senkaLine)
       break
     }
     this.props.backstate({

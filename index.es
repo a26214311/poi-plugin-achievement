@@ -447,13 +447,43 @@ export const reactClass = connect(
             type: 'line',
             data: {
               labels: [],
-              datasets: [{
-                label: '我的战果',
-                data: [],
-                backgroundColor: backgroundColors[0],
-                borderColor: borderColors[0],
-                borderWidth: 1,
-              }],
+              datasets: [
+                {
+                  label: '我的战果',
+                  data: [],
+                  backgroundColor: backgroundColors[0],
+                  borderColor: borderColors[0],
+                  borderWidth: 1,
+                },
+                {
+                  label: '5位',
+                  data: [],
+                  backgroundColor: backgroundColors[1],
+                  borderColor: borderColors[1],
+                  borderWidth: 1,
+                },
+                {
+                  label: '20位',
+                  data: [],
+                  backgroundColor: backgroundColors[2],
+                  borderColor: borderColors[2],
+                  borderWidth: 1,
+                },
+                {
+                  label: '100位',
+                  data: [],
+                  backgroundColor: backgroundColors[3],
+                  borderColor: borderColors[3],
+                  borderWidth: 1,
+                },
+                {
+                  label: '501位',
+                  data: [],
+                  backgroundColor: backgroundColors[4],
+                  borderColor: borderColors[4],
+                  borderWidth: 1,
+                },
+              ],
             },
             options: {
               scales: {
@@ -620,6 +650,12 @@ export const reactClass = connect(
             chartType={this.state.chartType}
             senkaType={this.state.senkaType}
             lineChart={lineChart}
+            senkaLine={{
+              r5his: this.state.r5his,
+              r20his: this.state.r20his,
+              r100his: this.state.r100his,
+              r501his: this.state.r501his
+            }}
             lt={layouttype}
             backstate={
               (newstate, callback) => {
