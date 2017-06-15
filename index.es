@@ -148,7 +148,9 @@ export const reactClass = connect(
         achieve.tmpno=no
         needupdate=true
       }
-      drawChart(exphistory,exp,no, data.chartType, data.senkaType, lineChart)
+      if(!!lineChart){
+        drawChart(exphistory,exp,no, data.chartType, data.senkaType, lineChart)
+      }
     }
     if(needupdate){
       this.setState(achieve,()=>this.savelist())
