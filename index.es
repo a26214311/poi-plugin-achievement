@@ -149,7 +149,18 @@ export const reactClass = connect(
         needupdate=true
       }
       if(!!lineChart){
-        drawChart(exphistory,exp,no, data.chartType, data.senkaType, lineChart)
+        console.log('================')
+        console.log(data.r5his)
+        console.log(data.r20his)
+        console.log(data.r100his)
+        console.log(data.r501his)
+        console.log('================')
+        drawChart(exphistory,exp,no, data.chartType, data.senkaType, lineChart, {
+          r5his: data.r5his,
+          r20his: data.r20his,
+          r100his: data.r100his,
+          r501his: data.r501his
+        })
       }
     }
     if(needupdate){
@@ -456,7 +467,18 @@ export const reactClass = connect(
           })
           if (typeof data.exphis !== 'undefined' &&
               typeof data.tmpexp !== 'undefined')
-            drawChart(data.exphis, data.tmpexp, data.tmpno, data.chartType, data.senkaType, lineChart)
+            console.log('========--========')
+            console.log(data.r5his)
+            console.log(data.r20his)
+            console.log(data.r100his)
+            console.log(data.r501his)
+            console.log('========--========')
+            drawChart(data.exphis, data.tmpexp, data.tmpno, data.chartType, data.senkaType, lineChart, {
+              r5his: data.r5his,
+              r20his: data.r20his,
+              r100his: data.r100his,
+              r501his: data.r501his
+            })
         })
         return data
       } catch (e) {

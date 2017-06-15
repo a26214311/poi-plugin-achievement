@@ -3,10 +3,12 @@ import { Col, Panel, ButtonGroup, Button, Table } from 'react-bootstrap'
 import FontAwesome from 'react-fontawesome'
 import { getDateNo, dayofMonth, senkaOfDay } from '../lib/util'
 
-export const drawChart = (exphis, tmpexp, tmpno, chartType, senkaType, chartBody) =>{
+export const drawChart = (exphis, tmpexp, tmpno, chartType, senkaType, chartBody, senkaLine) =>{
   if(senkaType=='calendar'){
     return
   }
+  console.log(chartBody)
+  console.log(senkaLine)
 
   const expadd = senkaOfDay(exphis, tmpexp, tmpno)
   const day = new Date().getDate()
