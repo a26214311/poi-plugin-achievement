@@ -17,19 +17,32 @@ export const drawChart = (exphis, tmpexp, tmpno, chartType, senkaType, chartBody
   }
   const no5Senka = senkaLine.r5his, no20Senka = senkaLine.r20his, no100Senka = senkaLine.r100his, no501Senka = senkaLine.r501his;
   labels.map(day => {
-    mySenkaData.push(((expadd[day * 2 - 1] ? expadd[day * 2 - 1] : 0) + (expadd[day * 2] ? expadd[day * 2] : 0)).toFixed(1));
-    no5SenkaDate.push(((no5Senka[day * 2 - 1] ? no5Senka[day * 2 - 1] : 0) + (no5Senka[day * 2] ? no5Senka[day * 2] : 0)).toFixed(1))
-    no20SenkaDate.push(((no20Senka[day * 2 - 1] ? no20Senka[day * 2 - 1] : 0) + (no20Senka[day * 2] ? no20Senka[day * 2] : 0)).toFixed(1))
-    no100SenkaDate.push(((no100Senka[day * 2 - 1] ? no100Senka[day * 2 - 1] : 0) + (no100Senka[day * 2] ? no100Senka[day * 2] : 0)).toFixed(1))
-    no501SenkaDate.push(((no501Senka[day * 2 - 1] ? no501Senka[day * 2 - 1] : 0) + (no501Senka[day * 2] ? no501Senka[day * 2] : 0)).toFixed(1))
+    mySenkaData.push(((expadd[day * 2 - 1] ? expadd[day * 2 - 1] : 0) + (expadd[day * 2] ? expadd[day * 2] : 0)).toFixed(1))
+    no5SenkaDate.push(no5Senka[day * 2 - 1] ? no5Senka[day * 2 - 1] : no5Senka[day * 2 - 2] ? no5Senka[day * 2 - 2] : (day === 1) ? 0 : NaN)
+    no20SenkaDate.push(no20Senka[day * 2 - 1] ? no20Senka[day * 2 - 1] : no20Senka[day * 2 - 2] ? no20Senka[day * 2 - 2] : (day === 1) ? 0 : NaN)
+    no100SenkaDate.push(no100Senka[day * 2 - 1] ? no100Senka[day * 2 - 1] : no100Senka[day * 2 - 2] ? no100Senka[day * 2 - 2] : (day === 1) ? 0 : NaN)
+    no501SenkaDate.push(no501Senka[day * 2 - 1] ? no501Senka[day * 2 - 1] : no501Senka[day * 2 - 2] ? no501Senka[day * 2 - 2] : (day === 1) ? 0 : NaN)
   })
+
+  if(chartType === 'day'){
+    [no5SenkaDate, no20SenkaDate, no100SenkaDate, no501SenkaDate].map(data => {
+      data.reduce((cur, pre, idx, arr) => {
+        arr[idx] = (parseFloat(pre) > parseFloat(cur) ? parseFloat(pre) - parseFloat(cur) : 0).toFixed(2)
+        return pre ? pre : cur ? cur : 0;
+      })
+    })
+  }
   if(chartType === 'mon'){
     mySenkaData.reduce((cur, pre, idx, arr) => arr[idx] = (parseFloat(cur) + parseFloat(pre)).toFixed(2))
-    no5SenkaDate.reduce((cur, pre, idx, arr) => arr[idx] = (parseFloat(cur) + parseFloat(pre)).toFixed(2))
-    no20SenkaDate.reduce((cur, pre, idx, arr) => arr[idx] = (parseFloat(cur) + parseFloat(pre)).toFixed(2))
-    no100SenkaDate.reduce((cur, pre, idx, arr) => arr[idx] = (parseFloat(cur) + parseFloat(pre)).toFixed(2))
-    no501SenkaDate.reduce((cur, pre, idx, arr) => arr[idx] = (parseFloat(cur) + parseFloat(pre)).toFixed(2))
   }
+  console.log('===== No.5 senka data =====')
+  console.log(no5SenkaDate)
+  console.log('===== No.20 senka data =====')
+  console.log(no20SenkaDate)
+  console.log('===== No.100 senka data =====')
+  console.log(no100SenkaDate)
+  console.log('===== No.501 senka data =====')
+  console.log(no501SenkaDate)
 
   chartBody.data.datasets[0].data = mySenkaData
   chartBody.data.datasets[1].data = no5SenkaDate

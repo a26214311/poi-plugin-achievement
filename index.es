@@ -443,6 +443,7 @@ export const reactClass = connect(
             'rgba(255, 159, 64, 1)',
           ]
           Chart.defaults.global.animation.duration = 0
+          Chart.defaults.line.spanGaps = true;
           lineChart = new Chart(ctx, {
             type: 'line',
             data: {
