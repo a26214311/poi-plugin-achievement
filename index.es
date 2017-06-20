@@ -125,10 +125,10 @@ export const reactClass = connect(
       achieve.rankuex=exlist
       achieve.extraSenka=1
       achieve.zclearts=0
-      achieve.r5his=0
-      achieve.r20his=0
-      achieve.r100his=0
-      achieve.r501his=0
+      achieve.r5his={}
+      achieve.r20his={}
+      achieve.r100his={}
+      achieve.r501his={}
       needupdate=true
     }
     if(!exphistory[no]){
