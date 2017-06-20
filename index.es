@@ -125,6 +125,10 @@ export const reactClass = connect(
       achieve.rankuex=exlist
       achieve.extraSenka=1
       achieve.zclearts=0
+      achieve.r5his=0
+      achieve.r20his=0
+      achieve.r100his=0
+      achieve.r501his=0
       needupdate=true
     }
     if(!exphistory[no]){
@@ -135,6 +139,7 @@ export const reactClass = connect(
       achieve.exphis=exphistory
       needupdate=true
     }
+    let willUpdateChart = false
     if(exp>data.tmpexp||exp<data.tmpexp-10000){
       if(now.getDate()==dayofMonth[month]){
         const Hour = now.getHours()
@@ -149,22 +154,27 @@ export const reactClass = connect(
         needupdate=true
       }
       if(!!lineChart){
-        console.log('================')
-        console.log(data.r5his)
-        console.log(data.r20his)
-        console.log(data.r100his)
-        console.log(data.r501his)
-        console.log('================')
-        drawChart(exphistory,exp,no, data.chartType, data.senkaType, lineChart, {
-          r5his: data.r5his,
-          r20his: data.r20his,
-          r100his: data.r100his,
-          r501his: data.r501his
-        })
+        willUpdateChart = true
       }
     }
     if(needupdate){
-      this.setState(achieve,()=>this.savelist())
+      this.setState(achieve,()=>{
+        if(willUpdateChart){
+          console.log('================')
+          console.log(data.r5his)
+          console.log(data.r20his)
+          console.log(data.r100his)
+          console.log(data.r501his)
+          console.log('================')
+          drawChart(exphistory,exp,no, data.chartType, data.senkaType, lineChart, {
+            r5his: data.r5his,
+            r20his: data.r20his,
+            r100his: data.r100his,
+            r501his: data.r501his
+          })
+        }
+        this.savelist()
+      })
     }
   }
 
