@@ -11,21 +11,21 @@ export const drawChart = (exphis, tmpexp, tmpno, chartType, senkaType, chartBody
 
   const expadd = senkaOfDay(exphis, tmpexp, tmpno)
   const day = new Date().getDate()
-  let labels = [], mySenkaData = [], no5SenkaDate = [], no20SenkaDate = [], no100SenkaDate = [], no501SenkaDate = []
+  let labels = [], mySenkaData = [], no5SenkaData = [], no20SenkaData = [], no100SenkaData = [], no501SenkaData = []
   for(let i = 1; i <= day; i++){
     labels.push(i)
   }
   const no5Senka = senkaLine.r5his, no20Senka = senkaLine.r20his, no100Senka = senkaLine.r100his, no501Senka = senkaLine.r501his;
   labels.map(day => {
     mySenkaData.push(((expadd[day * 2 - 1] ? expadd[day * 2 - 1] : 0) + (expadd[day * 2] ? expadd[day * 2] : 0)).toFixed(1))
-    no5SenkaDate.push(no5Senka[day * 2 - 1] ? no5Senka[day * 2 - 1] : no5Senka[day * 2 - 2] ? no5Senka[day * 2 - 2] : (day === 1) ? 0 : NaN)
-    no20SenkaDate.push(no20Senka[day * 2 - 1] ? no20Senka[day * 2 - 1] : no20Senka[day * 2 - 2] ? no20Senka[day * 2 - 2] : (day === 1) ? 0 : NaN)
-    no100SenkaDate.push(no100Senka[day * 2 - 1] ? no100Senka[day * 2 - 1] : no100Senka[day * 2 - 2] ? no100Senka[day * 2 - 2] : (day === 1) ? 0 : NaN)
-    no501SenkaDate.push(no501Senka[day * 2 - 1] ? no501Senka[day * 2 - 1] : no501Senka[day * 2 - 2] ? no501Senka[day * 2 - 2] : (day === 1) ? 0 : NaN)
+    no5SenkaData.push(no5Senka[day * 2 - 1] ? no5Senka[day * 2 - 1] : no5Senka[day * 2 - 2] ? no5Senka[day * 2 - 2] : (day === 1) ? 0 : NaN)
+    no20SenkaData.push(no20Senka[day * 2 - 1] ? no20Senka[day * 2 - 1] : no20Senka[day * 2 - 2] ? no20Senka[day * 2 - 2] : (day === 1) ? 0 : NaN)
+    no100SenkaData.push(no100Senka[day * 2 - 1] ? no100Senka[day * 2 - 1] : no100Senka[day * 2 - 2] ? no100Senka[day * 2 - 2] : (day === 1) ? 0 : NaN)
+    no501SenkaData.push(no501Senka[day * 2 - 1] ? no501Senka[day * 2 - 1] : no501Senka[day * 2 - 2] ? no501Senka[day * 2 - 2] : (day === 1) ? 0 : NaN)
   })
 
   if(chartType === 'day'){
-    [no5SenkaDate, no20SenkaDate, no100SenkaDate, no501SenkaDate].map(data => {
+    [no5SenkaData, no20SenkaData, no100SenkaData, no501SenkaData].map(data => {
       data.reduce((cur, pre, idx, arr) => {
         arr[idx] = (parseFloat(pre) > parseFloat(cur) ? parseFloat(pre) - parseFloat(cur) : 0).toFixed(2)
         return pre ? pre : cur ? cur : 0;
@@ -36,19 +36,19 @@ export const drawChart = (exphis, tmpexp, tmpno, chartType, senkaType, chartBody
     mySenkaData.reduce((cur, pre, idx, arr) => arr[idx] = (parseFloat(cur) + parseFloat(pre)).toFixed(2))
   }
   console.log('===== No.5 senka data =====')
-  console.log(no5SenkaDate)
+  console.log(no5SenkaData)
   console.log('===== No.20 senka data =====')
-  console.log(no20SenkaDate)
+  console.log(no20SenkaData)
   console.log('===== No.100 senka data =====')
-  console.log(no100SenkaDate)
+  console.log(no100SenkaData)
   console.log('===== No.501 senka data =====')
-  console.log(no501SenkaDate)
+  console.log(no501SenkaData)
 
   chartBody.data.datasets[0].data = mySenkaData
-  chartBody.data.datasets[1].data = no5SenkaDate
-  chartBody.data.datasets[2].data = no20SenkaDate
-  chartBody.data.datasets[3].data = no100SenkaDate
-  chartBody.data.datasets[4].data = no501SenkaDate
+  chartBody.data.datasets[1].data = no5SenkaData
+  chartBody.data.datasets[2].data = no20SenkaData
+  chartBody.data.datasets[3].data = no100SenkaData
+  chartBody.data.datasets[4].data = no501SenkaData
   chartBody.data.labels = labels
   chartBody.update()
 }
