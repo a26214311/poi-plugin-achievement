@@ -434,92 +434,88 @@ export const reactClass = connect(
         this.setState(data,() => {
           this.starttimer()
           /* create chart */
-
-          const ctx = document.getElementById("myChart")
-          const backgroundColors = [
-            'rgba(255, 99, 132, 0.2)',
-            'rgba(54, 162, 235, 0.2)',
-            'rgba(255, 206, 86, 0.2)',
-            'rgba(75, 192, 192, 0.2)',
-            'rgba(153, 102, 255, 0.2)',
-            'rgba(255, 159, 64, 0.2)',
-          ]
-          const borderColors = [
-            'rgba(255, 99, 132, 1)',
-            'rgba(54, 162, 235, 1)',
-            'rgba(255, 206, 86, 1)',
-            'rgba(75, 192, 192, 1)',
-            'rgba(153, 102, 255, 1)',
-            'rgba(255, 159, 64, 1)',
-          ]
-          Chart.defaults.global.animation.duration = 0
-          Chart.defaults.line.spanGaps = true;
-          lineChart = new Chart(ctx, {
-            type: 'line',
-            data: {
-              labels: [],
-              datasets: [
-                {
-                  label: '我的战果',
-                  data: [],
-                  backgroundColor: backgroundColors[0],
-                  borderColor: borderColors[0],
-                  borderWidth: 1,
-                },
-                {
-                  label: '5位',
-                  data: [],
-                  backgroundColor: backgroundColors[1],
-                  borderColor: borderColors[1],
-                  borderWidth: 1,
-                },
-                {
-                  label: '20位',
-                  data: [],
-                  backgroundColor: backgroundColors[2],
-                  borderColor: borderColors[2],
-                  borderWidth: 1,
-                },
-                {
-                  label: '100位',
-                  data: [],
-                  backgroundColor: backgroundColors[3],
-                  borderColor: borderColors[3],
-                  borderWidth: 1,
-                },
-                {
-                  label: '501位',
-                  data: [],
-                  backgroundColor: backgroundColors[4],
-                  borderColor: borderColors[4],
-                  borderWidth: 1,
-                },
-              ],
-            },
-            options: {
-              scales: {
-                yAxes: [{
-                  ticks: {
-                    beginAtZero:true,
+          if(!lineChart){
+            console.log('===== init chart =====')
+            const ctx = document.getElementById("myChart")
+            const backgroundColors = [
+              'rgba(255, 99, 132, 0.2)',
+              'rgba(54, 162, 235, 0.2)',
+              'rgba(255, 206, 86, 0.2)',
+              'rgba(75, 192, 192, 0.2)',
+              'rgba(153, 102, 255, 0.2)',
+              'rgba(255, 159, 64, 0.2)',
+            ]
+            const borderColors = [
+              'rgba(255, 99, 132, 1)',
+              'rgba(54, 162, 235, 1)',
+              'rgba(255, 206, 86, 1)',
+              'rgba(75, 192, 192, 1)',
+              'rgba(153, 102, 255, 1)',
+              'rgba(255, 159, 64, 1)',
+            ]
+            Chart.defaults.global.animation.duration = 0
+            Chart.defaults.line.spanGaps = true;
+            lineChart = new Chart(ctx, {
+              type: 'line',
+              data: {
+                labels: [],
+                datasets: [
+                  {
+                    label: '我的战果',
+                    data: [],
+                    backgroundColor: backgroundColors[0],
+                    borderColor: borderColors[0],
+                    borderWidth: 1,
                   },
-                }],
+                  {
+                    label: '5位',
+                    data: [],
+                    backgroundColor: backgroundColors[1],
+                    borderColor: borderColors[1],
+                    borderWidth: 1,
+                  },
+                  {
+                    label: '20位',
+                    data: [],
+                    backgroundColor: backgroundColors[2],
+                    borderColor: borderColors[2],
+                    borderWidth: 1,
+                  },
+                  {
+                    label: '100位',
+                    data: [],
+                    backgroundColor: backgroundColors[3],
+                    borderColor: borderColors[3],
+                    borderWidth: 1,
+                  },
+                  {
+                    label: '501位',
+                    data: [],
+                    backgroundColor: backgroundColors[4],
+                    borderColor: borderColors[4],
+                    borderWidth: 1,
+                  },
+                ],
               },
-            },
-          })
-          if (typeof data.exphis !== 'undefined' &&
-              typeof data.tmpexp !== 'undefined')
-            console.log('========--========')
-            console.log(data.r5his)
-            console.log(data.r20his)
-            console.log(data.r100his)
-            console.log(data.r501his)
-            console.log('========--========')
-            drawChart(data.exphis, data.tmpexp, data.tmpno, data.chartType, data.senkaType, lineChart, {
-              r5his: data.r5his,
-              r20his: data.r20his,
-              r100his: data.r100his,
-              r501his: data.r501his
+              options: {
+                scales: {
+                  yAxes: [{
+                    ticks: {
+                      beginAtZero:true,
+                    },
+                  }],
+                },
+              },
             })
+            if (typeof data.exphis !== 'undefined' &&
+              typeof data.tmpexp !== 'undefined')
+              drawChart(data.exphis, data.tmpexp, data.tmpno, data.chartType, data.senkaType, lineChart, {
+                r5his: data.r5his,
+                r20his: data.r20his,
+                r100his: data.r100his,
+                r501his: data.r501his
+              })
+          }
         })
         return data
       } catch (e) {
