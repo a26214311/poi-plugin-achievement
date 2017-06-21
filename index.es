@@ -1,5 +1,6 @@
 import React, {Component} from 'react'
 import {connect} from 'react-redux'
+import { _ } from 'lodash'
 
 import {join} from 'path'
 import { readJsonSync } from 'fs-extra'
@@ -18,6 +19,10 @@ import {
 } from './selectors'
 
 const Chart = require("./assets/Chart")
+
+const getChecksum = $ships =>
+  _.sum(Object.keys($ships).map(mstIdStr =>
+    parseInt(mstIdStr,10)))
 
 let lineChart
 
@@ -169,14 +174,6 @@ export const reactClass = connect(
     }
   }
 
-  getCheckSum(){
-    var $ships = this.props.$ships
-    var sum=0
-    for(var p in $ships){
-      sum = sum + parseInt(p)
-    }
-    return sum
-  }
 
   starttimer(){
     let now = new Date()
@@ -259,7 +256,7 @@ export const reactClass = connect(
       const list = body.api_list
       const tensurets = achieve.tensurets
 
-      const sum = this.getCheckSum()
+      const sum = getChecksum(this.props.$ships)
       const checksum = this.state.checksum
       if(sum!=checksum){
         achieve.reviseType=0
