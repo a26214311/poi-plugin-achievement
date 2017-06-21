@@ -20,19 +20,6 @@ import {
 
 const Chart = require("./assets/Chart")
 
-const getChecksum = $ships =>
-  _.sum(Object.keys($ships).map(mstIdStr =>
-    parseInt(mstIdStr,10)))
-
-const getUnclearedEx = maps =>
-  _.flatMap(
-    exlist,
-    (exStr, index) => {
-      const mapIdStr = exStr.split('-').join('')
-      const cleared = _.get(maps, `${mapIdStr}.api_cleared`) === 1
-      return cleared ? [] : [exStr]
-    })
-
 let lineChart
 
 export const reactClass = connect(
@@ -191,7 +178,7 @@ export const reactClass = connect(
     setTimeout(() =>{
       const exp = this.props.basic.api_experience
       const nowtime = new Date()
-      const unclearedex = getUnclearedEx(this.props.maps)
+      const unclearedex = this.props.unclearedExList
       const achieve = {tensureexp:exp,tensurets:nowtime,tensureuex:unclearedex}
       this.setState(achieve,()=>{
         this.savelist()
@@ -265,7 +252,7 @@ export const reactClass = connect(
       const list = body.api_list
       const tensurets = achieve.tensurets
 
-      const sum = getChecksum(this.props.$ships)
+      const sum = this.props.shipChecksum
       const checksum = this.state.checksum
       if(sum!=checksum){
         achieve.reviseType=0
@@ -295,7 +282,7 @@ export const reactClass = connect(
           achieve.myno=no
           const then = achieve.ranktime
           if(getRankDateNo(now)>getRankDateNo(new Date(then))){
-            achieve.rankuex = getUnclearedEx(this.props.maps)
+            achieve.rankuex = this.props.unclearedExList
           }
           achieve.ranktime = now
           const sub = now.getTime()-new Date(tensurets).getTime()
@@ -313,7 +300,7 @@ export const reactClass = connect(
             if(ensuresenka>0&&ensureexp>0){
               const thenexp = ensureexp
               const thensenka = ensuresenka
-              const senkauex = getUnclearedEx(this.props.maps)
+              const senkauex = this.props.unclearedExList
               const addexsenka = this.addExSenka(senkauex,ensureuex)
               if(addexsenka==0){
                 const senkaexp = thenexp + (senka-thensenka-addexsenka)*50000/35
@@ -558,7 +545,6 @@ export const reactClass = connect(
     }
   }
 
-
   render_D() {
     const achieve = this.state
 
@@ -567,7 +553,7 @@ export const reactClass = connect(
     const exp = this.state.tmpexp
     const no = getRankDateNo(ranktime)
 
-    const unclearedex = getUnclearedEx(this.props.maps)
+    const unclearedex = this.props.unclearedExList
     const exphis = this.state.exphis
     let upsenka
     const ensuresenka=achieve.fensuresenka
