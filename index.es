@@ -24,6 +24,15 @@ const getChecksum = $ships =>
   _.sum(Object.keys($ships).map(mstIdStr =>
     parseInt(mstIdStr,10)))
 
+const getUnclearedEx = maps =>
+  _.flatMap(
+    exlist,
+    (exStr, index) => {
+      const mapIdStr = exStr.split('-').join('')
+      const cleared = _.get(maps, `${mapIdStr}.api_cleared`) === 1
+      return cleared ? [] : [exStr]
+    })
+
 let lineChart
 
 export const reactClass = connect(
@@ -182,7 +191,7 @@ export const reactClass = connect(
     setTimeout(() =>{
       const exp = this.props.basic.api_experience
       const nowtime = new Date()
-      const unclearedex = this.getUnclearedEx()
+      const unclearedex = getUnclearedEx(this.props.maps)
       const achieve = {tensureexp:exp,tensurets:nowtime,tensureuex:unclearedex}
       this.setState(achieve,()=>{
         this.savelist()
@@ -286,7 +295,7 @@ export const reactClass = connect(
           achieve.myno=no
           const then = achieve.ranktime
           if(getRankDateNo(now)>getRankDateNo(new Date(then))){
-            achieve.rankuex = this.getUnclearedEx()
+            achieve.rankuex = getUnclearedEx(this.props.maps)
           }
           achieve.ranktime = now
           const sub = now.getTime()-new Date(tensurets).getTime()
@@ -304,7 +313,7 @@ export const reactClass = connect(
             if(ensuresenka>0&&ensureexp>0){
               const thenexp = ensureexp
               const thensenka = ensuresenka
-              const senkauex = this.getUnclearedEx()
+              const senkauex = getUnclearedEx(this.props.maps)
               const addexsenka = this.addExSenka(senkauex,ensureuex)
               if(addexsenka==0){
                 const senkaexp = thenexp + (senka-thensenka-addexsenka)*50000/35
@@ -515,24 +524,6 @@ export const reactClass = connect(
     }
   }
 
-  getUnclearedEx(){
-    const maps = this.props.maps
-    const unclearedex = []
-    exlist.map(function(mapidstr,index){
-      const mapid = mapidstr.split("-").join('')
-      if(maps[mapid]){
-        if(maps[mapid].api_cleared==1){
-
-        }else{
-          unclearedex.push(mapidstr)
-        }
-      }else{
-        unclearedex.push(mapidstr)
-      }
-    })
-    return unclearedex
-  }
-
   addExSenka(uexnow,uexthen){
     const hash={}
     for(var i=0;i<uexnow.length;i++){
@@ -576,7 +567,7 @@ export const reactClass = connect(
     const exp = this.state.tmpexp
     const no = getRankDateNo(ranktime)
 
-    const unclearedex = this.getUnclearedEx()
+    const unclearedex = getUnclearedEx(this.props.maps)
     const exphis = this.state.exphis
     let upsenka
     const ensuresenka=achieve.fensuresenka
