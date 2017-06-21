@@ -6,7 +6,7 @@ import {join} from 'path'
 import { readJsonSync } from 'fs-extra'
 import {Row, Col} from 'react-bootstrap'
 
-import SenkaCaculator from './views/caculator'
+import SenkaCalculator from './views/calculator'
 import SenkaCalendar from './views/calendar'
 import SenkaInfo from './views/info'
 import {drawChart} from './views/calendar.es'
@@ -600,7 +600,7 @@ export const reactClass = connect(
             }
           >
           </SenkaInfo>
-          <SenkaCaculator
+          <SenkaCalculator
             senkaleft={senkaleft}
             targetsenka={this.state.targetsenka}
             ignoreex={ignoreex}
@@ -614,7 +614,7 @@ export const reactClass = connect(
               }
             }
           >
-          </SenkaCaculator>
+          </SenkaCalculator>
           <SenkaCalendar
             exphis={exphis}
             tmpexp={this.state.tmpexp}

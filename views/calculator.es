@@ -4,7 +4,7 @@ import FontAwesome from 'react-fontawesome'
 import {exlist,dayofMonth} from '../lib/util'
 
 
-export default class SenkaCaculator extends Component {
+export default class SenkaCalculator extends Component {
   handleChangeTarget = e =>{
     let value = e.target.value
     if(parseInt(value)>66666){
