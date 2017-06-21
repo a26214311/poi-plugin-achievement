@@ -1,14 +1,9 @@
 import React, {Component} from 'react'
 import {connect} from 'react-redux'
-import {createSelector} from 'reselect'
-
-import {store} from 'views/create-store'
 
 import {join} from 'path'
 import { readJsonSync } from 'fs-extra'
 import {Row, Col} from 'react-bootstrap'
-
-import {extensionSelectorFactory} from 'views/utils/selectors'
 
 import SenkaCaculator from './views/caculator'
 import SenkaCalendar from './views/calendar'
@@ -18,20 +13,16 @@ import {drawChart} from './views/calendar.es'
 import {EAforArr,getDateNo,getRankDateNo,
         fs,exlist,exvalue,dayofMonth,MAGIC_L_NUMS,MAGIC_R_NUMS} from './lib/util'
 
+import {
+  mainUISelector,
+} from './selectors'
 
 const Chart = require("./assets/Chart")
 
 let lineChart
 
 export const reactClass = connect(
-  state => ({
-    horizontal: state.config.poi.layout || 'horizontal',
-    double:state.config.poi.tabarea?state.config.poi.tabarea.double:false,
-    basic:state.info.basic,
-    $maps:state.const.$maps,
-    maps:state.info.maps,
-    $ships:state.const.$ships,
-  }),
+  mainUISelector,
   null, null, {pure: false}
 )(class PluginAchievement extends Component {
 
@@ -617,7 +608,7 @@ export const reactClass = connect(
     if(extraSenka==0){
       senkaleft=senkaleft-350
     }
-    const layouttype = (this.props.horizontal=='vertical') && (this.props.double==false)
+    const layouttype = (this.props.layout=='vertical') && (this.props.doubleTabbed==false)
 
     return (
       <div id="achievement" className="achievement">
