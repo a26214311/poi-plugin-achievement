@@ -117,7 +117,7 @@ export default class SenkaCalculator extends Component {
               <ButtonGroup bsSize="xsmall" className="justified-group">
                 {
                   exlist.map((exid, idx) =>{
-                    if(idx < 4){
+                    if(idx < 3){
                       const mapId = exid.split('-').join('')
                       if(maps[mapId] && maps[mapId].api_cleared == 1){
                         return (
@@ -141,7 +141,7 @@ export default class SenkaCalculator extends Component {
               <ButtonGroup bsSize="xsmall" className="justified-group">
                 {
                   exlist.map((exid, idx) =>{
-                    if(idx >= 4){
+                    if(idx >= 3 && idx < 6){
                       const mapId = exid.split('-').join('')
                       if(maps[mapId] && maps[mapId].api_cleared == 1){
                         return (
@@ -164,23 +164,39 @@ export default class SenkaCalculator extends Component {
               </ButtonGroup>
               <ButtonGroup bsSize="xsmall" className="justified-group">
                 {
-                  <Button bsStyle={
-                    extraSenka == 0 ?
-                      'success':
-                      extraSenka == 1 ? 'danger' : 'info'
-                  } onClick={this.handleExtraSenkaChange}>
-                    {
-                      extraSenka == 0 ?
-                        <FontAwesome name="check"/>:
-                        extraSenka == 1 ? <FontAwesome name="close"/> : <FontAwesome name="star"/>
+                  exlist.map((exid, idx) =>{
+                    if(idx >= 6){
+                      const mapId = exid.split('-').join('')
+                      if(maps[mapId] && maps[mapId].api_cleared == 1){
+                        return (
+                          <Button bsStyle='info'>
+                            <FontAwesome name="star"/>
+                            {exid}
+                          </Button>
+                        )
+                      } else {
+                        return (
+                          <Button bsStyle={ignoreex[exid] ? 'danger' : 'success'} value={exid} onClick={this.handleExChange}>
+                            {ignoreex[exid] ? <FontAwesome name="close"/> : <FontAwesome name="check"/>}
+                            {exid}
+                          </Button>
+                        )
+                      }
                     }
-                    {
-                      extraSenka == 0 ?
-                        '计划攻略Z作战':
-                        extraSenka == 1 ? '计划不攻略Z作战' : '已攻略Z作战'
-                    }
-                  </Button>
+                  })
                 }
+                <Button bsStyle={
+                  extraSenka == 0 ?
+                    'success':
+                    extraSenka == 1 ? 'danger' : 'info'
+                } onClick={this.handleExtraSenkaChange}>
+                  {
+                    extraSenka == 0 ?
+                      <FontAwesome name="check"/>:
+                      extraSenka == 1 ? <FontAwesome name="close"/> : <FontAwesome name="star"/>
+                  }
+                  Z作战
+                </Button>
               </ButtonGroup>
             </div>
           </OverlayTrigger>
