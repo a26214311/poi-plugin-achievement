@@ -304,9 +304,11 @@ export const reactClass = connect(
               const addexsenka = this.addExSenka(senkauex,ensureuex)
               if(addexsenka==0){
                 const subsenka = (senka-thensenka-addexsenka)*50000/35
-                if(subsenka>0&&subsenka<345){
+                if(subsenka>0){
                   const senkaexp = thenexp + subsenka
-                  achieve.exphis[dateno] = senkaexp
+                  if(senkaexp<=achieve.tmpexp){
+                    achieve.exphis[dateno] = senkaexp
+                  }
                 }
               }
             }
