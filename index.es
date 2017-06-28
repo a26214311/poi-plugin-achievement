@@ -303,8 +303,11 @@ export const reactClass = connect(
               const senkauex = this.props.unclearedExList
               const addexsenka = this.addExSenka(senkauex,ensureuex)
               if(addexsenka==0){
-                const senkaexp = thenexp + (senka-thensenka-addexsenka)*50000/35
-                achieve.exphis[dateno] = senkaexp
+                const subsenka = (senka-thensenka-addexsenka)*50000/35
+                if(subsenka>0&&subsenka<345){
+                  const senkaexp = thenexp + subsenka
+                  achieve.exphis[dateno] = senkaexp
+                }
               }
             }
           }

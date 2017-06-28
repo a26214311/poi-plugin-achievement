@@ -7,7 +7,6 @@ export const drawChart = (exphis, tmpexp, tmpno, chartType, senkaType, chartBody
   if(senkaType=='calendar'){
     return
   }
-  console.log(senkaLine)
 
   const expadd = senkaOfDay(exphis, tmpexp, tmpno)
   const day = new Date().getDate()
@@ -35,14 +34,6 @@ export const drawChart = (exphis, tmpexp, tmpno, chartType, senkaType, chartBody
   if(chartType === 'mon'){
     mySenkaData.reduce((cur, pre, idx, arr) => arr[idx] = (parseFloat(cur) + parseFloat(pre)).toFixed(2))
   }
-  console.log('===== No.5 senka data =====')
-  console.log(no5SenkaData)
-  console.log('===== No.20 senka data =====')
-  console.log(no20SenkaData)
-  console.log('===== No.100 senka data =====')
-  console.log(no100SenkaData)
-  console.log('===== No.501 senka data =====')
-  console.log(no501SenkaData)
 
   chartBody.data.datasets[0].data = mySenkaData
   chartBody.data.datasets[1].data = no5SenkaData
@@ -50,7 +41,7 @@ export const drawChart = (exphis, tmpexp, tmpno, chartType, senkaType, chartBody
   chartBody.data.datasets[3].data = no100SenkaData
   chartBody.data.datasets[4].data = no501SenkaData
   chartBody.data.labels = labels
-  chartBody.update()
+  chartBody.update(0,true)
 }
 
 
