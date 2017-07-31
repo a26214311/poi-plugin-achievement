@@ -1,15 +1,18 @@
 import React, {Component} from 'react'
 import {connect} from 'react-redux'
-import { _ } from 'lodash'
 
 import {join} from 'path'
-import { readJsonSync } from 'fs-extra'
-import {Row, Col} from 'react-bootstrap'
+import {readJsonSync} from 'fs-extra'
+import {Row} from 'react-bootstrap'
 
 import SenkaCalculator from './views/calculator'
-import SenkaCalendar from './views/calendar'
+import SenkaCalendar, {drawChart} from './views/calendar'
 import SenkaInfo from './views/info'
-import {drawChart} from './views/calendar.es'
+
+import {
+  pluginDidLoad,
+  pluginWillUnload,
+} from './mananger'
 
 import {EAforArr,getDateNo,getRankDateNo,
         fs,exlist,exvalue,dayofMonth,MAGIC_L_NUMS,MAGIC_R_NUMS} from './lib/util'
@@ -17,6 +20,8 @@ import {EAforArr,getDateNo,getRankDateNo,
 import {
   mainUISelector,
 } from './selectors'
+
+import { debug } from './debug'
 
 const Chart = require("./assets/Chart")
 
@@ -259,12 +264,12 @@ export const reactClass = connect(
         achieve.checksum=sum
       }
       if(achieve.reviseType==0){
-        console.log('checksum failed,will refresh magic')
+        debug.log('checksum failed,will refresh magic')
         const newmagic = this.auto_magic(page,list)
         if(newmagic>0&&newmagic<100){
           achieve.mymagic=newmagic
           achieve.reviseType=1
-          console.log("newmagic:"+newmagic)
+          debug.log("newmagic:"+newmagic)
         }
       }
       for(let i=0;i<list.length;i++){
@@ -408,7 +413,7 @@ export const reactClass = connect(
         const savepath = join(window.APPDATA_PATH, 'achieve', 'achieve.json')
         fs.writeFileSync(savepath, JSON.stringify(data))
       } catch (e2) {
-        console.log(e2)
+        debug.log(e2)
       }
     }
   }
@@ -428,7 +433,7 @@ export const reactClass = connect(
           this.starttimer()
           /* create chart */
           if(!lineChart){
-            console.log('===== init chart =====')
+            debug.log('===== init chart =====')
             const ctx = document.getElementById("myChart")
             const backgroundColors = [
               'rgba(255, 99, 132, 0.2)',
@@ -521,7 +526,7 @@ export const reactClass = connect(
         })
         return data
       } catch (e) {
-        console.log(e)
+        debug.log(e)
         return {}
       }
     } else {
@@ -544,12 +549,11 @@ export const reactClass = connect(
     return r
   }
 
-
   render() {
     try {
       return this.render_D()
     } catch (e) {
-      console.log(e)
+      debug.log(e)
       return (
         <div>
           <div>
@@ -661,12 +665,12 @@ export const reactClass = connect(
   }
 })
 
-
 const switchPluginPath = [
   '/kcsapi/api_req_ranking/mxltvkpyuklh',
 ]
 
 export {
   switchPluginPath,
+  pluginDidLoad,
+  pluginWillUnload,
 }
-

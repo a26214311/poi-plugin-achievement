@@ -1,7 +1,9 @@
 import React, {Component} from 'react'
+import _ from 'lodash'
 import {Col, Panel, FormControl, ButtonGroup, Button, Table, OverlayTrigger, Tooltip} from 'react-bootstrap'
 import FontAwesome from 'react-fontawesome'
 import {exlist,dayofMonth} from '../lib/util'
+import { debug } from '../debug'
 
 
 export default class SenkaCalculator extends Component {
@@ -40,34 +42,78 @@ export default class SenkaCalculator extends Component {
     try {
       return this.render_D()
     } catch (e) {
-      console.log(e)
+      debug.log(e)
       return (
         <div>
-          <div>
-            {e.message}
-          </div>
+          {e.message}
         </div>
       )
     }
   }
+
+  renderExButton = exid => {
+    const {maps, ignoreex} = this.props
+    const mapId = exid.split('-').join('')
+    if(maps[mapId] && maps[mapId].api_cleared == 1){
+      return (
+        <Button
+          key={exid}
+          bsStyle='info'>
+          <FontAwesome name="star"/>
+          {exid}
+        </Button>
+      )
+    } else {
+      return (
+        <Button
+          key={exid}
+          bsStyle={ignoreex[exid] ? 'danger' : 'success'}
+          value={exid}
+          onClick={this.handleExChange}>
+          <FontAwesome
+            name={ignoreex[exid] ? 'close' : 'check'}
+          />
+          {exid}
+        </Button>
+      )
+    }
+  }
+
+  renderExtraSenkaButton = extraSenka => (
+    <Button
+      bsStyle={
+        extraSenka == 0 ? 'success' :
+        extraSenka == 1 ? 'danger' :
+        'info'
+      }
+      onClick={this.handleExtraSenkaChange}>
+      {
+        extraSenka == 0 ?
+          <FontAwesome name="check"/> :
+        extraSenka == 1 ?
+          <FontAwesome name="close"/> :
+          <FontAwesome name="star"/>
+      }
+      Z作战
+    </Button>
+  )
 
   render_D(){
     const now = new Date()
     const day = now.getDate()
     const month = now.getMonth()
     const daysleft = dayofMonth[month] - day + 1
-    const maps = this.props.maps
-    const ignoreex = this.props.ignoreex
     const senkaleft = this.props.senkaleft
     const extraSenka = this.props.extraSenka
-
     return(
       <Col xs={this.props.lt?3:6}>
-        <Panel header={
-          <span>
-            <FontAwesome name="calculator"/> 战果计算器
-          </span>
-        } className="info senka-calc">
+        <Panel
+          header={
+            <span>
+              <FontAwesome name="calculator"/> 战果计算器
+            </span>
+          }
+          className="info senka-calc">
           <div className="senka-ipt flex">
             <div>
               目标战果
@@ -100,126 +146,61 @@ export default class SenkaCalculator extends Component {
             <tr><td>MAP</td><td>次数</td><td>每天</td></tr>
             </thead>
             <tbody>
-            <tr><td>5-4</td><td>{Math.ceil(senkaleft/2.282)}</td><td>{(senkaleft/daysleft/2.282).toFixed(1)}</td></tr>
-            <tr><td>5-2</td><td>{Math.ceil(senkaleft/1.995)}</td><td>{(senkaleft/daysleft/1.995).toFixed(1)}</td></tr>
-            <tr><td>1-5</td><td>{Math.ceil(senkaleft/0.8925)}</td><td>{(senkaleft/daysleft/0.8925).toFixed(1)}</td></tr>
+              {
+                [
+                  ['5-4', 2.282],
+                  ['5-2', 1.995],
+                  ['1-5', 0.8925],
+                ].map(([hd, dv]) => (
+                  <tr key={hd}>
+                    <td>{hd}</td>
+                    <td>{Math.ceil(senkaleft/dv)}</td>
+                    <td>{(senkaleft/daysleft/dv).toFixed(1)}</td>
+                  </tr>
+                ))
+              }
             </tbody>
           </Table>
           <p className="short-line">预想攻略的EX图</p>
           <OverlayTrigger placement="top" overlay={
             <Tooltip>
-              <p className="text-left"><Button bsStyle='success' bsSize="xsmall"><FontAwesome name="check"/></Button>：计划攻略</p>
-              <p className="text-left"><Button bsStyle='danger' bsSize="xsmall"><FontAwesome name="close"/></Button>：计划不攻略</p>
-              <p className="text-left"><Button bsStyle='info' bsSize="xsmall"><FontAwesome name="star"/></Button>：已完成</p>
+              {
+                [
+                  ['success', 'check', '计划攻略'],
+                  ['danger', 'close', '计划不攻略'],
+                  ['info', 'star', '已完成'],
+                ].map(([bsStyle, faName, content],ind) => (
+                  <p key={ind} className="text-left">
+                    <Button bsStyle={bsStyle} bsSize="xsmall">
+                      <FontAwesome name={faName}/>
+                    </Button>：{content}
+                  </p>
+                ))
+              }
             </Tooltip>
           }>
             <div>
-              <ButtonGroup bsSize="xsmall" className="justified-group">
-                {
-                  exlist.map((exid, idx) =>{
-                    if(idx < 3){
-                      const mapId = exid.split('-').join('')
-                      if(maps[mapId] && maps[mapId].api_cleared == 1){
-                        return (
-                          <Button bsStyle='info'>
-                            <FontAwesome name="star"/>
-                            {exid}
-                          </Button>
-                        )
-                      } else {
-                        return (
-                          <Button bsStyle={ignoreex[exid] ? 'danger' : 'success'} value={exid} onClick={this.handleExChange}>
-                            {ignoreex[exid] ? <FontAwesome name="close"/> : <FontAwesome name="check"/>}
-                            {exid}
-                          </Button>
-                        )
+              {
+                _.chunk(
+                  [
+                    ...exlist.map(this.renderExButton),
+                    this.renderExtraSenkaButton(extraSenka),
+                  ],
+                  3).map((btns,groupInd) => (
+                    <ButtonGroup
+                      key={groupInd}
+                      bsSize="xsmall"
+                      className="justified-group">
+                      {
+                        btns
                       }
-                    }
-                  })
-                }
-              </ButtonGroup>
-              <ButtonGroup bsSize="xsmall" className="justified-group">
-                {
-                  exlist.map((exid, idx) =>{
-                    if(idx >= 3 && idx < 6){
-                      const mapId = exid.split('-').join('')
-                      if(maps[mapId] && maps[mapId].api_cleared == 1){
-                        return (
-                          <Button bsStyle='info'>
-                            <FontAwesome name="star"/>
-                            {exid}
-                          </Button>
-                        )
-                      } else {
-                        return (
-                          <Button bsStyle={ignoreex[exid] ? 'danger' : 'success'} value={exid} onClick={this.handleExChange}>
-                            {ignoreex[exid] ? <FontAwesome name="close"/> : <FontAwesome name="check"/>}
-                            {exid}
-                          </Button>
-                        )
-                      }
-                    }
-                  })
-                }
-              </ButtonGroup>
-              <ButtonGroup bsSize="xsmall" className="justified-group">
-                {
-                  exlist.map((exid, idx) =>{
-                    if(idx >= 6){
-                      const mapId = exid.split('-').join('')
-                      if(maps[mapId] && maps[mapId].api_cleared == 1){
-                        return (
-                          <Button bsStyle='info'>
-                            <FontAwesome name="star"/>
-                            {exid}
-                          </Button>
-                        )
-                      } else {
-                        return (
-                          <Button bsStyle={ignoreex[exid] ? 'danger' : 'success'} value={exid} onClick={this.handleExChange}>
-                            {ignoreex[exid] ? <FontAwesome name="close"/> : <FontAwesome name="check"/>}
-                            {exid}
-                          </Button>
-                        )
-                      }
-                    }
-                  })
-                }
-                <Button bsStyle={
-                  extraSenka == 0 ?
-                    'success':
-                    extraSenka == 1 ? 'danger' : 'info'
-                } onClick={this.handleExtraSenkaChange}>
-                  {
-                    extraSenka == 0 ?
-                      <FontAwesome name="check"/>:
-                      extraSenka == 1 ? <FontAwesome name="close"/> : <FontAwesome name="star"/>
-                  }
-                  Z作战
-                </Button>
-              </ButtonGroup>
+                    </ButtonGroup>
+                  ))
+              }
             </div>
           </OverlayTrigger>
         </Panel>
       </Col>
-
     )
   }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

@@ -2,6 +2,7 @@ import React, {Component} from 'react'
 import { Col, Panel, Table, OverlayTrigger, Tooltip} from 'react-bootstrap'
 import FontAwesome from 'react-fontawesome'
 import {getRankDateNo, MAGIC_L_NUMS} from '../lib/util'
+import { debug } from '../debug'
 
 export default class SenkaInfo extends Component {
 
@@ -49,7 +50,7 @@ export default class SenkaInfo extends Component {
     try {
       return this.render_D()
     } catch (e) {
-      console.log(e)
+      debug.log(e)
       return (
         <div>
           <div>

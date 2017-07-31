@@ -22,5 +22,8 @@
     "eslint": "^3.19.0",
     "eslint-plugin-import": "^2.3.0",
     "eslint-plugin-react": "^7.0.1"
+  },
+  "dependencies": {
+    "subtender": "^0.12.0"
   }
 }
