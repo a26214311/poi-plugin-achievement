@@ -125,7 +125,9 @@ export const reactClass = connect(
     }
     if(!exphistory[no]){
       if(!exphistory[data.tmpno+1]){
-        exphistory[data.tmpno+1]=data.tmpexp
+        if(no>data.tmpno){
+          exphistory[data.tmpno+1]=data.tmpexp
+        }
       }
       exphistory[no]=exp
       achieve.exphis=exphistory
