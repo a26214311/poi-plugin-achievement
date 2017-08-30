@@ -256,7 +256,7 @@ export const reactClass = connect(
 
       const sum = this.props.shipChecksum
       const checksum = this.state.checksum
-      if(sum!=checksum){
+      if(sum>0&&sum!=checksum){
         achieve.reviseType=0
         achieve.checksum=sum
       }
