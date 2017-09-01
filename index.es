@@ -648,3 +648,15 @@ export const reactClass = connect(
     )
   }
 })
+
+
+const switchPluginPath = [
+  '/kcsapi/api_req_ranking/mxltvkpyuklh',
+]
+
+export {
+  pluginDidLoad,
+  pluginWillUnload,
+  switchPluginPath,
+}
+
