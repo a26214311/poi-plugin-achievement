@@ -655,8 +655,6 @@ const switchPluginPath = [
 ]
 
 export {
-  pluginDidLoad,
-  pluginWillUnload,
   switchPluginPath,
 }
 
