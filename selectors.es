@@ -16,7 +16,7 @@ import { exlist } from './lib/util'
 const shipChecksumSelector = createSelector(
   constSelector,
   ({$ships}) =>
-    _.sum(Object.keys($ships).map(mstIdStr =>
+    _.sum(Object.keys($ships||{}).map(mstIdStr =>
       parseInt(mstIdStr,10))))
 
 const unclearedExListSelector = createSelector(

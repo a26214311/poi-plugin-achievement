@@ -281,6 +281,10 @@ export const reactClass = connect(
 
           }
 
+          var timeno = getRankDateNo(now)
+          achieve.myhis[timeno]=senka
+
+
           achieve.mysenka=senka
           achieve.mylastno=achieve.myno
           achieve.mylastranktime=getRankDateNo(achieve.ranktime)
