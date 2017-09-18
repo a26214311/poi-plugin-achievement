@@ -60,6 +60,8 @@ export const reactClass = connect(
       r100his:{},
       r501his:{},
 
+      myhis:{},
+
 
       mylastno:0,
       mylastranktime:0,
@@ -121,6 +123,7 @@ export const reactClass = connect(
       achieve.r20his={}
       achieve.r100his={}
       achieve.r501his={}
+      achieve.myhis={}
       needupdate=true
     }
     if(!exphistory[no]){
