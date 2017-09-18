@@ -162,12 +162,14 @@ export const reactClass = connect(
           console.log(data.r20his)
           console.log(data.r100his)
           console.log(data.r501his)
+          console.log(data.myhis)
           console.log('================')
           drawChart(exphistory,exp,no, data.chartType, data.senkaType, lineChart, {
             r5his: data.r5his,
             r20his: data.r20his,
             r100his: data.r100his,
-            r501his: data.r501his
+            r501his: data.r501his,
+            myhis: data.myhis
           })
         }
         this.savelist()
@@ -511,7 +513,8 @@ export const reactClass = connect(
                 r5his: data.r5his,
                 r20his: data.r20his,
                 r100his: data.r100his,
-                r501his: data.r501his
+                r501his: data.r501his,
+                myhis: data.myhis
               })
           }
         })
@@ -640,7 +643,8 @@ export const reactClass = connect(
               r5his: this.state.r5his,
               r20his: this.state.r20his,
               r100his: this.state.r100his,
-              r501his: this.state.r501his
+              r501his: this.state.r501his,
+              myhis: this.state.myhis
             }}
             lt={layouttype}
             backstate={

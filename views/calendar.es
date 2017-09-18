@@ -14,9 +14,10 @@ export const drawChart = (exphis, tmpexp, tmpno, chartType, senkaType, chartBody
   for(let i = 1; i <= day; i++){
     labels.push(i)
   }
-  const no5Senka = senkaLine.r5his, no20Senka = senkaLine.r20his, no100Senka = senkaLine.r100his, no501Senka = senkaLine.r501his;
+  const no5Senka = senkaLine.r5his, no20Senka = senkaLine.r20his, no100Senka = senkaLine.r100his, no501Senka = senkaLine.r501his, mySenka = senkaLine.myhis;
   labels.map(day => {
-    mySenkaData.push(((expadd[day * 2 - 1] ? expadd[day * 2 - 1] : 0) + (expadd[day * 2] ? expadd[day * 2] : 0)).toFixed(1))
+    //mySenkaData.push(((expadd[day * 2 - 1] ? expadd[day * 2 - 1] : 0) + (expadd[day * 2] ? expadd[day * 2] : 0)).toFixed(1))
+    mySenkaData.push(mySenka[day * 2 - 1] ? mySenka[day * 2 - 1] : mySenka[day * 2 - 2] ? mySenka[day * 2 - 2] : (day === 1) ? 0 : NaN)
     no5SenkaData.push(no5Senka[day * 2 - 1] ? no5Senka[day * 2 - 1] : no5Senka[day * 2 - 2] ? no5Senka[day * 2 - 2] : (day === 1) ? 0 : NaN)
     no20SenkaData.push(no20Senka[day * 2 - 1] ? no20Senka[day * 2 - 1] : no20Senka[day * 2 - 2] ? no20Senka[day * 2 - 2] : (day === 1) ? 0 : NaN)
     no100SenkaData.push(no100Senka[day * 2 - 1] ? no100Senka[day * 2 - 1] : no100Senka[day * 2 - 2] ? no100Senka[day * 2 - 2] : (day === 1) ? 0 : NaN)
@@ -24,16 +25,16 @@ export const drawChart = (exphis, tmpexp, tmpno, chartType, senkaType, chartBody
   })
 
   if(chartType === 'day'){
-    [no5SenkaData, no20SenkaData, no100SenkaData, no501SenkaData].map(data => {
+    [mySenkaData, no5SenkaData, no20SenkaData, no100SenkaData, no501SenkaData].map(data => {
       data.reduce((cur, pre, idx, arr) => {
         arr[idx] = (parseFloat(pre) > parseFloat(cur) ? parseFloat(pre) - parseFloat(cur) : 0).toFixed(2)
         return pre ? pre : cur ? cur : 0;
       })
     })
   }
-  if(chartType === 'mon'){
-    mySenkaData.reduce((cur, pre, idx, arr) => arr[idx] = (parseFloat(cur) + parseFloat(pre)).toFixed(2))
-  }
+  // if(chartType === 'mon'){
+  //   mySenkaData.reduce((cur, pre, idx, arr) => arr[idx] = (parseFloat(cur) + parseFloat(pre)).toFixed(2))
+  // }
 
   chartBody.data.datasets[0].data = mySenkaData
   chartBody.data.datasets[1].data = no5SenkaData
