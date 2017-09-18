@@ -1,5 +1,5 @@
 #achievement {
-	margin: 10px 15px 0;
+	margin: 3px 5px 0;
 	line-height: 1.42857143;
 }
 
@@ -15,6 +15,10 @@
 
 #achievement .panel {
 	margin-bottom: 4px;
+}
+
+#achievement .panel .panel-heading {
+	padding: 7px 15px !important;
 }
 
 #achievement .panel.info .panel-body {
