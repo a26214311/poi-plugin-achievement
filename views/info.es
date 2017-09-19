@@ -131,7 +131,7 @@ export default class SenkaInfo extends Component {
                   <div>{achieve.myno}位</div>
                 </OverlayTrigger>
                 <div className="pos bg-primary">
-                  更新时间:{(Math.floor((parseInt(no))/2)+1)}日
+                  更新时间: {(Math.floor((parseInt(no))/2)+1)}日
                   {parseInt(no)%2!=0?<FontAwesome name="sun-o"/> : <FontAwesome name="moon-o"/>}
                 </div>
               </td>
