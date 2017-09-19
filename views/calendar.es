@@ -3,12 +3,11 @@ import { Col, Panel, ButtonGroup, Button, Table } from 'react-bootstrap'
 import FontAwesome from 'react-fontawesome'
 import { getDateNo, dayofMonth, senkaOfDay } from '../lib/util'
 
-export const drawChart = (exphis, tmpexp, tmpno, chartType, senkaType, chartBody, senkaLine) =>{
+export const drawChart = (chartType, senkaType, chartBody, senkaLine) =>{
   if(senkaType=='calendar'){
     return
   }
 
-  const expadd = senkaOfDay(exphis, tmpexp, tmpno)
   const day = new Date().getDate()
   let labels = [], mySenkaData = [], no5SenkaData = [], no20SenkaData = [], no100SenkaData = [], no501SenkaData = []
   for(let i = 1; i <= day; i++){
@@ -23,18 +22,28 @@ export const drawChart = (exphis, tmpexp, tmpno, chartType, senkaType, chartBody
     no100SenkaData.push(no100Senka[day * 2 - 1] ? no100Senka[day * 2 - 1] : no100Senka[day * 2 - 2] ? no100Senka[day * 2 - 2] : (day === 1) ? 0 : NaN)
     no501SenkaData.push(no501Senka[day * 2 - 1] ? no501Senka[day * 2 - 1] : no501Senka[day * 2 - 2] ? no501Senka[day * 2 - 2] : (day === 1) ? 0 : NaN)
   })
+  delete chartBody.options.scales.yAxes[0].ticks.max
 
   if(chartType === 'day'){
     [mySenkaData, no5SenkaData, no20SenkaData, no100SenkaData, no501SenkaData].map(data => {
-      data.reduce((cur, pre, idx, arr) => {
-        arr[idx] = (parseFloat(pre) > parseFloat(cur) ? parseFloat(pre) - parseFloat(cur) : 0).toFixed(2)
-        return pre ? pre : cur ? cur : 0;
+      // data.reduce((cur, pre, idx, arr) => {
+      //   arr[idx] = (parseFloat(pre) > parseFloat(cur) ? parseFloat(pre) - parseFloat(cur) : 0).toFixed(2)
+      //   return pre ? pre : cur ? cur : 0;
+      // })
+      let count = 1, lastData = 0
+      data.forEach((ele, idx, arr) => {
+        if(isNaN(ele)){
+          count ++
+        } else {
+          let saveData = arr[idx]
+          arr[idx] = (ele - lastData) / count
+          count = 1
+          lastData = saveData
+        }
       })
     })
+    chartBody.options.scales.yAxes[0].ticks.max = 200
   }
-  // if(chartType === 'mon'){
-  //   mySenkaData.reduce((cur, pre, idx, arr) => arr[idx] = (parseFloat(cur) + parseFloat(pre)).toFixed(2))
-  // }
 
   chartBody.data.datasets[0].data = mySenkaData
   chartBody.data.datasets[1].data = no5SenkaData
@@ -53,7 +62,7 @@ export default class SenkaCalendar extends Component {
     this.props.backstate({
       senkaType: e.currentTarget.value,
     }, ()=>{
-      drawChart(this.props.exphis, this.props.tmpexp, this.props.tmpno, this.props.chartType ,this.props.senkaType, this.props.lineChart, this.props.senkaLine)
+      drawChart(this.props.chartType ,this.props.senkaType, this.props.lineChart, this.props.senkaLine)
     })
   };
 
@@ -63,10 +72,10 @@ export default class SenkaCalendar extends Component {
     const type = this.props.chartType === 'mon' ? 'day' : 'mon'
     switch(this.props.chartType){
     case 'mon':
-      drawChart(this.props.exphis, this.props.tmpexp, this.props.tmpno, 'day',this.props.senkaType, this.props.lineChart, this.props.senkaLine)
+      drawChart('day',this.props.senkaType, this.props.lineChart, this.props.senkaLine)
       break
     case 'day':
-      drawChart(this.props.exphis, this.props.tmpexp, this.props.tmpno, 'mon',this.props.senkaType, this.props.lineChart, this.props.senkaLine)
+      drawChart('mon',this.props.senkaType, this.props.lineChart, this.props.senkaLine)
       break
     }
     this.props.backstate({

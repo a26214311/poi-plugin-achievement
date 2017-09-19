@@ -125,7 +125,7 @@
 /* 战果日历 / 战果趋势 切换 */
 
 #achievement .btn-panel-title .panel-heading {
-	padding: 0;
+	padding: 0 !important;
 }
 
 #achievement .btn-panel-title .panel-heading .panel-title{
