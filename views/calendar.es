@@ -36,7 +36,7 @@ export const drawChart = (chartType, senkaType, chartBody, senkaLine) =>{
           count ++
         } else {
           let saveData = arr[idx]
-          arr[idx] = (ele - lastData) / count
+          arr[idx] = Math.round((ele - lastData) / count)
           count = 1
           lastData = saveData
         }

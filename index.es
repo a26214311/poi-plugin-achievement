@@ -491,6 +491,14 @@ export const reactClass = connect(
                 ],
               },
               options: {
+                tooltips: {
+                  mode: 'index',
+                  intersect: false,
+                },
+                hover: {
+                  mode: 'nearest',
+                  intersect: true
+                },
                 scales: {
                   yAxes: [{
                     ticks: {
