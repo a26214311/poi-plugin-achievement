@@ -9,10 +9,12 @@ import SenkaCalculator from './views/calculator'
 import SenkaCalendar, {drawChart} from './views/calendar'
 import SenkaInfo from './views/info'
 
+/*
 import {
   pluginDidLoad,
   pluginWillUnload,
 } from './mananger'
+*/
 
 import {
   getDateNo,getRankDateNo,
@@ -516,6 +518,6 @@ const switchPluginPath = [
 
 export {
   switchPluginPath,
-  pluginDidLoad,
-  pluginWillUnload,
+  // pluginDidLoad,
+  // pluginWillUnload,
 }
