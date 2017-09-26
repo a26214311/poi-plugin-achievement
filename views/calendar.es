@@ -82,12 +82,11 @@ export const drawChart = (chartType, senkaType, senkaLine) =>{
   }
   const no5Senka = senkaLine.r5his, no20Senka = senkaLine.r20his, no100Senka = senkaLine.r100his, no501Senka = senkaLine.r501his, mySenka = senkaLine.myhis
   labels.map(day => {
-    //mySenkaData.push(((expadd[day * 2 - 1] ? expadd[day * 2 - 1] : 0) + (expadd[day * 2] ? expadd[day * 2] : 0)).toFixed(1))
-    mySenkaData.push(mySenka[day * 2 - 1] ? mySenka[day * 2 - 1] : mySenka[day * 2 - 2] ? mySenka[day * 2 - 2] : (day === 1) ? 0 : NaN)
-    no5SenkaData.push(no5Senka[day * 2 - 1] ? no5Senka[day * 2 - 1] : no5Senka[day * 2 - 2] ? no5Senka[day * 2 - 2] : (day === 1) ? 0 : NaN)
-    no20SenkaData.push(no20Senka[day * 2 - 1] ? no20Senka[day * 2 - 1] : no20Senka[day * 2 - 2] ? no20Senka[day * 2 - 2] : (day === 1) ? 0 : NaN)
-    no100SenkaData.push(no100Senka[day * 2 - 1] ? no100Senka[day * 2 - 1] : no100Senka[day * 2 - 2] ? no100Senka[day * 2 - 2] : (day === 1) ? 0 : NaN)
-    no501SenkaData.push(no501Senka[day * 2 - 1] ? no501Senka[day * 2 - 1] : no501Senka[day * 2 - 2] ? no501Senka[day * 2 - 2] : (day === 1) ? 0 : NaN)
+    mySenka && mySenkaData.push(mySenka[day * 2 - 1] ? mySenka[day * 2 - 1] : mySenka[day * 2 - 2] ? mySenka[day * 2 - 2] : (day === 1) ? 0 : NaN)
+    no5Senka && no5SenkaData.push(no5Senka[day * 2 - 1] ? no5Senka[day * 2 - 1] : no5Senka[day * 2 - 2] ? no5Senka[day * 2 - 2] : (day === 1) ? 0 : NaN)
+    no20Senka && no20SenkaData.push(no20Senka[day * 2 - 1] ? no20Senka[day * 2 - 1] : no20Senka[day * 2 - 2] ? no20Senka[day * 2 - 2] : (day === 1) ? 0 : NaN)
+    no100Senka && no100SenkaData.push(no100Senka[day * 2 - 1] ? no100Senka[day * 2 - 1] : no100Senka[day * 2 - 2] ? no100Senka[day * 2 - 2] : (day === 1) ? 0 : NaN)
+    no501Senka && no501SenkaData.push(no501Senka[day * 2 - 1] ? no501Senka[day * 2 - 1] : no501Senka[day * 2 - 2] ? no501Senka[day * 2 - 2] : (day === 1) ? 0 : NaN)
   })
   delete lineChart.options.scales.yAxes[0].ticks.max
 
@@ -185,8 +184,6 @@ export default class SenkaCalendar extends Component {
     return calendar
   }
 
-
-
   render() {
     try {
       return this.render_D()
@@ -201,7 +198,6 @@ export default class SenkaCalendar extends Component {
       )
     }
   }
-
 
   render_D(){
     const exphis = this.props.exphis
