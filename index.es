@@ -14,8 +14,11 @@ import {
   pluginWillUnload,
 } from './mananger'
 
-import {EAforArr,getDateNo,getRankDateNo,
-        fs,exlist,exvalue,dayofMonth,MAGIC_L_NUMS,MAGIC_R_NUMS} from './lib/util'
+import {
+  getDateNo,getRankDateNo,
+  fs,exlist,exvalue,dayofMonth,MAGIC_L_NUMS,MAGIC_R_NUMS,
+  findSenkaMagicNum,
+} from './lib/util'
 
 import {
   mainUISelector,
@@ -27,74 +30,74 @@ const Chart = require("./assets/Chart")
 
 let lineChart
 
+const mkInitState = props => ({
+  achieve: {
+    exphis: {},
+  },
+  exphis: {},
+  lastmonth: -1,
+  r1: 0,
+  r501: 0,
+  ranktime: 0,
+  rankuex:exlist,
+  r1time: 0,
+  r501time: 0,
+  r1last: 0,
+  r501last: 0,
+  r1lasttime: 0,
+  r501lasttime: 0,
+
+  r5:0,
+  r5time:0,
+  r5last:0,
+  r5lasttime:0,
+  r20:0,
+  r20time:0,
+  r20last:0,
+  r20lasttime:0,
+
+  r5his:{},
+  r20his:{},
+  r100his:{},
+  r501his:{},
+
+  myhis:{},
+
+  mylastno:0,
+  mylastranktime:0,
+
+  mymagic:MAGIC_L_NUMS[props.basic?props.basic.api_member_id:0],
+  tmpexp:0,
+  tmpno:0,
+  reviseType: 0, /* revise */
+
+  mysenka: 0,
+  targetsenka: 2400,
+  ignoreex: {},
+  need_load: true,
+  fensureexp: 0,
+  fensurets: 0,
+  fensuresenka: 0,
+  tensureexp:0,
+  tensurets:0,
+  tensureuex:exlist,
+  fensureuex:exlist,
+  extraSenka: 1,
+  zclearts:0,
+
+  checksum:484764,  //2017.6.5
+
+  senkaType:'calendar',
+  chartType: 'mon',
+})
+
 export const reactClass = connect(
   mainUISelector,
   null, null, {pure: false}
 )(class PluginAchievement extends Component {
-
   constructor(props) {
     super(props)
-    this.state = {
-      achieve: {
-        exphis: {},
-      },
-      exphis: {},
-      lastmonth: -1,
-      r1: 0,
-      r501: 0,
-      ranktime: 0,
-      rankuex:exlist,
-      r1time: 0,
-      r501time: 0,
-      r1last: 0,
-      r501last: 0,
-      r1lasttime: 0,
-      r501lasttime: 0,
-
-      r5:0,
-      r5time:0,
-      r5last:0,
-      r5lasttime:0,
-      r20:0,
-      r20time:0,
-      r20last:0,
-      r20lasttime:0,
-
-      r5his:{},
-      r20his:{},
-      r100his:{},
-      r501his:{},
-
-      myhis:{},
-
-
-      mylastno:0,
-      mylastranktime:0,
-
-      mymagic:MAGIC_L_NUMS[this.props.basic?this.props.basic.api_member_id:0],
-      tmpexp:0,
-      tmpno:0,
-      reviseType: 0, /* revise */
-
-      mysenka: 0,
-      targetsenka: 2400,
-      ignoreex: {},
-      need_load: true,
-      fensureexp: 0,
-      fensurets: 0,
-      fensuresenka: 0,
-      tensureexp:0,
-      tensurets:0,
-      tensureuex:exlist,
-      fensureuex:exlist,
-      extraSenka: 1,
-      zclearts:0,
-
-      checksum:484764,  //2017.6.5
-
-      senkaType:'calendar',
-      chartType: 'mon',
-    }
+    this.state = mkInitState(props)
   }
 
   componentWillReceiveProps(nextProps){
@@ -200,31 +203,6 @@ export const reactClass = connect(
     return rate > 0 ? rate : 0
   }
 
-  auto_magic(page,list){
-    const larray = []
-    let fixR=false
-    for(var i=0;i<list.length;i++){
-      const no=list[i].api_mxltvkpyuklh
-      const key = list[i].api_wuhnhojjxmke
-      const Rno = no % 13
-      if(key%MAGIC_R_NUMS[Rno]==0){//R magic is correct
-        const lrate = key /  MAGIC_R_NUMS[Rno]
-        larray.push(lrate)
-      }else{
-        fixR=true
-      }
-    }
-    const lsub=[]
-    for(var i=1;i<larray.length;i++){
-      const sub = larray[i-1] - larray[i]
-      if(sub>0){
-        lsub.push(sub)
-      }
-    }
-    return EAforArr(lsub)
-  }
-
-
   handleResponse = e => {
     const {path, body,postBody} = e.detail
 
@@ -265,8 +243,8 @@ export const reactClass = connect(
       }
       if(achieve.reviseType==0){
         debug.log('checksum failed,will refresh magic')
-        const newmagic = this.auto_magic(page,list)
-        if(newmagic>0&&newmagic<100){
+        const newmagic = findSenkaMagicNum(list)
+        if (newmagic){
           achieve.mymagic=newmagic
           achieve.reviseType=1
           debug.log("newmagic:"+newmagic)
