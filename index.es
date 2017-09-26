@@ -2,7 +2,7 @@ import React, {Component} from 'react'
 import {connect} from 'react-redux'
 
 import {join} from 'path'
-import {readJsonSync} from 'fs-extra'
+import {readJsonSync, ensureDirSync} from 'fs-extra'
 import {Row} from 'react-bootstrap'
 
 import SenkaCalculator from './views/calculator'
@@ -25,6 +25,14 @@ import {
 } from './selectors'
 
 import { debug } from './debug'
+
+// make sure the directory exists and return file path to achieve.json
+const getAchieveFilePath = () => {
+  const {APPDATA_PATH} = window
+  const path = join(APPDATA_PATH,'achieve')
+  ensureDirSync(path)
+  return join(path,'achieve.json')
+}
 
 const mkInitState = props => ({
   achieve: {
@@ -330,17 +338,10 @@ export const reactClass = connect(
   savelist(){
     try {
       const data = this.loadlist()
-      const savepath = join(window.APPDATA_PATH, 'achieve', 'achieve.json')
+      const savepath = getAchieveFilePath()
       fs.writeFileSync(savepath, JSON.stringify(data))
     } catch (e) {
-      fs.mkdir(join(window.APPDATA_PATH, 'achieve'))
-      try {
-        const data = this.loadlist()
-        const savepath = join(window.APPDATA_PATH, 'achieve', 'achieve.json')
-        fs.writeFileSync(savepath, JSON.stringify(data))
-      } catch (e2) {
-        debug.log(e2)
-      }
+      debug.error(`error while saving data`, e)
     }
   }
 
@@ -348,10 +349,10 @@ export const reactClass = connect(
     const needload = this.state.need_load
     if (needload) {
       try {
-        const savedpath = join(window.APPDATA_PATH, 'achieve', 'achieve.json')
+        const savedpath = getAchieveFilePath()
         const data = readJsonSync(savedpath)
         data.need_load = false
-        let zclearts = data.zclearts;
+        const zclearts = data.zclearts
         if(new Date(zclearts).getDate()==1&&new Date(zclearts).getHours()<6){
           data.zclearts=0
         }
@@ -369,7 +370,9 @@ export const reactClass = connect(
         })
         return data
       } catch (e) {
-        debug.log(e)
+        if (e.syscall !== 'open' || e.code !== 'ENOENT') {
+          debug.error('Error while loading config', e)
+        }
         return {}
       }
     } else {
@@ -379,11 +382,11 @@ export const reactClass = connect(
 
   addExSenka(uexnow,uexthen){
     const hash={}
-    for(var i=0;i<uexnow.length;i++){
+    for (let i=0;i<uexnow.length;i++){
       hash[uexnow[i]]=1
     }
     let r=0
-    for(var i=0;i<uexthen.length;i++){
+    for (let i=0;i<uexthen.length;i++){
       const map=uexthen[i]
       if(!hash[map]){
         r=r+exvalue[map]
