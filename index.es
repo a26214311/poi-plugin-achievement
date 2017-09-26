@@ -240,18 +240,13 @@ export const reactClass = connect(
         }
       }
       for(let i=0;i<list.length;i++){
-        if(list[i].api_mtjmdcwtvhdr==myname){
-          var no=list[i].api_mxltvkpyuklh
-          var key = list[i].api_wuhnhojjxmke
-          var senka = this.getRate(no,key,myid)
-          if(achieve){
+        if(list[i].api_mtjmdcwtvhdr === myname){
 
-          }
-
-          var timeno = getRankDateNo(now)
+          const no=list[i].api_mxltvkpyuklh
+          const key = list[i].api_wuhnhojjxmke
+          const senka = this.getRate(no,key,myid)
+          const timeno = getRankDateNo(now)
           achieve.myhis[timeno]=senka
-
-
           achieve.mysenka=senka
           achieve.mylastno=achieve.myno
           achieve.mylastranktime=getRankDateNo(achieve.ranktime)
@@ -291,69 +286,33 @@ export const reactClass = connect(
           }
         }
       }
-      if(page==10){
-        var no=list[9].api_mxltvkpyuklh
-        var key = list[9].api_wuhnhojjxmke
-        var senka = this.getRate(no,key,myid)
-        const r1last = achieve.r1
-        const r1time = achieve.r1time
-        const r1timeno = getRankDateNo(new Date(r1time))
-        achieve.r1=senka
-        achieve.r1time=now
-        var timeno = getRankDateNo(now)
-        achieve.r100his[timeno]=senka
-        if(r1timeno!=timeno){
-          achieve.r1last=r1last
-          achieve.r1lasttime=r1timeno
-        }
-      }else if(page==51){
-        var no=list[0].api_mxltvkpyuklh
-        var key = list[0].api_wuhnhojjxmke
-        var senka = this.getRate(no,key,myid)
-        var timeno = getRankDateNo(now)
-        const r501last = achieve.r501
-        const r501time = achieve.r501time
-        const r501timeno = getRankDateNo(new Date(r501time))
-        achieve.r501=senka
-        achieve.r501time=now
-        achieve.r501his[timeno]=senka
-        if(r501timeno!=timeno){
-          achieve.r501last=r501last
-          achieve.r501lasttime=r501timeno
-        }
-      }else if(page==1){
-        var no=list[4].api_mxltvkpyuklh
-        var key = list[4].api_wuhnhojjxmke
-        var senka = this.getRate(no,key,myid)
-        var timeno = getRankDateNo(now)
-        const r5last = achieve.r5
-        const r5time = achieve.r5time
-        const r5timeno = getRankDateNo(new Date(r5time))
-        achieve.r5=senka
-        achieve.r5time=now
-        achieve.r5his[timeno]=senka
-        if(r5timeno!=timeno){
-          achieve.r5last=r5last
-          achieve.r5lasttime=r5timeno
-        }
-      }else if(page==2){
-        var no=list[9].api_mxltvkpyuklh
-        var key = list[9].api_wuhnhojjxmke
-        var senka = this.getRate(no,key,myid)
-        var timeno = getRankDateNo(now)
-        const r20last = achieve.r20
-        const r20time = achieve.r20time
-        const r20timeno = getRankDateNo(new Date(r20time))
-        achieve.r20=senka
-        achieve.r20time=now
-        achieve.r20his[timeno]=senka
-        if(r20timeno!=timeno){
-          achieve.r20last=r20last
-          achieve.r20lasttime=r20timeno
-        }
-      }else{
 
-      }
+      const trackingRanks = [100,501,5,20]
+      trackingRanks.map(rank => {
+        const pg = Math.ceil(rank/10)
+        if (pg !== page)
+          return
+
+        const offset =
+          rank % 10 === 0 ? 9 :
+            rank % 10 - 1
+
+        const no=list[offset].api_mxltvkpyuklh
+        const key = list[offset].api_wuhnhojjxmke
+        const senka = this.getRate(no,key,myid)
+        const prefix = rank === 100 ? `r1` : `r${rank}`
+        const rXlast = achieve[prefix]
+        const rXtime = achieve[`${prefix}time`]
+        const rXtimeno = getRankDateNo(new Date(rXtime))
+        achieve[prefix]=senka
+        achieve[`${prefix}time`]=now
+        const timeno = getRankDateNo(now)
+        achieve[`r${rank}his`][timeno]=senka
+        if(rXtimeno!=timeno){
+          achieve.r1last=rXlast
+          achieve.r1lasttime=rXtimeno
+        }
+      })
       this.setState(achieve,()=>this.savelist())
     }
   }
