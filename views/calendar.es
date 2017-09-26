@@ -1,7 +1,7 @@
 import React, {Component} from 'react'
 import { Col, Panel, ButtonGroup, Button, Table } from 'react-bootstrap'
 import FontAwesome from 'react-fontawesome'
-import { getDateNo, dayofMonth, senkaOfDay } from '../lib/util'
+import { dayofMonth, senkaOfDay } from '../lib/util'
 import { debug } from '../debug'
 import Chart from '../assets/Chart'
 
@@ -76,17 +76,22 @@ export const drawChart = (chartType, senkaType, senkaLine) =>{
   }
 
   const day = new Date().getDate()
-  let labels = [], mySenkaData = [], no5SenkaData = [], no20SenkaData = [], no100SenkaData = [], no501SenkaData = []
+  const labels = []
+  const mySenkaData = []
+  const no5SenkaData = []
+  const no20SenkaData = []
+  const no100SenkaData = []
+  const no501SenkaData = []
   for(let i = 1; i <= day; i++){
     labels.push(i)
   }
   const no5Senka = senkaLine.r5his, no20Senka = senkaLine.r20his, no100Senka = senkaLine.r100his, no501Senka = senkaLine.r501his, mySenka = senkaLine.myhis
   labels.map(day => {
-    mySenka && mySenkaData.push(mySenka[day * 2 - 1] ? mySenka[day * 2 - 1] : mySenka[day * 2 - 2] ? mySenka[day * 2 - 2] : (day === 1) ? 0 : NaN)
-    no5Senka && no5SenkaData.push(no5Senka[day * 2 - 1] ? no5Senka[day * 2 - 1] : no5Senka[day * 2 - 2] ? no5Senka[day * 2 - 2] : (day === 1) ? 0 : NaN)
-    no20Senka && no20SenkaData.push(no20Senka[day * 2 - 1] ? no20Senka[day * 2 - 1] : no20Senka[day * 2 - 2] ? no20Senka[day * 2 - 2] : (day === 1) ? 0 : NaN)
-    no100Senka && no100SenkaData.push(no100Senka[day * 2 - 1] ? no100Senka[day * 2 - 1] : no100Senka[day * 2 - 2] ? no100Senka[day * 2 - 2] : (day === 1) ? 0 : NaN)
-    no501Senka && no501SenkaData.push(no501Senka[day * 2 - 1] ? no501Senka[day * 2 - 1] : no501Senka[day * 2 - 2] ? no501Senka[day * 2 - 2] : (day === 1) ? 0 : NaN)
+    mySenka && mySenkaData.push(mySenka[day * 2 - 1] || mySenka[day * 2 - 2] || (day === 1 ? 0 : NaN))
+    no5Senka && no5SenkaData.push(no5Senka[day * 2 - 1] || no5Senka[day * 2 - 2] || (day === 1 ? 0 : NaN))
+    no20Senka && no20SenkaData.push(no20Senka[day * 2 - 1] || no20Senka[day * 2 - 2] || (day === 1 ? 0 : NaN))
+    no100Senka && no100SenkaData.push(no100Senka[day * 2 - 1] || no100Senka[day * 2 - 2] || (day === 1 ? 0 : NaN))
+    no501Senka && no501SenkaData.push(no501Senka[day * 2 - 1] || no501Senka[day * 2 - 2] || (day === 1 ? 0 : NaN))
   })
   delete lineChart.options.scales.yAxes[0].ticks.max
 
@@ -101,7 +106,7 @@ export const drawChart = (chartType, senkaType, senkaLine) =>{
         if(isNaN(ele)){
           count ++
         } else {
-          let saveData = arr[idx]
+          const saveData = arr[idx]
           arr[idx] = Math.round((ele - lastData) / count)
           count = 1
           lastData = saveData
@@ -235,20 +240,3 @@ export default class SenkaCalendar extends Component {
     )
   }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
