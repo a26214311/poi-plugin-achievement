@@ -26,10 +26,6 @@ import {
 
 import { debug } from './debug'
 
-const Chart = require("./assets/Chart")
-
-let lineChart
-
 const mkInitState = props => ({
   achieve: {
     exphis: {},
@@ -144,7 +140,6 @@ export const reactClass = connect(
       achieve.exphis=exphistory
       needupdate=true
     }
-    let willUpdateChart = false
     if(exp>data.tmpexp||exp<data.tmpexp-10000){
       if(now.getDate()==dayofMonth[month]){
         const Hour = now.getHours()
@@ -158,26 +153,20 @@ export const reactClass = connect(
         achieve.tmpno=no
         needupdate=true
       }
-      if(!!lineChart){
-        willUpdateChart = true
-      }
     }
     if(needupdate){
       this.setState(achieve,()=>{
-        if(willUpdateChart){
-          drawChart(data.chartType, data.senkaType, lineChart, {
-            r5his: data.r5his,
-            r20his: data.r20his,
-            r100his: data.r100his,
-            r501his: data.r501his,
-            myhis: data.myhis
-          })
-        }
+        drawChart(data.chartType, data.senkaType, {
+          r5his: data.r5his,
+          r20his: data.r20his,
+          r100his: data.r100his,
+          r501his: data.r501his,
+          myhis: data.myhis,
+        })
         this.savelist()
       })
     }
   }
-
 
   starttimer(){
     let now = new Date()
@@ -409,98 +398,15 @@ export const reactClass = connect(
         }
         this.setState(data,() => {
           this.starttimer()
-          /* create chart */
-          if(!lineChart){
-            debug.log('===== init chart =====')
-            const ctx = document.getElementById("myChart")
-            const backgroundColors = [
-              'rgba(255, 99, 132, 0.2)',
-              'rgba(54, 162, 235, 0.2)',
-              'rgba(255, 206, 86, 0.2)',
-              'rgba(75, 192, 192, 0.2)',
-              'rgba(153, 102, 255, 0.2)',
-              'rgba(255, 159, 64, 0.2)',
-            ]
-            const borderColors = [
-              'rgba(255, 99, 132, 1)',
-              'rgba(54, 162, 235, 1)',
-              'rgba(255, 206, 86, 1)',
-              'rgba(75, 192, 192, 1)',
-              'rgba(153, 102, 255, 1)',
-              'rgba(255, 159, 64, 1)',
-            ]
-            Chart.defaults.global.animation.duration = 0
-            Chart.defaults.line.spanGaps = true;
-            lineChart = new Chart(ctx, {
-              type: 'line',
-              data: {
-                labels: [],
-                datasets: [
-                  {
-                    label: '我的战果',
-                    data: [],
-                    backgroundColor: backgroundColors[0],
-                    borderColor: borderColors[0],
-                    borderWidth: 1,
-                  },
-                  {
-                    label: '5位',
-                    data: [],
-                    backgroundColor: backgroundColors[1],
-                    borderColor: borderColors[1],
-                    borderWidth: 1,
-                  },
-                  {
-                    label: '20位',
-                    data: [],
-                    backgroundColor: backgroundColors[2],
-                    borderColor: borderColors[2],
-                    borderWidth: 1,
-                  },
-                  {
-                    label: '100位',
-                    data: [],
-                    backgroundColor: backgroundColors[3],
-                    borderColor: borderColors[3],
-                    borderWidth: 1,
-                  },
-                  {
-                    label: '501位',
-                    data: [],
-                    backgroundColor: backgroundColors[4],
-                    borderColor: borderColors[4],
-                    borderWidth: 1,
-                  },
-                ],
-              },
-              options: {
-                tooltips: {
-                  mode: 'index',
-                  intersect: false,
-                },
-                hover: {
-                  mode: 'nearest',
-                  intersect: true
-                },
-                scales: {
-                  yAxes: [{
-                    ticks: {
-                      beginAtZero:true,
-                    },
-                  }],
-                },
-              },
-            })
-            if (typeof data.exphis !== 'undefined' &&
+          if (typeof data.exphis !== 'undefined' &&
               typeof data.tmpexp !== 'undefined')
-              drawChart(data.chartType, data.senkaType, lineChart, {
-                r5his: data.r5his,
-                r20his: data.r20his,
-                r100his: data.r100his,
-                r501his: data.r501his,
-                myhis: data.myhis
-              })
-          }
+            drawChart(data.chartType, data.senkaType, {
+              r5his: data.r5his,
+              r20his: data.r20his,
+              r100his: data.r100his,
+              r501his: data.r501his,
+              myhis: data.myhis,
+            })
         })
         return data
       } catch (e) {
@@ -621,13 +527,12 @@ export const reactClass = connect(
             tmpno={this.state.tmpno}
             chartType={this.state.chartType}
             senkaType={this.state.senkaType}
-            lineChart={lineChart}
             senkaLine={{
               r5his: this.state.r5his,
               r20his: this.state.r20his,
               r100his: this.state.r100his,
               r501his: this.state.r501his,
-              myhis: this.state.myhis
+              myhis: this.state.myhis,
             }}
             lt={layouttype}
             backstate={
