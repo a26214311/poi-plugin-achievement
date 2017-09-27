@@ -11,7 +11,10 @@ export default class SenkaInfo extends Component {
     rxlast = rxlast?rxlast:0
     rxtime = new Date(rxtime)
     const rxno = getRankDateNo(rxtime)
-    const rxtsstr = ["更新时间: " + (Math.floor((parseInt(rxno))/2)+1) + "日", parseInt(rxno)%2!=0?<FontAwesome name="sun-o"/> : <FontAwesome name="moon-o"/>]
+    const rxtsstr = [
+      "更新时间: " + (Math.floor((parseInt(rxno))/2)+1) + "日",
+      <FontAwesome key={1} name={parseInt(rxno)%2 !== 0 ? 'sun-o' : 'moon-o'} />,
+    ]
     return(
       <tr>
         <td className="pob">
@@ -20,7 +23,7 @@ export default class SenkaInfo extends Component {
         </td>
         <td className="pob">
           <OverlayTrigger placement="bottom" overlay={
-            <Tooltip>
+            <Tooltip id={`plugin-achievement-senka-info-tooltip-${order}`}>
               <div>战果增加： <FontAwesome name="arrow-up"/>{(rx-rxlast).toFixed(0)}</div>
               <div>
                 {"上次更新: " + (Math.floor((parseInt(rxlasttime))/2)+1) + "日"}

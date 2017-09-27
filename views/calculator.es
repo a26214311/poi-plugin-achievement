@@ -81,6 +81,7 @@ export default class SenkaCalculator extends Component {
 
   renderExtraSenkaButton = extraSenka => (
     <Button
+      key="extraSenka"
       bsStyle={
         extraSenka == 0 ? 'success' :
         extraSenka == 1 ? 'danger' :
