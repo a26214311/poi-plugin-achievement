@@ -319,8 +319,8 @@ export const reactClass = connect(
         const timeno = getRankDateNo(now)
         achieve[`r${rank}his`][timeno]=senka
         if(rXtimeno!=timeno){
-          achieve.r1last=rXlast
-          achieve.r1lasttime=rXtimeno
+          achieve[`${prefix}last`]=rXlast
+          achieve[`${prefix}lasttime`]=rXtimeno
         }
       })
       this.setState(achieve,()=>this.savelist())
