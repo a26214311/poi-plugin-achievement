@@ -1,95 +1,109 @@
 import React, {Component} from 'react'
 import {connect} from 'react-redux'
-import { _ } from 'lodash'
 
 import {join} from 'path'
-import { readJsonSync } from 'fs-extra'
-import {Row, Col} from 'react-bootstrap'
+import {readJsonSync, ensureDirSync} from 'fs-extra'
+import {Row} from 'react-bootstrap'
 
 import SenkaCalculator from './views/calculator'
-import SenkaCalendar from './views/calendar'
+import SenkaCalendar, {drawChart} from './views/calendar'
 import SenkaInfo from './views/info'
-import {drawChart} from './views/calendar.es'
 
-import {EAforArr,getDateNo,getRankDateNo,
-        fs,exlist,exvalue,dayofMonth,MAGIC_L_NUMS,MAGIC_R_NUMS} from './lib/util'
+/*
+import {
+  pluginDidLoad,
+  pluginWillUnload,
+} from './mananger'
+*/
+
+import {
+  getDateNo,getRankDateNo,
+  fs,exlist,exvalue,dayofMonth,MAGIC_L_NUMS,MAGIC_R_NUMS,
+  findSenkaMagicNum,
+} from './lib/util'
 
 import {
   mainUISelector,
 } from './selectors'
 
-const Chart = require("./assets/Chart")
+import { debug } from './debug'
 
-let lineChart
+// make sure the directory exists and return file path to achieve.json
+const getAchieveFilePath = () => {
+  const {APPDATA_PATH} = window
+  const path = join(APPDATA_PATH,'achieve')
+  ensureDirSync(path)
+  return join(path,'achieve.json')
+}
+
+const mkInitState = props => ({
+  achieve: {
+    exphis: {},
+  },
+  exphis: {},
+  lastmonth: -1,
+  r1: 0,
+  r501: 0,
+  ranktime: 0,
+  rankuex:exlist,
+  r1time: 0,
+  r501time: 0,
+  r1last: 0,
+  r501last: 0,
+  r1lasttime: 0,
+  r501lasttime: 0,
+
+  r5:0,
+  r5time:0,
+  r5last:0,
+  r5lasttime:0,
+  r20:0,
+  r20time:0,
+  r20last:0,
+  r20lasttime:0,
+
+  r5his:{},
+  r20his:{},
+  r100his:{},
+  r501his:{},
+
+  myhis:{},
+
+  mylastno:0,
+  mylastranktime:0,
+
+  mymagic:MAGIC_L_NUMS[props.basic?props.basic.api_member_id:0],
+  tmpexp:0,
+  tmpno:0,
+  reviseType: 0, /* revise */
+
+  mysenka: 0,
+  targetsenka: 2400,
+  ignoreex: {},
+  need_load: true,
+  fensureexp: 0,
+  fensurets: 0,
+  fensuresenka: 0,
+  tensureexp:0,
+  tensurets:0,
+  tensureuex:exlist,
+  fensureuex:exlist,
+  extraSenka: 1,
+  zclearts:0,
+
+  checksum:484764,  //2017.6.5
+
+  senkaType:'calendar',
+  chartType: 'mon',
+})
 
 export const reactClass = connect(
   mainUISelector,
   null, null, {pure: false}
 )(class PluginAchievement extends Component {
-
   constructor(props) {
     super(props)
-    this.state = {
-      achieve: {
-        exphis: {},
-      },
-      exphis: {},
-      lastmonth: -1,
-      r1: 0,
-      r501: 0,
-      ranktime: 0,
-      rankuex:exlist,
-      r1time: 0,
-      r501time: 0,
-      r1last: 0,
-      r501last: 0,
-      r1lasttime: 0,
-      r501lasttime: 0,
-
-      r5:0,
-      r5time:0,
-      r5last:0,
-      r5lasttime:0,
-      r20:0,
-      r20time:0,
-      r20last:0,
-      r20lasttime:0,
-
-      r5his:{},
-      r20his:{},
-      r100his:{},
-      r501his:{},
-
-      myhis:{},
-
-
-      mylastno:0,
-      mylastranktime:0,
-
-      mymagic:MAGIC_L_NUMS[this.props.basic?this.props.basic.api_member_id:0],
-      tmpexp:0,
-      tmpno:0,
-      reviseType: 0, /* revise */
-
-      mysenka: 0,
-      targetsenka: 2400,
-      ignoreex: {},
-      need_load: true,
-      fensureexp: 0,
-      fensurets: 0,
-      fensuresenka: 0,
-      tensureexp:0,
-      tensurets:0,
-      tensureuex:exlist,
-      fensureuex:exlist,
-      extraSenka: 1,
-      zclearts:0,
-
-      checksum:484764,  //2017.6.5
-
-      senkaType:'calendar',
-      chartType: 'mon',
-    }
+    this.state = mkInitState(props)
   }
 
   componentWillReceiveProps(nextProps){
@@ -136,7 +150,6 @@ export const reactClass = connect(
       achieve.exphis=exphistory
       needupdate=true
     }
-    let willUpdateChart = false
     if(exp>data.tmpexp||exp<data.tmpexp-10000){
       if(now.getDate()==dayofMonth[month]){
         const Hour = now.getHours()
@@ -150,26 +163,20 @@ export const reactClass = connect(
         achieve.tmpno=no
         needupdate=true
       }
-      if(!!lineChart){
-        willUpdateChart = true
-      }
     }
     if(needupdate){
       this.setState(achieve,()=>{
-        if(willUpdateChart){
-          drawChart(data.chartType, data.senkaType, lineChart, {
-            r5his: data.r5his,
-            r20his: data.r20his,
-            r100his: data.r100his,
-            r501his: data.r501his,
-            myhis: data.myhis
-          })
-        }
+        drawChart(data.chartType, data.senkaType, {
+          r5his: data.r5his,
+          r20his: data.r20his,
+          r100his: data.r100his,
+          r501his: data.r501his,
+          myhis: data.myhis,
+        })
         this.savelist()
       })
     }
   }
-
 
   starttimer(){
     let now = new Date()
@@ -194,31 +201,6 @@ export const reactClass = connect(
     const rate = obfsRate / MAGIC_R_NUMS[rankNo % 13] / mymagic - 73 - 18
     return rate > 0 ? rate : 0
   }
-
-  auto_magic(page,list){
-    const larray = []
-    let fixR=false
-    for(var i=0;i<list.length;i++){
-      const no=list[i].api_mxltvkpyuklh
-      const key = list[i].api_wuhnhojjxmke
-      const Rno = no % 13
-      if(key%MAGIC_R_NUMS[Rno]==0){//R magic is correct
-        const lrate = key /  MAGIC_R_NUMS[Rno]
-        larray.push(lrate)
-      }else{
-        fixR=true
-      }
-    }
-    const lsub=[]
-    for(var i=1;i<larray.length;i++){
-      const sub = larray[i-1] - larray[i]
-      if(sub>0){
-        lsub.push(sub)
-      }
-    }
-    return EAforArr(lsub)
-  }
-
 
   handleResponse = e => {
     const {path, body,postBody} = e.detail
@@ -259,27 +241,22 @@ export const reactClass = connect(
         achieve.checksum=sum
       }
       if(achieve.reviseType==0){
-        console.log('checksum failed,will refresh magic')
-        const newmagic = this.auto_magic(page,list)
-        if(newmagic>0&&newmagic<100){
+        debug.log('checksum failed,will refresh magic')
+        const newmagic = findSenkaMagicNum(list)
+        if (newmagic){
           achieve.mymagic=newmagic
           achieve.reviseType=1
-          console.log("newmagic:"+newmagic)
+          debug.log("newmagic:"+newmagic)
         }
       }
       for(let i=0;i<list.length;i++){
-        if(list[i].api_mtjmdcwtvhdr==myname){
-          var no=list[i].api_mxltvkpyuklh
-          var key = list[i].api_wuhnhojjxmke
-          var senka = this.getRate(no,key,myid)
-          if(achieve){
+        if(list[i].api_mtjmdcwtvhdr === myname){
 
-          }
-
-          var timeno = getRankDateNo(now)
+          const no=list[i].api_mxltvkpyuklh
+          const key = list[i].api_wuhnhojjxmke
+          const senka = this.getRate(no,key,myid)
+          const timeno = getRankDateNo(now)
           achieve.myhis[timeno]=senka
-
-
           achieve.mysenka=senka
           achieve.mylastno=achieve.myno
           achieve.mylastranktime=getRankDateNo(achieve.ranktime)
@@ -319,69 +296,33 @@ export const reactClass = connect(
           }
         }
       }
-      if(page==10){
-        var no=list[9].api_mxltvkpyuklh
-        var key = list[9].api_wuhnhojjxmke
-        var senka = this.getRate(no,key,myid)
-        const r1last = achieve.r1
-        const r1time = achieve.r1time
-        const r1timeno = getRankDateNo(new Date(r1time))
-        achieve.r1=senka
-        achieve.r1time=now
-        var timeno = getRankDateNo(now)
-        achieve.r100his[timeno]=senka
-        if(r1timeno!=timeno){
-          achieve.r1last=r1last
-          achieve.r1lasttime=r1timeno
-        }
-      }else if(page==51){
-        var no=list[0].api_mxltvkpyuklh
-        var key = list[0].api_wuhnhojjxmke
-        var senka = this.getRate(no,key,myid)
-        var timeno = getRankDateNo(now)
-        const r501last = achieve.r501
-        const r501time = achieve.r501time
-        const r501timeno = getRankDateNo(new Date(r501time))
-        achieve.r501=senka
-        achieve.r501time=now
-        achieve.r501his[timeno]=senka
-        if(r501timeno!=timeno){
-          achieve.r501last=r501last
-          achieve.r501lasttime=r501timeno
-        }
-      }else if(page==1){
-        var no=list[4].api_mxltvkpyuklh
-        var key = list[4].api_wuhnhojjxmke
-        var senka = this.getRate(no,key,myid)
-        var timeno = getRankDateNo(now)
-        const r5last = achieve.r5
-        const r5time = achieve.r5time
-        const r5timeno = getRankDateNo(new Date(r5time))
-        achieve.r5=senka
-        achieve.r5time=now
-        achieve.r5his[timeno]=senka
-        if(r5timeno!=timeno){
-          achieve.r5last=r5last
-          achieve.r5lasttime=r5timeno
-        }
-      }else if(page==2){
-        var no=list[9].api_mxltvkpyuklh
-        var key = list[9].api_wuhnhojjxmke
-        var senka = this.getRate(no,key,myid)
-        var timeno = getRankDateNo(now)
-        const r20last = achieve.r20
-        const r20time = achieve.r20time
-        const r20timeno = getRankDateNo(new Date(r20time))
-        achieve.r20=senka
-        achieve.r20time=now
-        achieve.r20his[timeno]=senka
-        if(r20timeno!=timeno){
-          achieve.r20last=r20last
-          achieve.r20lasttime=r20timeno
-        }
-      }else{
 
-      }
+      const trackingRanks = [100,501,5,20]
+      trackingRanks.map(rank => {
+        const pg = Math.ceil(rank/10)
+        if (pg !== page)
+          return
+
+        const offset =
+          rank % 10 === 0 ? 9 :
+            rank % 10 - 1
+
+        const no=list[offset].api_mxltvkpyuklh
+        const key = list[offset].api_wuhnhojjxmke
+        const senka = this.getRate(no,key,myid)
+        const prefix = rank === 100 ? `r1` : `r${rank}`
+        const rXlast = achieve[prefix]
+        const rXtime = achieve[`${prefix}time`]
+        const rXtimeno = getRankDateNo(new Date(rXtime))
+        achieve[prefix]=senka
+        achieve[`${prefix}time`]=now
+        const timeno = getRankDateNo(now)
+        achieve[`r${rank}his`][timeno]=senka
+        if(rXtimeno!=timeno){
+          achieve[`${prefix}last`]=rXlast
+          achieve[`${prefix}lasttime`]=rXtimeno
+        }
+      })
       this.setState(achieve,()=>this.savelist())
     }
   }
@@ -399,17 +340,10 @@ export const reactClass = connect(
   savelist(){
     try {
       const data = this.loadlist()
-      const savepath = join(window.APPDATA_PATH, 'achieve', 'achieve.json')
+      const savepath = getAchieveFilePath()
       fs.writeFileSync(savepath, JSON.stringify(data))
     } catch (e) {
-      fs.mkdir(join(window.APPDATA_PATH, 'achieve'))
-      try {
-        const data = this.loadlist()
-        const savepath = join(window.APPDATA_PATH, 'achieve', 'achieve.json')
-        fs.writeFileSync(savepath, JSON.stringify(data))
-      } catch (e2) {
-        console.log(e2)
-      }
+      debug.error(`error while saving data`, e)
     }
   }
 
@@ -417,111 +351,30 @@ export const reactClass = connect(
     const needload = this.state.need_load
     if (needload) {
       try {
-        const savedpath = join(window.APPDATA_PATH, 'achieve', 'achieve.json')
+        const savedpath = getAchieveFilePath()
         const data = readJsonSync(savedpath)
         data.need_load = false
-        let zclearts = data.zclearts;
+        const zclearts = data.zclearts
         if(new Date(zclearts).getDate()==1&&new Date(zclearts).getHours()<6){
           data.zclearts=0
         }
         this.setState(data,() => {
           this.starttimer()
-          /* create chart */
-          if(!lineChart){
-            console.log('===== init chart =====')
-            const ctx = document.getElementById("myChart")
-            const backgroundColors = [
-              'rgba(255, 99, 132, 0.2)',
-              'rgba(54, 162, 235, 0.2)',
-              'rgba(255, 206, 86, 0.2)',
-              'rgba(75, 192, 192, 0.2)',
-              'rgba(153, 102, 255, 0.2)',
-              'rgba(255, 159, 64, 0.2)',
-            ]
-            const borderColors = [
-              'rgba(255, 99, 132, 1)',
-              'rgba(54, 162, 235, 1)',
-              'rgba(255, 206, 86, 1)',
-              'rgba(75, 192, 192, 1)',
-              'rgba(153, 102, 255, 1)',
-              'rgba(255, 159, 64, 1)',
-            ]
-            Chart.defaults.global.animation.duration = 0
-            Chart.defaults.line.spanGaps = true;
-            lineChart = new Chart(ctx, {
-              type: 'line',
-              data: {
-                labels: [],
-                datasets: [
-                  {
-                    label: '我的战果',
-                    data: [],
-                    backgroundColor: backgroundColors[0],
-                    borderColor: borderColors[0],
-                    borderWidth: 1,
-                  },
-                  {
-                    label: '5位',
-                    data: [],
-                    backgroundColor: backgroundColors[1],
-                    borderColor: borderColors[1],
-                    borderWidth: 1,
-                  },
-                  {
-                    label: '20位',
-                    data: [],
-                    backgroundColor: backgroundColors[2],
-                    borderColor: borderColors[2],
-                    borderWidth: 1,
-                  },
-                  {
-                    label: '100位',
-                    data: [],
-                    backgroundColor: backgroundColors[3],
-                    borderColor: borderColors[3],
-                    borderWidth: 1,
-                  },
-                  {
-                    label: '501位',
-                    data: [],
-                    backgroundColor: backgroundColors[4],
-                    borderColor: borderColors[4],
-                    borderWidth: 1,
-                  },
-                ],
-              },
-              options: {
-                tooltips: {
-                  mode: 'index',
-                  intersect: false,
-                },
-                hover: {
-                  mode: 'nearest',
-                  intersect: true
-                },
-                scales: {
-                  yAxes: [{
-                    ticks: {
-                      beginAtZero:true,
-                    },
-                  }],
-                },
-              },
-            })
-            if (typeof data.exphis !== 'undefined' &&
+          if (typeof data.exphis !== 'undefined' &&
               typeof data.tmpexp !== 'undefined')
-              drawChart(data.chartType, data.senkaType, lineChart, {
-                r5his: data.r5his,
-                r20his: data.r20his,
-                r100his: data.r100his,
-                r501his: data.r501his,
-                myhis: data.myhis
-              })
-          }
+            drawChart(data.chartType, data.senkaType, {
+              r5his: data.r5his,
+              r20his: data.r20his,
+              r100his: data.r100his,
+              r501his: data.r501his,
+              myhis: data.myhis,
+            })
         })
         return data
       } catch (e) {
-        console.log(e)
+        if (e.syscall !== 'open' || e.code !== 'ENOENT') {
+          debug.error('Error while loading config', e)
+        }
         return {}
       }
     } else {
@@ -531,11 +384,11 @@ export const reactClass = connect(
 
   addExSenka(uexnow,uexthen){
     const hash={}
-    for(var i=0;i<uexnow.length;i++){
+    for (let i=0;i<uexnow.length;i++){
       hash[uexnow[i]]=1
     }
     let r=0
-    for(var i=0;i<uexthen.length;i++){
+    for (let i=0;i<uexthen.length;i++){
       const map=uexthen[i]
       if(!hash[map]){
         r=r+exvalue[map]
@@ -544,12 +397,11 @@ export const reactClass = connect(
     return r
   }
 
-
   render() {
     try {
       return this.render_D()
     } catch (e) {
-      console.log(e)
+      debug.log(e)
       return (
         <div>
           <div>
@@ -639,13 +491,12 @@ export const reactClass = connect(
             tmpno={this.state.tmpno}
             chartType={this.state.chartType}
             senkaType={this.state.senkaType}
-            lineChart={lineChart}
             senkaLine={{
               r5his: this.state.r5his,
               r20his: this.state.r20his,
               r100his: this.state.r100his,
               r501his: this.state.r501his,
-              myhis: this.state.myhis
+              myhis: this.state.myhis,
             }}
             lt={layouttype}
             backstate={
@@ -661,12 +512,12 @@ export const reactClass = connect(
   }
 })
 
-
 const switchPluginPath = [
   '/kcsapi/api_req_ranking/mxltvkpyuklh',
 ]
 
 export {
   switchPluginPath,
+  // pluginDidLoad,
+  // pluginWillUnload,
 }
-

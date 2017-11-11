@@ -1,28 +1,99 @@
 import React, {Component} from 'react'
 import { Col, Panel, ButtonGroup, Button, Table } from 'react-bootstrap'
 import FontAwesome from 'react-fontawesome'
-import { getDateNo, dayofMonth, senkaOfDay } from '../lib/util'
+import { dayofMonth, senkaOfDay } from '../lib/util'
+import { debug } from '../debug'
+import Chart from '../assets/Chart'
 
-export const drawChart = (chartType, senkaType, chartBody, senkaLine) =>{
+const {$} = window
+
+let lineChart = null
+
+const createChart = () => {
+  if (lineChart)
+    return
+
+  debug.log('===== init chart =====')
+  const backgroundColors = [
+    'rgba(255, 99, 132, 0.2)',
+    'rgba(54, 162, 235, 0.2)',
+    'rgba(255, 206, 86, 0.2)',
+    'rgba(75, 192, 192, 0.2)',
+    'rgba(153, 102, 255, 0.2)',
+    'rgba(255, 159, 64, 0.2)',
+  ]
+  const borderColors = [
+    'rgba(255, 99, 132, 1)',
+    'rgba(54, 162, 235, 1)',
+    'rgba(255, 206, 86, 1)',
+    'rgba(75, 192, 192, 1)',
+    'rgba(153, 102, 255, 1)',
+    'rgba(255, 159, 64, 1)',
+  ]
+
+  Chart.defaults.global.animation.duration = 0
+  Chart.defaults.line.spanGaps = true
+  lineChart = new Chart($('#myChart'), {
+    type: 'line',
+    data: {
+      labels: [],
+      datasets:
+        ['我的战果', '5位', '20位', '100位', '501位'].map((label,ind) => {
+          const data = []
+          const borderWidth = 1
+          return {
+            label, data, borderWidth,
+            borderColor: borderColors[ind],
+            backgroundColor: backgroundColors[ind],
+          }
+        }),
+    },
+    options: {
+      tooltips: {
+        mode: 'index',
+        intersect: false,
+      },
+      hover: {
+        mode: 'nearest',
+        intersect: true,
+      },
+      scales: {
+        yAxes: [{
+          ticks: {
+            beginAtZero:true,
+          },
+        }],
+      },
+    },
+  })
+}
+
+export const drawChart = (chartType, senkaType, senkaLine) =>{
+  if (!lineChart)
+    return
   if(senkaType=='calendar'){
     return
   }
 
   const day = new Date().getDate()
-  let labels = [], mySenkaData = [], no5SenkaData = [], no20SenkaData = [], no100SenkaData = [], no501SenkaData = []
+  const labels = []
+  const mySenkaData = []
+  const no5SenkaData = []
+  const no20SenkaData = []
+  const no100SenkaData = []
+  const no501SenkaData = []
   for(let i = 1; i <= day; i++){
     labels.push(i)
   }
-  const no5Senka = senkaLine.r5his, no20Senka = senkaLine.r20his, no100Senka = senkaLine.r100his, no501Senka = senkaLine.r501his, mySenka = senkaLine.myhis;
+  const no5Senka = senkaLine.r5his, no20Senka = senkaLine.r20his, no100Senka = senkaLine.r100his, no501Senka = senkaLine.r501his, mySenka = senkaLine.myhis
   labels.map(day => {
-    //mySenkaData.push(((expadd[day * 2 - 1] ? expadd[day * 2 - 1] : 0) + (expadd[day * 2] ? expadd[day * 2] : 0)).toFixed(1))
-    mySenkaData.push(mySenka[day * 2 - 1] ? mySenka[day * 2 - 1] : mySenka[day * 2 - 2] ? mySenka[day * 2 - 2] : (day === 1) ? 0 : NaN)
-    no5SenkaData.push(no5Senka[day * 2 - 1] ? no5Senka[day * 2 - 1] : no5Senka[day * 2 - 2] ? no5Senka[day * 2 - 2] : (day === 1) ? 0 : NaN)
-    no20SenkaData.push(no20Senka[day * 2 - 1] ? no20Senka[day * 2 - 1] : no20Senka[day * 2 - 2] ? no20Senka[day * 2 - 2] : (day === 1) ? 0 : NaN)
-    no100SenkaData.push(no100Senka[day * 2 - 1] ? no100Senka[day * 2 - 1] : no100Senka[day * 2 - 2] ? no100Senka[day * 2 - 2] : (day === 1) ? 0 : NaN)
-    no501SenkaData.push(no501Senka[day * 2 - 1] ? no501Senka[day * 2 - 1] : no501Senka[day * 2 - 2] ? no501Senka[day * 2 - 2] : (day === 1) ? 0 : NaN)
+    mySenka && mySenkaData.push(mySenka[day * 2 - 1] || mySenka[day * 2 - 2] || (day === 1 ? 0 : NaN))
+    no5Senka && no5SenkaData.push(no5Senka[day * 2 - 1] || no5Senka[day * 2 - 2] || (day === 1 ? 0 : NaN))
+    no20Senka && no20SenkaData.push(no20Senka[day * 2 - 1] || no20Senka[day * 2 - 2] || (day === 1 ? 0 : NaN))
+    no100Senka && no100SenkaData.push(no100Senka[day * 2 - 1] || no100Senka[day * 2 - 2] || (day === 1 ? 0 : NaN))
+    no501Senka && no501SenkaData.push(no501Senka[day * 2 - 1] || no501Senka[day * 2 - 2] || (day === 1 ? 0 : NaN))
   })
-  delete chartBody.options.scales.yAxes[0].ticks.max
+  delete lineChart.options.scales.yAxes[0].ticks.max
 
   if(chartType === 'day'){
     [mySenkaData, no5SenkaData, no20SenkaData, no100SenkaData, no501SenkaData].map(data => {
@@ -35,34 +106,38 @@ export const drawChart = (chartType, senkaType, chartBody, senkaLine) =>{
         if(isNaN(ele)){
           count ++
         } else {
-          let saveData = arr[idx]
+          const saveData = arr[idx]
           arr[idx] = Math.round((ele - lastData) / count)
           count = 1
           lastData = saveData
         }
       })
     })
-    chartBody.options.scales.yAxes[0].ticks.max = 200
+    lineChart.options.scales.yAxes[0].ticks.max = 200
   }
 
-  chartBody.data.datasets[0].data = mySenkaData
-  chartBody.data.datasets[1].data = no5SenkaData
-  chartBody.data.datasets[2].data = no20SenkaData
-  chartBody.data.datasets[3].data = no100SenkaData
-  chartBody.data.datasets[4].data = no501SenkaData
-  chartBody.data.labels = labels
-  chartBody.update(0,true)
+  lineChart.data.datasets[0].data = mySenkaData
+  lineChart.data.datasets[1].data = no5SenkaData
+  lineChart.data.datasets[2].data = no20SenkaData
+  lineChart.data.datasets[3].data = no100SenkaData
+  lineChart.data.datasets[4].data = no501SenkaData
+  lineChart.data.labels = labels
+  lineChart.update(0,true)
 }
 
 
 export default class SenkaCalendar extends Component {
+  componentDidMount() {
+    createChart()
+  }
+
   handleTypeChange = e => {
     e.preventDefault()
     e.stopPropagation()
     this.props.backstate({
       senkaType: e.currentTarget.value,
     }, ()=>{
-      drawChart(this.props.chartType ,this.props.senkaType, this.props.lineChart, this.props.senkaLine)
+      drawChart(this.props.chartType ,this.props.senkaType, this.props.senkaLine)
     })
   };
 
@@ -72,10 +147,10 @@ export default class SenkaCalendar extends Component {
     const type = this.props.chartType === 'mon' ? 'day' : 'mon'
     switch(this.props.chartType){
     case 'mon':
-      drawChart('day',this.props.senkaType, this.props.lineChart, this.props.senkaLine)
+      drawChart('day',this.props.senkaType, this.props.senkaLine)
       break
     case 'day':
-      drawChart('mon',this.props.senkaType, this.props.lineChart, this.props.senkaLine)
+      drawChart('mon',this.props.senkaType, this.props.senkaLine)
       break
     }
     this.props.backstate({
@@ -114,13 +189,11 @@ export default class SenkaCalendar extends Component {
     return calendar
   }
 
-
-
   render() {
     try {
       return this.render_D()
     } catch (e) {
-      console.log(e)
+      debug.log(e)
       return (
         <div>
           <div>
@@ -130,7 +203,6 @@ export default class SenkaCalendar extends Component {
       )
     }
   }
-
 
   render_D(){
     const exphis = this.props.exphis
@@ -168,20 +240,3 @@ export default class SenkaCalendar extends Component {
     )
   }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

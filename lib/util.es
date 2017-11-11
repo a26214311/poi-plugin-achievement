@@ -1,3 +1,5 @@
+import _ from 'lodash'
+
 export const getDateNo = (now) =>{
   now = new Date(new Date(now).getTime()+(new Date().getTimezoneOffset()+480)*60000)
   let date = now.getDate()
@@ -22,9 +24,6 @@ export const getRankDateNo = (now) =>{
   return no
 }
 
-const ea = (max, min) => (max % min ? ea(min, max % min) : min)
-export const EAforArr = arr => arr.sort().reduce((pre, cur) => ea(cur, pre))
-
 export const senkaOfDay = (exphis,tmpexp,tmpno) => {
   const hiskey = Object.keys(exphis).sort((a, b) => parseInt(a) - parseInt(b))
   let lastkey = hiskey[0]
@@ -48,10 +47,6 @@ export const senkaOfDay = (exphis,tmpexp,tmpno) => {
   return expadd
 }
 
-
-
-
-
 export const fs = require('fs')
 export const exlist=["1-5","1-6","2-5","3-5","4-5","5-5","6-5"]
 export const exvalue={"1-5":75,"1-6":75,"2-5":100,"3-5":150,"4-5":180,"5-5":200,"6-5":250}
@@ -65,29 +60,59 @@ export const MAGIC_R_NUMS = [ 8931, 1201, 1156, 5061, 4569, 4732, 3779, 4568, 56
 export const MAGIC_L_NUMS = [36,31,33,97,64,54,52,78,40,85]     // 2017.5.2-2017.5.22
 
 
+/*
+   gcd(a1,a2,a3,...) returns:
 
+   - NaN if the argument list is empty
+   - NaN if any of the arguments is not an integer
+   - otherwise the greatest common divisor of a1,a2,a3...
+ */
+const gcd = (() => {
+  const unsafeBinaryGcd = (m,n) =>
+    n === 0 ? m : gcd(n,m % n)
 
+  return (...args) =>
+    args.length === 0 ?
+      NaN :
+    args.every(_.isInteger) ?
+      args.reduce(unsafeBinaryGcd) :
+    NaN
+})()
 
+/*
+   find senka magic number, return null on failure
+ */
+const findSenkaMagicNum = apiData => {
+  let failed = false
+  const obfsRates = apiData.map(raw => {
+    const no = raw.api_mxltvkpyuklh
+    const key = raw.api_wuhnhojjxmke
+    const magicR = MAGIC_R_NUMS[no % 13]
+    if (key % magicR !== 0){
+      console.warn(`${key} is indivisible by ${magicR}`)
+      failed = true
+    }
+    return key / magicR
+  })
+  if (failed)
+    return null
 
+  const magicX = gcd(...obfsRates)
 
+  if (_.isNaN(magicX))
+    return null
 
+  if (magicX < 99)
+    return magicX
 
+  for (let magic=99; magic>0; --magic) {
+    if (magicX % magic === 0)
+      return magic
+  }
+  // unreachable, because magicX % 1 === 0 will always be true.
+}
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+export {
+  gcd,
+  findSenkaMagicNum,
+}
