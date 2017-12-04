@@ -1,27 +1,25 @@
 import _ from 'lodash'
 
 export const getDateNo = (now) =>{
-  now = new Date(new Date(now).getTime()+(new Date().getTimezoneOffset()+480)*60000)
-  let date = now.getDate()
-  let hour = now.getHours()
-  if(hour<1){
-    date = date -1
-    hour = hour + 24
-  }
-  const no = (date-1)*2+((hour>=13)?1:0)
-  return no
+  let x = new Date();
+  x.setUTCDate(0);
+  x.setUTCHours(17);
+  x.setUTCMinutes(0);
+  x.setUTCSeconds(0);
+  x.setUTCMilliseconds(0);
+  let no = Math.floor((now.getTime()-x.getTime())/3600000/12);
+  return no;
 }
 
 export const getRankDateNo = (now) =>{
-  now = new Date(new Date(now).getTime()+(new Date().getTimezoneOffset()+480)*60000)
-  let date = now.getDate()
-  let hour = now.getHours()
-  if(hour<2){
-    date = date -1
-    hour = hour + 24
-  }
-  const no = (date-1)*2+((hour>=14)?1:0)
-  return no
+  let x = new Date();
+  x.setUTCDate(0);
+  x.setUTCHours(18);
+  x.setUTCMinutes(0);
+  x.setUTCSeconds(0);
+  x.setUTCMilliseconds(0);
+  let no = Math.floor((now.getTime()-x.getTime())/3600000/12);
+  return no;
 }
 
 export const senkaOfDay = (exphis,tmpexp,tmpno) => {

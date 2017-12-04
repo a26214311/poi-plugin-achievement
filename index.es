@@ -109,7 +109,7 @@ export const reactClass = connect(
   componentWillReceiveProps(nextProps){
     const basic = nextProps.basic
     const exp = basic.api_experience
-    const now = new Date(new Date().getTime()+(new Date().getTimezoneOffset()+480)*60000)
+    const now = new Date()
     const month = now.getMonth()
     const no = getDateNo(now)
     const achieve = {}
@@ -180,7 +180,6 @@ export const reactClass = connect(
 
   starttimer(){
     let now = new Date()
-    now = new Date(new Date(now).getTime()+(new Date().getTimezoneOffset()+480)*60000)
     const left = (43200000-(now.getTime()-18001000)%43200000)
     setTimeout(() =>{
       const exp = this.props.basic.api_experience
