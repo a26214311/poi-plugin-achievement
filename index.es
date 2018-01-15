@@ -181,6 +181,7 @@ export const reactClass = connect(
   starttimer(){
     let now = new Date()
     const left = (43200000-(now.getTime()-18001000)%43200000)
+    console.log('will start record exp after '+(left/3600000).toFixed(1)+' hours');
     setTimeout(() =>{
       const exp = this.props.basic.api_experience
       const nowtime = new Date()
@@ -286,7 +287,7 @@ export const reactClass = connect(
                 const subsenka = (senka-thensenka-addexsenka)*50000/35
                 if(subsenka>0){
                   const senkaexp = thenexp + subsenka
-                  if(senkaexp<=achieve.tmpexp){
+                  if(senkaexp<=achieve.tmpexp+4500){
                     achieve.exphis[dateno] = senkaexp
                   }
                 }
