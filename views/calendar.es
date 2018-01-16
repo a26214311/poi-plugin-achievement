@@ -210,31 +210,36 @@ export default class SenkaCalendar extends Component {
     const calendar = this.generateCalendarFromExpadd(expadd)
     return(
       <Col xs={this.props.lt?6:12}>
-        <Panel header={
-          <ButtonGroup>
-            <Button onClick={this.handleTypeChange} value="calendar" bsStyle={this.props.senkaType === 'calendar' ? 'info' : 'default'}>
-              <FontAwesome name="calendar"/> 战果日历
-            </Button>
-            <Button onClick={this.handleTypeChange} value="chart" bsStyle={this.props.senkaType === 'chart' ? 'info' : 'default'}>
-              <FontAwesome name="area-chart"/> 战果趋势
-            </Button>
-          </ButtonGroup>
-        } className={'btn-panel-title ' + this.props.senkaType}>
-          <Table striped bordered condensed>
-            <thead>
-            <tr><td>一</td><td>二</td><td>三</td><td>四</td><td>五</td>
-              <td><font color={"red"}>六</font></td><td><font color={"red"}>日</font></td></tr>
-            </thead>
-            <tbody>
-            {calendar}
-            </tbody>
-          </Table>
-          <div className="chart-main">
-            <Button onClick={this.handleChartType} bsStyle="primary" bsSize="xsmall" className="btn-block">
-              {this.props.chartType === 'mon'? '按月显示' : '按日显示'}
-            </Button>
-            <canvas id="myChart" width="400" height="400"></canvas>
-          </div>
+        <Panel
+          className={'btn-panel-title ' + this.props.senkaType}
+        >
+          <Panel.Heading>
+            <ButtonGroup>
+              <Button onClick={this.handleTypeChange} value="calendar" bsStyle={this.props.senkaType === 'calendar' ? 'info' : 'default'}>
+                <FontAwesome name="calendar"/> 战果日历
+              </Button>
+              <Button onClick={this.handleTypeChange} value="chart" bsStyle={this.props.senkaType === 'chart' ? 'info' : 'default'}>
+                <FontAwesome name="area-chart"/> 战果趋势
+              </Button>
+            </ButtonGroup>
+          </Panel.Heading>
+          <Panel.Body>
+            <Table striped bordered condensed>
+              <thead>
+                <tr><td>一</td><td>二</td><td>三</td><td>四</td><td>五</td>
+                  <td><font color={"red"}>六</font></td><td><font color={"red"}>日</font></td></tr>
+              </thead>
+              <tbody>
+                {calendar}
+              </tbody>
+            </Table>
+            <div className="chart-main">
+              <Button onClick={this.handleChartType} bsStyle="primary" bsSize="xsmall" className="btn-block">
+                {this.props.chartType === 'mon'? '按月显示' : '按日显示'}
+              </Button>
+              <canvas id="myChart" width="400" height="400"></canvas>
+            </div>
+          </Panel.Body>
         </Panel>
       </Col>
     )
