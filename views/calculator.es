@@ -109,97 +109,99 @@ export default class SenkaCalculator extends Component {
     return(
       <Col xs={this.props.lt?3:6}>
         <Panel
-          header={
+          className="info senka-calc">
+          <Panel.Heading>
             <span>
               <FontAwesome name="calculator"/> 战果计算器
             </span>
-          }
-          className="info senka-calc">
-          <div className="senka-ipt flex">
-            <div>
-              目标战果
+          </Panel.Heading>
+          <Panel.Body>
+            <div className="senka-ipt flex">
+              <div>
+                目标战果
+              </div>
+              <div className="flex-auto">
+                <FormControl
+                  value={this.props.targetsenka}
+                  type="text"
+                  placeholder="目标战果"
+                  onChange={this.handleChangeTarget}
+                />
+              </div>
             </div>
-            <div className="flex-auto">
-              <FormControl
-                value={this.props.targetsenka}
-                type="text"
-                placeholder="目标战果"
-                onChange={this.handleChangeTarget}
-              />
+            <div className="senka-eq flex">
+              <div>
+                剩余战果
+              </div>
+              <OverlayTrigger placement="top" overlay={
+                <Tooltip>
+                  {(senkaleft/daysleft).toFixed(1)}/天
+                </Tooltip>
+              }>
+                <div className="flex-auto">
+                  {senkaleft.toFixed(1)}
+                </div>
+              </OverlayTrigger>
             </div>
-          </div>
-          <div className="senka-eq flex">
-            <div>
-              剩余战果
-            </div>
+            <Table striped bordered condensed hover>
+              <thead>
+                <tr><td>MAP</td><td>次数</td><td>每天</td></tr>
+              </thead>
+              <tbody>
+                {
+                  [
+                    ['5-4', 2.282],
+                    ['5-2', 1.995],
+                    ['1-5', 0.8925],
+                  ].map(([hd, dv]) => (
+                    <tr key={hd}>
+                      <td>{hd}</td>
+                      <td>{Math.ceil(senkaleft/dv)}</td>
+                      <td>{(senkaleft/daysleft/dv).toFixed(1)}</td>
+                    </tr>
+                  ))
+                }
+              </tbody>
+            </Table>
+            <p className="short-line">预想攻略的EX图</p>
             <OverlayTrigger placement="top" overlay={
               <Tooltip>
-                {(senkaleft/daysleft).toFixed(1)}/天
+                {
+                  [
+                    ['success', 'check', '计划攻略'],
+                    ['danger', 'close', '计划不攻略'],
+                    ['info', 'star', '已完成'],
+                  ].map(([bsStyle, faName, content],ind) => (
+                    <p key={ind} className="text-left">
+                      <Button bsStyle={bsStyle} bsSize="xsmall">
+                        <FontAwesome name={faName}/>
+                      </Button>：{content}
+                    </p>
+                  ))
+                }
               </Tooltip>
             }>
-              <div className="flex-auto">
-                {senkaleft.toFixed(1)}
+              <div>
+                {
+                  _.chunk(
+                    [
+                      ...exlist.map(this.renderExButton),
+                      this.renderExtraSenkaButton(extraSenka),
+                    ],
+                    3).map((btns,groupInd) => (
+                      <ButtonGroup
+                        key={groupInd}
+                        bsSize="xsmall"
+                        className="justified-group">
+                        {
+                          btns
+                        }
+                      </ButtonGroup>
+                    ))
+                }
               </div>
             </OverlayTrigger>
-          </div>
-          <Table striped bordered condensed hover>
-            <thead>
-            <tr><td>MAP</td><td>次数</td><td>每天</td></tr>
-            </thead>
-            <tbody>
-              {
-                [
-                  ['5-4', 2.282],
-                  ['5-2', 1.995],
-                  ['1-5', 0.8925],
-                ].map(([hd, dv]) => (
-                  <tr key={hd}>
-                    <td>{hd}</td>
-                    <td>{Math.ceil(senkaleft/dv)}</td>
-                    <td>{(senkaleft/daysleft/dv).toFixed(1)}</td>
-                  </tr>
-                ))
-              }
-            </tbody>
-          </Table>
-          <p className="short-line">预想攻略的EX图</p>
-          <OverlayTrigger placement="top" overlay={
-            <Tooltip>
-              {
-                [
-                  ['success', 'check', '计划攻略'],
-                  ['danger', 'close', '计划不攻略'],
-                  ['info', 'star', '已完成'],
-                ].map(([bsStyle, faName, content],ind) => (
-                  <p key={ind} className="text-left">
-                    <Button bsStyle={bsStyle} bsSize="xsmall">
-                      <FontAwesome name={faName}/>
-                    </Button>：{content}
-                  </p>
-                ))
-              }
-            </Tooltip>
-          }>
-            <div>
-              {
-                _.chunk(
-                  [
-                    ...exlist.map(this.renderExButton),
-                    this.renderExtraSenkaButton(extraSenka),
-                  ],
-                  3).map((btns,groupInd) => (
-                    <ButtonGroup
-                      key={groupInd}
-                      bsSize="xsmall"
-                      className="justified-group">
-                      {
-                        btns
-                      }
-                    </ButtonGroup>
-                  ))
-              }
-            </div>
-          </OverlayTrigger>
+          </Panel.Body>
         </Panel>
       </Col>
     )
