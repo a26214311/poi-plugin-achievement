@@ -1,6 +1,6 @@
 {
   "name": "poi-plugin-achievement",
-  "version": "1.4.6",
+  "version": "1.5.1",
   "main": "index.es",
   "description": "A plugin for view achievement",
   "author": {
@@ -13,8 +13,7 @@
     "icon": "fa/line-chart",
     "i18nDir": "i18n/translator",
     "apiVer": {
-      "6.3.3": "2.1.1",
-      "7.0.0-beta.1": "3.0.0"
+      "8.0.1": "1.4.5"
     }
   },
   "devDependencies": {

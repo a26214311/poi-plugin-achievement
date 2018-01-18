@@ -1,13 +1,14 @@
 import _ from 'lodash'
 
 export const getDateNo = (now) =>{
+
   let x = new Date();
   x.setUTCDate(0);
   x.setUTCHours(17);
   x.setUTCMinutes(0);
   x.setUTCSeconds(0);
   x.setUTCMilliseconds(0);
-  let no = Math.floor((now.getTime()-x.getTime())/3600000/12);
+  let no = Math.floor((new Date(now).getTime()-x.getTime())/3600000/12);
   return no;
 }
 
@@ -18,7 +19,7 @@ export const getRankDateNo = (now) =>{
   x.setUTCMinutes(0);
   x.setUTCSeconds(0);
   x.setUTCMilliseconds(0);
-  let no = Math.floor((now.getTime()-x.getTime())/3600000/12);
+  let no = Math.floor((new Date(now).getTime()-x.getTime())/3600000/12);
   return no;
 }
 
