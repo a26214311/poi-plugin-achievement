@@ -251,20 +251,16 @@ export const reactClass = connect(
       }
       for(let i=0;i<list.length;i++){
         if(list[i].api_mtjmdcwtvhdr === myname){
-          console.log(11111);
-          console.log(now);
           const no=list[i].api_mxltvkpyuklh
           const key = list[i].api_wuhnhojjxmke
           const senka = this.getRate(no,key,myid)
           const timeno = getRankDateNo(now)
-          console.log(22222);
           achieve.myhis[timeno]=senka
           achieve.mysenka=senka
           achieve.mylastno=achieve.myno
           achieve.mylastranktime=getRankDateNo(achieve.ranktime)
           achieve.myno=no
           const then = achieve.ranktime
-          console.log(then);
           if(getRankDateNo(now)>getRankDateNo(new Date(then))){
             achieve.rankuex = this.props.unclearedExList
           }
