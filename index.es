@@ -178,6 +178,7 @@ export const reactClass = connect(
     }
   }
 
+
   starttimer(){
     let now = new Date()
     const left = (43200000-(now.getTime()-18001000)%43200000)
