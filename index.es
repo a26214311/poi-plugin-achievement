@@ -153,7 +153,8 @@ export const reactClass = connect(
     if(exp>data.tmpexp||exp<data.tmpexp-10000){
       if(now.getDate()==dayofMonth[month]){
         const Hour = now.getHours()
-        if(Hour<21){
+        const rem = now.getTime()%86400000
+        if(rem<46800000||rem>57600000){
           achieve.tmpexp=exp
           achieve.tmpno=no
           needupdate=true
