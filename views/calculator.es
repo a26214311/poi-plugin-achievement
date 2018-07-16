@@ -38,6 +38,15 @@ export default class SenkaCalculator extends Component {
     }
   }
 
+  handleExtra2SenkaChange = e => {
+    e.preventDefault()
+    e.stopPropagation()
+    if(!this.props.z2clearts){
+      const es = (this.props.extra2Senka + 1) % 3
+      this.props.backstate({extra2Senka:es})
+    }
+  }
+
   render() {
     try {
       return this.render_D()
@@ -99,6 +108,26 @@ export default class SenkaCalculator extends Component {
     </Button>
   )
 
+  renderExtra2SenkaButton = extra2Senka => (
+    <Button
+      key="extra2Senka"
+      bsStyle={
+        extra2Senka == 0 ? 'success' :
+          extra2Senka == 1 ? 'danger' :
+            'info'
+      }
+      onClick={this.handleExtra2SenkaChange}>
+      {
+        extra2Senka == 0 ?
+          <FontAwesome name="check"/> :
+          extra2Senka == 1 ?
+            <FontAwesome name="close"/> :
+            <FontAwesome name="star"/>
+      }
+      Z2作战
+    </Button>
+  )
+
   render_D(){
     const now = new Date()
     const day = now.getDate()
@@ -106,6 +135,7 @@ export default class SenkaCalculator extends Component {
     const daysleft = dayofMonth[month] - day + 1
     const senkaleft = this.props.senkaleft
     const extraSenka = this.props.extraSenka
+    const extra2Senka = this.props.extra2Senka
     return(
       <Col xs={this.props.lt?3:6}>
         <Panel
@@ -187,6 +217,7 @@ export default class SenkaCalculator extends Component {
                     [
                       ...exlist.map(this.renderExButton),
                       this.renderExtraSenkaButton(extraSenka),
+                      this.renderExtra2SenkaButton(extra2Senka),
                     ],
                     3).map((btns,groupInd) => (
                       <ButtonGroup

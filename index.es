@@ -91,6 +91,9 @@ const mkInitState = props => ({
   extraSenka: 1,
   zclearts:0,
 
+  extra2Senka: 1,
+  z2clearts:0,
+
   checksum:484764,  //2017.6.5
 
   senkaType:'calendar',
@@ -431,16 +434,25 @@ export const reactClass = connect(
     const ensureexp = achieve.fensureexp
     const ensureuex = achieve.fensureuex
     if(ensuresenka>0&&ensureexp>0){
+
       upsenka = (exp-ensureexp)/50000*35+ensuresenka-mysenka+this.addExSenka(unclearedex,ensureuex)
       if(new Date(this.state.zclearts).getTime()>new Date(this.state.fensurets).getTime()){
         upsenka = upsenka + 350
       }
+      if(new Date(this.state.z2clearts).getTime()>new Date(this.state.fensurets).getTime()){
+        upsenka = upsenka + 200
+      }
     }else{
       upsenka = (exp - exphis[no])/50000*35 + this.addExSenka(unclearedex,this.state.rankuex)
+      console.log("u:"+upsenka+":"+exp)
       if(new Date(this.state.zclearts).getTime()>ranktime.getTime()){
         upsenka = upsenka + 350
       }
+      if(new Date(this.state.z2clearts).getTime()>ranktime.getTime()){
+        upsenka = upsenka + 200
+      }
     }
+    console.log("m:"+mysenka+":up:"+upsenka);
     const ignoreex = this.state.ignoreex
     const maps = this.props.maps
     let senkaleft = this.state.targetsenka-mysenka-upsenka
@@ -452,6 +464,10 @@ export const reactClass = connect(
     const extraSenka=this.state.extraSenka
     if(extraSenka==0){
       senkaleft=senkaleft-350
+    }
+    const extra2Senka=this.state.extra2Senka
+    if(extra2Senka==0){
+      senkaleft=senkaleft-200
     }
     const layouttype = (this.props.layout=='vertical') && (this.props.doubleTabbed==false)
 
@@ -478,6 +494,8 @@ export const reactClass = connect(
             extraSenka={extraSenka}
             maps={maps}
             zclearts={this.state.zclearts}
+            extra2Senka={this.state.extra2Senka}
+            z2clearts={this.state.z2clearts}
             lt={layouttype}
             backstate={
               (newstate) => {
