@@ -124,7 +124,7 @@ export default class SenkaCalculator extends Component {
             <FontAwesome name="close"/> :
             <FontAwesome name="star"/>
       }
-      Z2作战
+      三川
     </Button>
   )
 
