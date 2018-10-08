@@ -230,6 +230,13 @@ export const reactClass = connect(
           this.setState({extraSenka:2,zclearts:new Date()})
         }
       }
+      if(postBody.api_quest_id==888){
+        if(now.getDate()==1&&now.getHours()<4){
+          this.setState({extra2Senka:2})
+        }else{
+          this.setState({extra2Senka:2,z2clearts:new Date()})
+        }
+      }
     }
     if(path=="/kcsapi/api_req_ranking/mxltvkpyuklh"){
       const myname = this.props.basic.api_nickname

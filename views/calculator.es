@@ -180,8 +180,8 @@ export default class SenkaCalculator extends Component {
               <tbody>
                 {
                   [
+                    ['7-1', 3.035],
                     ['5-4', 2.282],
-                    ['5-2', 1.995],
                     ['1-5', 0.8925],
                   ].map(([hd, dv]) => (
                     <tr key={hd}>
