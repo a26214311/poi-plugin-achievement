@@ -47,6 +47,15 @@ export default class SenkaCalculator extends Component {
     }
   }
 
+  handleExtra3SenkaChange = e => {
+    e.preventDefault()
+    e.stopPropagation()
+    if(!this.props.z3clearts){
+      const es = (this.props.extra3Senka + 1) % 3
+      this.props.backstate({extra3Senka:es})
+    }
+  }
+
   render() {
     try {
       return this.render_D()
@@ -128,6 +137,27 @@ export default class SenkaCalculator extends Component {
     </Button>
   )
 
+
+  renderExtra3SenkaButton = extra3Senka => (
+    <Button
+      key="extra3Senka"
+      bsStyle={
+        extra3Senka == 0 ? 'success' :
+          extra3Senka == 1 ? 'danger' :
+            'info'
+      }
+      onClick={this.handleExtra3SenkaChange}>
+      {
+        extra3Senka == 0 ?
+          <FontAwesome name="check"/> :
+          extra3Senka == 1 ?
+            <FontAwesome name="close"/> :
+            <FontAwesome name="star"/>
+      }
+      泊地警戒
+    </Button>
+  )
+
   render_D(){
     const now = new Date()
     const day = now.getDate()
@@ -136,6 +166,7 @@ export default class SenkaCalculator extends Component {
     const senkaleft = this.props.senkaleft
     const extraSenka = this.props.extraSenka
     const extra2Senka = this.props.extra2Senka
+    const extra3Senka = this.props.extra3Senka
     return(
       <Col xs={this.props.lt?3:6}>
         <Panel
@@ -180,9 +211,10 @@ export default class SenkaCalculator extends Component {
               <tbody>
                 {
                   [
-                    ['7-1', 3.035],
-                    ['5-4', 2.282],
-                    ['1-5', 0.8925],
+                    ['1-5', 0.91],
+                    ['7-1', 1.42],
+                    ['4-4', 1.995],
+                    ['4-5', 2.31],
                   ].map(([hd, dv]) => (
                     <tr key={hd}>
                       <td>{hd}</td>
@@ -193,7 +225,6 @@ export default class SenkaCalculator extends Component {
                 }
               </tbody>
             </Table>
-            <p className="short-line">预想攻略的EX图</p>
             <OverlayTrigger placement="top" overlay={
               <Tooltip>
                 {
@@ -218,8 +249,9 @@ export default class SenkaCalculator extends Component {
                       ...exlist.map(this.renderExButton),
                       this.renderExtraSenkaButton(extraSenka),
                       this.renderExtra2SenkaButton(extra2Senka),
+                      this.renderExtra3SenkaButton(extra3Senka),
                     ],
-                    3).map((btns,groupInd) => (
+                    4).map((btns,groupInd) => (
                       <ButtonGroup
                         key={groupInd}
                         bsSize="xsmall"

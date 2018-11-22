@@ -94,6 +94,9 @@ const mkInitState = props => ({
   extra2Senka: 1,
   z2clearts:0,
 
+  extra3Senka: 1,
+  z3clearts:0,
+
   checksum:484764,  //2017.6.5
 
   senkaType:'calendar',
@@ -235,6 +238,13 @@ export const reactClass = connect(
           this.setState({extra2Senka:2})
         }else{
           this.setState({extra2Senka:2,z2clearts:new Date()})
+        }
+      }
+      if(postBody.api_quest_id==999999){//我也不知道ID是啥，有没有小伙伴告诉我
+        if(now.getDate()==1&&now.getHours()<4){
+          this.setState({extra3Senka:2})
+        }else{
+          this.setState({extra3Senka:2,z3clearts:new Date()})
         }
       }
     }
@@ -449,6 +459,9 @@ export const reactClass = connect(
       if(new Date(this.state.z2clearts).getTime()>new Date(this.state.fensurets).getTime()){
         upsenka = upsenka + 200
       }
+      if(new Date(this.state.z3clearts).getTime()>new Date(this.state.fensurets).getTime()){
+        upsenka = upsenka + 300
+      }
     }else{
       upsenka = (exp - exphis[no])/50000*35 + this.addExSenka(unclearedex,this.state.rankuex)
       console.log("u:"+upsenka+":"+exp)
@@ -457,6 +470,9 @@ export const reactClass = connect(
       }
       if(new Date(this.state.z2clearts).getTime()>ranktime.getTime()){
         upsenka = upsenka + 200
+      }
+      if(new Date(this.state.z3clearts).getTime()>ranktime.getTime()){
+        upsenka = upsenka + 300
       }
     }
     console.log("m:"+mysenka+":up:"+upsenka);
@@ -475,6 +491,10 @@ export const reactClass = connect(
     const extra2Senka=this.state.extra2Senka
     if(extra2Senka==0){
       senkaleft=senkaleft-200
+    }
+    const extra3Senka=this.state.extra3Senka
+    if(extra3Senka==0){
+      senkaleft=senkaleft-300
     }
     const layouttype = (this.props.layout=='vertical') && (this.props.doubleTabbed==false)
 
@@ -503,6 +523,8 @@ export const reactClass = connect(
             zclearts={this.state.zclearts}
             extra2Senka={this.state.extra2Senka}
             z2clearts={this.state.z2clearts}
+            extra3Senka={this.state.extra3Senka}
+            z3clearts={this.state.z3clearts}
             lt={layouttype}
             backstate={
               (newstate) => {

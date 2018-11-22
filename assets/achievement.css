@@ -84,8 +84,8 @@
 /* 战果计算 */
 #achievement .senka-calc .flex {
 	display: flex;
-	line-height: 26px;
-	height: 26px;
+	line-height: 20px;
+	height: 20px;
 }
 
 #achievement .senka-calc table {
@@ -98,7 +98,7 @@
 }
 
 #achievement .senka-calc .flex input {
-	height: 26px;
+	height: 20px;
 }
 
 #achievement .senka-calc .table tbody tr td {
