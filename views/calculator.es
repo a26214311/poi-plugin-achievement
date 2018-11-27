@@ -212,7 +212,7 @@ export default class SenkaCalculator extends Component {
                 {
                   [
                     ['1-5', 0.91],
-                    ['7-1', 1.42],
+                    ['7-1', 1.47],
                     ['4-4', 1.995],
                     ['4-5', 2.31],
                   ].map(([hd, dv]) => (

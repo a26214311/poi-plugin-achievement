@@ -240,7 +240,7 @@ export const reactClass = connect(
           this.setState({extra2Senka:2,z2clearts:new Date()})
         }
       }
-      if(postBody.api_quest_id==999999){//我也不知道ID是啥，有没有小伙伴告诉我
+      if(postBody.api_quest_id==893){//我也不知道ID是啥，有没有小伙伴告诉我
         if(now.getDate()==1&&now.getHours()<4){
           this.setState({extra3Senka:2})
         }else{
@@ -464,7 +464,6 @@ export const reactClass = connect(
       }
     }else{
       upsenka = (exp - exphis[no])/50000*35 + this.addExSenka(unclearedex,this.state.rankuex)
-      console.log("u:"+upsenka+":"+exp)
       if(new Date(this.state.zclearts).getTime()>ranktime.getTime()){
         upsenka = upsenka + 350
       }
@@ -475,7 +474,6 @@ export const reactClass = connect(
         upsenka = upsenka + 300
       }
     }
-    console.log("m:"+mysenka+":up:"+upsenka);
     const ignoreex = this.state.ignoreex
     const maps = this.props.maps
     let senkaleft = this.state.targetsenka-mysenka-upsenka
