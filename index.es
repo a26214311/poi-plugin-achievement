@@ -379,6 +379,19 @@ export const reactClass = connect(
         if(new Date(zclearts).getDate()==1&&new Date(zclearts).getHours()<6){
           data.zclearts=0
         }
+        if(new Date(data.z2clearts).getDate()==1&&new Date(data.z2clearts).getHours()<6){
+          data.z2clearts=0
+        }
+        if(new Date(data.z3clearts).getDate()==1&&new Date(data.z3clearts).getHours()<6){
+          data.z3clearts=0
+        }
+        if(new Date().getDate()>2&&new Date().getDay()<20){
+          delete(data.exphis[58])
+          delete(data.exphis[59])
+          delete(data.exphis[60])
+          delete(data.exphis[61])
+          delete(data.exphis[62])
+        }
         this.setState(data,() => {
           this.starttimer()
           if (typeof data.exphis !== 'undefined' &&
