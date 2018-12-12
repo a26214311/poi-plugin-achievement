@@ -409,8 +409,8 @@ export const reactClass = connect(
         if (e.syscall !== 'open' || e.code !== 'ENOENT') {
           debug.error('Error while loading config', e)
         }
-        return {}
-      }
+        return this.state
+
     } else {
       return this.state
     }
