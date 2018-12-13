@@ -406,11 +406,8 @@ export const reactClass = connect(
         })
         return data
       } catch (e) {
-        if (e.syscall !== 'open' || e.code !== 'ENOENT') {
-          debug.error('Error while loading config', e)
-        }
         return this.state
-
+      }
     } else {
       return this.state
     }
