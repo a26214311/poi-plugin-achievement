@@ -116,7 +116,13 @@ export const reactClass = connect(
     const basic = nextProps.basic
     const exp = basic.api_experience
     const now = new Date()
-    const month = now.getMonth()
+
+    let month = now.getMonth();
+    let date = now.getDate();
+    if(dayofMonth[month-1]==date){
+      
+    }
+
     const no = getDateNo(now)
     const achieve = {}
     const data = this.loadlist()
@@ -139,6 +145,8 @@ export const reactClass = connect(
       achieve.rankuex=exlist
       achieve.extraSenka=1
       achieve.zclearts=0
+      achieve.z2clearts=0
+      achieve.z3clearts=0
       achieve.r5his={}
       achieve.r20his={}
       achieve.r100his={}
