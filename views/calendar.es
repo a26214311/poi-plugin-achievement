@@ -33,7 +33,7 @@ const createChart = () => {
 
   Chart.defaults.global.animation.duration = 0
   Chart.defaults.line.spanGaps = true
-  if($('#myChart')){
+  if($('#myChart')==null){
     return
   }
   lineChart = new Chart($('#myChart'), {
