@@ -88,15 +88,11 @@ const mkInitState = props => ({
   tensurets:0,
   tensureuex:exlist,
   fensureuex:exlist,
-  extraSenka: 1,
-  zclearts:0,
-
-  extra2Senka: 1,
-  z2clearts:0,
-
-  extra3Senka: 1,
-  z3clearts:0,
-
+  zcleartslist: [0,0,0,0,0,0,0],
+  extraSenkalist: [1,1,1,1,1,1,1],
+  zId: [854,888,893,666666,284,666666,666666],
+  zValue: [350,200,300,400,80,330,390],
+  zName: ['Z作战前','三川','泊地警戒','Z作戦後','海上警備','西方','六水戦'],
   checksum:484764,  //2017.6.5
 
   senkaType:'calendar',
@@ -143,10 +139,11 @@ export const reactClass = connect(
       achieve.r20=0
       achieve.mysenka=0
       achieve.rankuex=exlist
-      achieve.extraSenka=1
-      achieve.zclearts=0
-      achieve.z2clearts=0
-      achieve.z3clearts=0
+      achieve.extraSenkalist=[1,1,1,1,1,1,1]
+      achieve.zcleartslist=[0,0,0,0,0,0,0]
+      achieve.zId=[854,888,893,666666,284,666666,666666], // I don't know some of the request Id of senka mission
+      achieve.zValue=[350,200,300,400,80,330,390],
+      achieve.zName=['Z作战前','三川','泊地警戒','Z作戦後','海上警備','西方','六水戦']
       achieve.r5his={}
       achieve.r20his={}
       achieve.r100his={}
@@ -234,25 +231,17 @@ export const reactClass = connect(
 
     const now = new Date()
     if(path=="/kcsapi/api_req_quest/clearitemget"){
-      if(postBody.api_quest_id==854){
+      requestId = this.state.zId.indexOf(postBody.api_request_id)
+      if(requestId>-1){
+        let es = this.state.extraSenkalist.slice()
+        let zcts = this.state.zcleartslist.slice()
+        es[requestId] = 2
+
         if(now.getDate()==1&&now.getHours()<4){
-          this.setState({extraSenka:2})
+          this.setState({extraSenkalist:es})
         }else{
-          this.setState({extraSenka:2,zclearts:new Date()})
-        }
-      }
-      if(postBody.api_quest_id==888){
-        if(now.getDate()==1&&now.getHours()<4){
-          this.setState({extra2Senka:2})
-        }else{
-          this.setState({extra2Senka:2,z2clearts:new Date()})
-        }
-      }
-      if(postBody.api_quest_id==893){//我也不知道ID是啥，有没有小伙伴告诉我
-        if(now.getDate()==1&&now.getHours()<4){
-          this.setState({extra3Senka:2})
-        }else{
-          this.setState({extra3Senka:2,z3clearts:new Date()})
+          zcts[requestId] = new Date()
+          this.setState({extraSenkalist:es,zcleartslist:zcts})
         }
       }
     }
@@ -383,16 +372,14 @@ export const reactClass = connect(
         const savedpath = getAchieveFilePath()
         const data = readJsonSync(savedpath)
         data.need_load = false
-        const zclearts = data.zclearts
-        if(new Date(zclearts).getDate()==1&&new Date(zclearts).getHours()<6){
-          data.zclearts=0
-        }
-        if(new Date(data.z2clearts).getDate()==1&&new Date(data.z2clearts).getHours()<6){
-          data.z2clearts=0
-        }
-        if(new Date(data.z3clearts).getDate()==1&&new Date(data.z3clearts).getHours()<6){
-          data.z3clearts=0
-        }
+        const zcts = data.zcleartslist.slice()
+        let zcts2 = data.zcleartslist.slice()
+        zcts.forEach((ts, index) => {
+          if(new Date(ts).getDate()==1&&new Date(ts).getHours()<6){
+            zcts2[index]=0
+          }
+        })
+        data.zcleartslist = zcts2
         if(new Date().getDate()>2&&new Date().getDay()<20){
           delete(data.exphis[58])
           delete(data.exphis[59])
@@ -468,29 +455,24 @@ export const reactClass = connect(
     const ensuresenka=achieve.fensuresenka
     const ensureexp = achieve.fensureexp
     const ensureuex = achieve.fensureuex
+
+    const zclearts = this.state.zcleartslist.slice()
+    const zValue = this.state.zValue.slice()
     if(ensuresenka>0&&ensureexp>0){
 
       upsenka = (exp-ensureexp)/50000*35+ensuresenka-mysenka+this.addExSenka(unclearedex,ensureuex)
-      if(new Date(this.state.zclearts).getTime()>new Date(this.state.fensurets).getTime()){
-        upsenka = upsenka + 350
-      }
-      if(new Date(this.state.z2clearts).getTime()>new Date(this.state.fensurets).getTime()){
-        upsenka = upsenka + 200
-      }
-      if(new Date(this.state.z3clearts).getTime()>new Date(this.state.fensurets).getTime()){
-        upsenka = upsenka + 300
-      }
+      zclearts.forEach((ts, index) => {
+        if(new Date(ts).getTime()>new Date(this.state.fensurets).getTime()){
+          upsenka = parseInt(upsenka) + parseInt(zValue[index])
+        }
+      })
     }else{
       upsenka = (exp - exphis[no])/50000*35 + this.addExSenka(unclearedex,this.state.rankuex)
-      if(new Date(this.state.zclearts).getTime()>ranktime.getTime()){
-        upsenka = upsenka + 350
-      }
-      if(new Date(this.state.z2clearts).getTime()>ranktime.getTime()){
-        upsenka = upsenka + 200
-      }
-      if(new Date(this.state.z3clearts).getTime()>ranktime.getTime()){
-        upsenka = upsenka + 300
-      }
+      zclearts.forEach((ts, index) => {
+        if(new Date(ts).getTime()>ranktime.getTime()){
+          upsenka = parseInt(upsenka) + parseInt(zValue[index])
+        }
+      })
     }
     const ignoreex = this.state.ignoreex
     const maps = this.props.maps
@@ -500,18 +482,12 @@ export const reactClass = connect(
         senkaleft=senkaleft-exvalue[unclearedex[i]]
       }
     }
-    const extraSenka=this.state.extraSenka
-    if(extraSenka==0){
-      senkaleft=senkaleft-350
-    }
-    const extra2Senka=this.state.extra2Senka
-    if(extra2Senka==0){
-      senkaleft=senkaleft-200
-    }
-    const extra3Senka=this.state.extra3Senka
-    if(extra3Senka==0){
-      senkaleft=senkaleft-300
-    }
+    const extraSenka = this.state.extraSenkalist.slice()
+    extraSenka.forEach((item, index) => {
+      if(item == 0){
+        senkaleft=senkaleft-zValue[index]
+      }
+    })
     const layouttype = (this.props.layout=='vertical') && (this.props.doubleTabbed==false)
 
     return (
@@ -534,13 +510,10 @@ export const reactClass = connect(
             senkaleft={senkaleft}
             targetsenka={this.state.targetsenka}
             ignoreex={ignoreex}
-            extraSenka={extraSenka}
             maps={maps}
-            zclearts={this.state.zclearts}
-            extra2Senka={this.state.extra2Senka}
-            z2clearts={this.state.z2clearts}
-            extra3Senka={this.state.extra3Senka}
-            z3clearts={this.state.z3clearts}
+            zclearts={this.state.zcleartslist}
+            extraSenka={this.state.extraSenkalist}
+            zName={this.state.zName}
             lt={layouttype}
             backstate={
               (newstate) => {

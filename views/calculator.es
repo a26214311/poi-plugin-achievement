@@ -29,30 +29,14 @@ export default class SenkaCalculator extends Component {
   }
 
 
-  handleExtraSenkaChange = e => {
+  handleExtraSenkaChange = (e, k) => {
     e.preventDefault()
     e.stopPropagation()
-    if(!this.props.zclearts){
-      const es = (this.props.extraSenka + 1) % 3
-      this.props.backstate({extraSenka:es})
-    }
-  }
-
-  handleExtra2SenkaChange = e => {
-    e.preventDefault()
-    e.stopPropagation()
-    if(!this.props.z2clearts){
-      const es = (this.props.extra2Senka + 1) % 3
-      this.props.backstate({extra2Senka:es})
-    }
-  }
-
-  handleExtra3SenkaChange = e => {
-    e.preventDefault()
-    e.stopPropagation()
-    if(!this.props.z3clearts){
-      const es = (this.props.extra3Senka + 1) % 3
-      this.props.backstate({extra3Senka:es})
+    if(!this.props.zclearts[k]){
+      let extraSenka = this.props.extraSenka
+      const es = (extraSenka[k] + 1) % 3
+      extraSenka[k] = es
+      this.props.backstate({extraSenkalist:extraSenka})
     }
   }
 
@@ -97,64 +81,23 @@ export default class SenkaCalculator extends Component {
     }
   }
 
-  renderExtraSenkaButton = extraSenka => (
+  renderExtraSenkaButton = (extraSenka, k) => (
     <Button
-      key="extraSenka"
+      key={k}
       bsStyle={
         extraSenka == 0 ? 'success' :
-        extraSenka == 1 ? 'danger' :
-        'info'
+          extraSenka == 1 ? 'danger' :
+            'info'
       }
-      onClick={this.handleExtraSenkaChange}>
+      onClick={e=>{this.handleExtraSenkaChange(e, k)}}>
       {
         extraSenka == 0 ?
           <FontAwesome name="check"/> :
-        extraSenka == 1 ?
-          <FontAwesome name="close"/> :
-          <FontAwesome name="star"/>
-      }
-      Z作战
-    </Button>
-  )
-
-  renderExtra2SenkaButton = extra2Senka => (
-    <Button
-      key="extra2Senka"
-      bsStyle={
-        extra2Senka == 0 ? 'success' :
-          extra2Senka == 1 ? 'danger' :
-            'info'
-      }
-      onClick={this.handleExtra2SenkaChange}>
-      {
-        extra2Senka == 0 ?
-          <FontAwesome name="check"/> :
-          extra2Senka == 1 ?
+          extraSenka == 1 ?
             <FontAwesome name="close"/> :
             <FontAwesome name="star"/>
       }
-      三川
-    </Button>
-  )
-
-
-  renderExtra3SenkaButton = extra3Senka => (
-    <Button
-      key="extra3Senka"
-      bsStyle={
-        extra3Senka == 0 ? 'success' :
-          extra3Senka == 1 ? 'danger' :
-            'info'
-      }
-      onClick={this.handleExtra3SenkaChange}>
-      {
-        extra3Senka == 0 ?
-          <FontAwesome name="check"/> :
-          extra3Senka == 1 ?
-            <FontAwesome name="close"/> :
-            <FontAwesome name="star"/>
-      }
-      泊地警戒
+      {this.props.zName[k]}
     </Button>
   )
 
@@ -165,8 +108,6 @@ export default class SenkaCalculator extends Component {
     const daysleft = dayofMonth[month] - day + 1
     const senkaleft = this.props.senkaleft
     const extraSenka = this.props.extraSenka
-    const extra2Senka = this.props.extra2Senka
-    const extra3Senka = this.props.extra3Senka
     return(
       <Col xs={this.props.lt?3:6}>
         <Panel
@@ -247,9 +188,9 @@ export default class SenkaCalculator extends Component {
                   _.chunk(
                     [
                       ...exlist.map(this.renderExButton),
-                      this.renderExtraSenkaButton(extraSenka),
-                      this.renderExtra2SenkaButton(extra2Senka),
-                      this.renderExtra3SenkaButton(extra3Senka),
+                      ...extraSenka.map((es, key) => {
+                        return this.renderExtraSenkaButton(es, key)
+                      })
                     ],
                     4).map((btns,groupInd) => (
                       <ButtonGroup
