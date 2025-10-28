@@ -47,8 +47,8 @@ export const senkaOfDay = (exphis,tmpexp,tmpno) => {
 }
 
 export const fs = require('fs')
-export const exlist=["1-5","1-6","2-5","3-5","4-5","5-5","6-5"]
-export const exvalue={"1-5":75,"1-6":75,"2-5":100,"3-5":150,"4-5":180,"5-5":200,"6-5":250}
+export const exlist=["1-5","1-6","2-5","3-5","4-5","5-5","6-5","7-5"]
+export const exvalue={"1-5":75,"1-6":75,"2-5":100,"3-5":150,"4-5":180,"5-5":200,"6-5":250,"7-5":170}
 
 export const dayofMonth = [31,29,31,30,31,30,31,31,30,31,30,31]
 

@@ -215,6 +215,8 @@ export const reactClass = connect(
     return rate > 0 ? rate : 0
   }
 
+
+
   handleResponse = e => {
     const {path, body,postBody} = e.detail
 
@@ -231,7 +233,7 @@ export const reactClass = connect(
 
     const now = new Date()
     if(path=="/kcsapi/api_req_quest/clearitemget"){
-      requestId = this.state.zId.indexOf(postBody.api_request_id)
+      let requestId = this.state.zId.indexOf(postBody.api_request_id)
       if(requestId>-1){
         let es = this.state.extraSenkalist.slice()
         let zcts = this.state.zcleartslist.slice()
@@ -269,6 +271,14 @@ export const reactClass = connect(
         }
       }
       for(let i=0;i<list.length;i++){
+
+        const no1=list[i].api_mxltvkpyuklh
+        const key1 = list[i].api_wuhnhojjxmke
+        const senka1 = this.getRate(no,key1,myid)
+        const timeno1 = getRankDateNo(now)
+        var tr = {n:ist[i].api_mtjmdcwtvhdr,dd:senka1,no:no1,ts:timeno1}
+        var tstr = JSON.stringify(tr)
+        //fs.appendFileSync('ww.txt',tstr+'\n');
         if(list[i].api_mtjmdcwtvhdr === myname){
           const no=list[i].api_mxltvkpyuklh
           const key = list[i].api_wuhnhojjxmke

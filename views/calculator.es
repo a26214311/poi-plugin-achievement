@@ -101,6 +101,7 @@ export default class SenkaCalculator extends Component {
     </Button>
   )
 
+
   render_D(){
     const now = new Date()
     const day = now.getDate()
@@ -109,7 +110,7 @@ export default class SenkaCalculator extends Component {
     const senkaleft = this.props.senkaleft
     const extraSenka = this.props.extraSenka
     return(
-      <Col xs={this.props.lt?3:6}>
+      <Col xs={this.props.lt?4:8}>
         <Panel
           className="info senka-calc">
           <Panel.Heading>
@@ -192,7 +193,7 @@ export default class SenkaCalculator extends Component {
                         return this.renderExtraSenkaButton(es, key)
                       })
                     ],
-                    4).map((btns,groupInd) => (
+                    5).map((btns,groupInd) => (
                       <ButtonGroup
                         key={groupInd}
                         bsSize="xsmall"

@@ -73,7 +73,7 @@ export default class SenkaInfo extends Component {
     const mysenka = achieve.mysenka?achieve.mysenka:0
     const no = getRankDateNo(ranktime)
     return(
-      <Col xs={this.props.lt?3:6}>
+      <Col xs={this.props.lt?2:4}>
         <Panel className="info senka-info">
           <Panel.Heading>
             <span>
