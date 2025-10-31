@@ -276,7 +276,7 @@ export const reactClass = connect(
         const key1 = list[i].api_wuhnhojjxmke
         const senka1 = this.getRate(no1,key1,myid)
         const timeno1 = getRankDateNo(now)
-        var tr = {n:ist[i].api_mtjmdcwtvhdr,dd:senka1,no:no1,ts:timeno1}
+        var tr = {n:list[i].api_mtjmdcwtvhdr,dd:senka1,no:no1,ts:timeno1}
         var tstr = JSON.stringify(tr)
         //fs.appendFileSync('ww.txt',tstr+'\n');
         if(list[i].api_mtjmdcwtvhdr === myname){
