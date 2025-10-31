@@ -274,7 +274,7 @@ export const reactClass = connect(
 
         const no1=list[i].api_mxltvkpyuklh
         const key1 = list[i].api_wuhnhojjxmke
-        const senka1 = this.getRate(no,key1,myid)
+        const senka1 = this.getRate(no1,key1,myid)
         const timeno1 = getRankDateNo(now)
         var tr = {n:ist[i].api_mtjmdcwtvhdr,dd:senka1,no:no1,ts:timeno1}
         var tstr = JSON.stringify(tr)
